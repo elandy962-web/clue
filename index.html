@@ -574,13 +574,13 @@
         </div>
     </div>
 
-    <!-- SDK de Firebase -->
-    <script src="https://www.gstatic.com/firebaseapps/9.22.0/firebase-app-compat.min.js"></script>
-    <script src="https://www.gstatic.com/firebaseapps/9.22.0/firebase-auth-compat.min.js"></script>
-    <script src="https://www.gstatic.com/firebaseapps/9.22.0/firebase-database-compat.min.js"></script>
+    <!-- SDKs de Firebase Corregidos (Versión 9 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // ===== CREDENCIALES DE FIREBASE (YA CONFIGURADAS) =====
+        // ===== CREDENCIALES DE FIREBASE =====
         const firebaseConfig = {
             apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
             authDomain: "clue-game-47c7e.firebaseapp.com",
@@ -622,9 +622,9 @@
                 setTimeout(() => {
                     document.getElementById('statusMessage').innerHTML = '';
                     loadPublicRooms();
-                }, 1500);
+                }, 1000);
             } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
+                showStatus('❌ Error de conexión: ' + error.message, 'error');
             }
         }
 
@@ -670,7 +670,7 @@
                 await database.ref(`rooms/${gameState.roomCode}`).set(roomData);
                 startGame();
             } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
+                showStatus('❌ Error al crear sala: ' + error.message, 'error');
             }
         }
 
@@ -686,7 +686,7 @@
             gameState.playerName = name;
             gameState.roomCode = code;
 
-            showStatus('⏳ Conectando...', 'loading');
+            showStatus('⏳ Conectando a sala...', 'loading');
 
             try {
                 const roomSnapshot = await database.ref(`rooms/${code}`).get();
@@ -705,12 +705,12 @@
 
                 startGame();
             } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
+                showStatus('❌ Error al entrar: ' + error.message, 'error');
             }
         }
 
         function loadPublicRooms() {
-            database.ref('rooms').limitToLast(5).on('value', (snapshot) => {
+            database.ref('rooms').on('value', (snapshot) => {
                 const roomsList = document.getElementById('roomsList');
                 const data = snapshot.val();
 
@@ -720,7 +720,8 @@
                 }
 
                 let html = '<h3>📋 Salas Disponibles:</h3>';
-                Object.entries(data).forEach(([code, room]) => {
+                const entries = Object.entries(data).slice(-5); // Mostrar últimas 5 salas
+                entries.forEach(([code, room]) => {
                     const playerCount = Object.keys(room.players || {}).length;
                     html += `
                         <div class="room-item">
@@ -755,8 +756,23 @@
                 gameState.players = snapshot.val() || {};
                 updatePlayersList();
                 
-                if (Object.keys(gameState.players).length >= 2 && gameState.mystery.suspect === '') {
-                    initializeMystery();
+                if (Object.keys(gameState.players).length >= 1 && !gameState.mystery.suspect) {
+                    // Inicializar el misterio si es el host o si aún no está creado
+                    database.ref(`rooms/${gameState.roomCode}/mystery`).get().then((snap) => {
+                        if (!snap.exists()) {
+                            initializeMystery();
+                        } else {
+                            gameState.mystery = snap.val();
+                            updateGameBoard();
+                        }
+                    });
+                }
+            });
+
+            database.ref(`rooms/${gameState.roomCode}/mystery`).on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    gameState.mystery = snapshot.val();
+                    updateGameBoard();
                 }
             });
 
@@ -770,23 +786,23 @@
 
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).on('child_added', (snapshot) => {
                 const message = snapshot.val();
-                addMessage(message.type, message.text);
+                if(message) addMessage(message.type, message.text);
             });
         }
 
         function initializeMystery() {
-            gameState.mystery = {
+            const mystery = {
                 suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
                 weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
                 room: ROOMS[Math.floor(Math.random() * ROOMS.length)]
             };
 
-            distributeCards();
-            updateGameBoard();
+            database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+            distributeCards(mystery);
             addMessage('system', '¡La partida ha comenzado! 🎮');
         }
 
-        function distributeCards() {
+        function distributeCards(mystery) {
             const allCards = [...SUSPECTS, ...WEAPONS, ...ROOMS];
             const shuffled = allCards.sort(() => Math.random() - 0.5);
             
@@ -796,9 +812,9 @@
             playerIds.forEach((playerId, index) => {
                 const playerCards = shuffled.slice(index * cardsPerPlayer, (index + 1) * cardsPerPlayer);
                 const filteredCards = playerCards.filter(card => 
-                    card !== gameState.mystery.suspect &&
-                    card !== gameState.mystery.weapon &&
-                    card !== gameState.mystery.room
+                    card !== mystery.suspect &&
+                    card !== mystery.weapon &&
+                    card !== mystery.room
                 );
 
                 database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(filteredCards);
@@ -824,14 +840,11 @@
             const playerIds = Object.keys(gameState.players);
             
             list.innerHTML = playerIds.map((id, idx) => {
-                const player = gameState.players[id];
+                const player = gameState.players[id] || {};
                 return `
                     <div class="player-info ${idx === gameState.currentPlayer ? 'current' : ''}">
                         <div class="player-name">
-                            ${idx === gameState.currentPlayer ? '▶ ' : ''}${player.name}
-                        </div>
-                        <div class="player-status">
-                            ${player.suspect ? '🎭 ' + player.suspect : 'Esperando...'}
+                            ${idx === gameState.currentPlayer ? '▶ ' : ''}${player.name || 'Jugador'}
                         </div>
                         <div class="player-status">
                             🎴 ${player.cards ? player.cards.length : 0} cartas
@@ -843,15 +856,19 @@
 
         function updateMyCards() {
             const cardsDiv = document.getElementById('myCards');
-            if (gameState.myCards.length === 0) {
-                cardsDiv.innerHTML = '<p style="color: #999;">Esperando cartas...</p>';
-                return;
-            }
+            
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
+                gameState.myCards = snapshot.val() || [];
+                if (gameState.myCards.length === 0) {
+                    cardsDiv.innerHTML = '<p style="color: #999;">Esperando cartas...</p>';
+                    return;
+                }
 
-            cardsDiv.innerHTML = gameState.myCards.map(card => {
-                let type = SUSPECTS.includes(card) ? 'suspect' : WEAPONS.includes(card) ? 'weapon' : 'room';
-                return `<div class="card ${type}">${card}</div>`;
-            }).join('');
+                cardsDiv.innerHTML = gameState.myCards.map(card => {
+                    let type = SUSPECTS.includes(card) ? 'suspect' : WEAPONS.includes(card) ? 'weapon' : 'room';
+                    return `<div class="card ${type}">${card}</div>`;
+                }).join('');
+            });
         }
 
         function updateCurrentTurn() {
@@ -904,6 +921,7 @@
 
         function addMessage(type, text) {
             const log = document.getElementById('messageLog');
+            if(!log) return;
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${type}`;
             msgDiv.textContent = text;
