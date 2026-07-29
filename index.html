@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clue - Tablero y Libreta de Detectives</title>
+    <title>Clue - Turnos Estrictos, Pasillos y Libreta</title>
     <style>
         * {
             margin: 0;
@@ -88,6 +88,7 @@
         .btn-secondary { background: #34495e; color: white; width: 100%; }
         .btn-secondary:hover { background: #2c3e50; }
         .btn-small { padding: 8px 12px; font-size: 0.9em; width: auto; }
+        .btn:disabled { background: #555 !important; color: #888 !important; cursor: not-allowed; }
 
         .status-message {
             padding: 12px;
@@ -142,72 +143,91 @@
 
         .clue-board {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 8px;
             background: #151522;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             border: 2px dashed #4b4b6b;
-            min-height: 480px;
+            min-height: 520px;
         }
 
-        .room-tile {
-            background: #2c3e50;
-            border: 3px solid #34495e;
-            border-radius: 10px;
+        .board-tile {
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px;
+            justify-content: center;
+            padding: 6px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
+            font-size: 0.85em;
         }
 
-        .room-tile:hover {
+        .board-tile.room {
+            background: #2c3e50;
+            border: 3px solid #34495e;
+        }
+        .board-tile.room:hover {
             border-color: #f39c12;
             background: #34495e;
         }
-
-        .room-tile.my-current-room {
+        .board-tile.room.my-current-location {
             border-color: #2ecc71;
             background: #1b4332;
         }
-
-        .room-tile.reachable {
+        .board-tile.room.reachable {
             border-color: #f1c40f;
             background: #3d3a22;
             box-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
         }
 
+        .board-tile.hallway {
+            background: #1a1a24;
+            border: 2px dashed #3f3f5f;
+        }
+        .board-tile.hallway:hover {
+            border-color: #f39c12;
+            background: #252538;
+        }
+        .board-tile.hallway.my-current-location {
+            border-color: #2ecc71;
+            background: #163623;
+        }
+        .board-tile.hallway.reachable {
+            border-color: #f1c40f;
+            background: #36321b;
+            box-shadow: 0 0 8px rgba(241, 196, 15, 0.4);
+        }
+
         .room-name {
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #ecf0f1;
         }
 
         .room-icon {
-            font-size: 1.5em;
-            margin: 5px 0;
+            font-size: 1.2em;
+            margin: 2px 0;
         }
 
-        .players-in-room {
+        .players-in-tile {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 3px;
             justify-content: center;
-            margin-top: 5px;
+            margin-top: 3px;
         }
 
         .player-token {
             background: #e74c3c;
             color: white;
-            font-size: 0.75em;
-            padding: 2px 6px;
-            border-radius: 12px;
+            font-size: 0.7em;
+            padding: 1px 5px;
+            border-radius: 10px;
             font-weight: bold;
             border: 1px solid #fff;
         }
@@ -215,12 +235,12 @@
         .board-center {
             background: #111118;
             border: 2px dashed #e74c3c;
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px;
+            padding: 5px;
             text-align: center;
         }
 
@@ -308,7 +328,6 @@
         .message.error { background: #b71c1c; color: #ffcdd2; }
         .message.info { background: #4a148c; color: #e1bee7; }
 
-        /* LIBRETA DE DETECTIVE (MODAL) */
         .detective-table {
             width: 100%;
             border-collapse: collapse;
@@ -412,7 +431,7 @@
     <div class="container">
         <div class="header">
             <h1>🔍 Clue Multijugador</h1>
-            <p>Con Sistema de Movimiento por Dados y Libreta de Detective</p>
+            <p>Control de Turnos Estrictos, Pasillos y Libreta de Detectives</p>
         </div>
 
         <!-- PANTALLA DE INICIO -->
@@ -443,8 +462,8 @@
 
                     <div class="game-info">
                         <div>
-                            <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #f39c12;">-</span><br>
-                            <strong>Estás en:</strong> <span id="myLocation" style="color: #2ecc71; font-weight: bold;">Cocina</span><br>
+                            <strong>Turno de:</strong> <span id="currentTurnInfo" style="color: #f39c12;">-</span><br>
+                            <strong>Posición Actual:</strong> <span id="myLocation" style="color: #2ecc71; font-weight: bold;">Cocina</span><br>
                             <strong>Pasos Disponibles:</strong> <span id="stepsAvailable" style="color: #f1c40f; font-weight: bold;">0</span>
                         </div>
                         <div>
@@ -453,7 +472,7 @@
                     </div>
                     
                     <div class="clue-board" id="gameBoard"></div>
-                    <p id="boardInstruction" style="text-align: center; font-size: 0.75em; color: #f1c40f; margin-top: 8px;">⚠️ Primero debes tirar los dados para moverte.</p>
+                    <p id="boardInstruction" style="text-align: center; font-size: 0.75em; color: #f1c40f; margin-top: 8px;">⏳ Espera tu turno para tirar los dados.</p>
                 </div>
 
                 <div class="board-section" style="margin-top: 15px;">
@@ -471,11 +490,10 @@
 
                 <div class="panel">
                     <h3>⚙️ Acciones</h3>
-                    <div class="action-buttons">
-                        <button class="btn btn-primary btn-small" onclick="rollDice()" style="background: #27ae60;">🎲 Tirar Dados</button>
+                    <div class="action-buttons" id="actionButtonsContainer">
+                        <button id="rollDiceBtn" class="btn btn-primary btn-small" onclick="rollDice()" style="background: #27ae60;" disabled>🎲 Tirar Dados</button>
                         <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #2980b9;">📓 Abrir Libreta de Notas</button>
                         <button class="btn btn-primary btn-small" onclick="showAccusationModal()">🎯 Hacer Teoría / Acusación</button>
-                        <button class="btn btn-secondary btn-small" onclick="manualDistributeCards()" style="background: #8e44ad;">🃏 Repartir Cartas</button>
                         <button class="btn btn-secondary btn-small" onclick="copyRoomCode()">📋 Copiar Código</button>
                     </div>
                 </div>
@@ -492,7 +510,7 @@
     <div id="notebookModal" class="modal">
         <div class="modal-content">
             <h2>📓 Libreta de Detective (Tacha y Descarta)</h2>
-            <p style="font-size: 0.8em; color: #aaa; margin-bottom: 10px;">Marca las casillas para llevar control de lo que vas descartando de los sospechosos, armas y habitaciones.</p>
+            <p style="font-size: 0.8em; color: #aaa; margin-bottom: 10px;">Marca las casillas para llevar control de lo que vas descartando.</p>
             <div id="notebookContainer"></div>
             <div style="margin-top: 15px; text-align: right;">
                 <button class="btn btn-secondary btn-small" onclick="closeNotebookModal()">Cerrar Libreta</button>
@@ -504,7 +522,7 @@
     <div id="accusationModal" class="modal">
         <div class="modal-content">
             <h2>🔍 Plantear Teoría / Acusación</h2>
-            <p style="color: #aaa; margin-bottom: 15px; font-size: 0.85em;">Debes estar ubicado físicamente en la habitación para formular tu teoría.</p>
+            <p style="color: #aaa; margin-bottom: 15px; font-size: 0.85em;">Debes estar ubicado físicamente en una habitación para formular tu teoría.</p>
             
             <div class="selection-group">
                 <label>Sospechoso:</label>
@@ -533,7 +551,7 @@
             </div>
 
             <div class="selection-group">
-                <label>Habitación (Tu ubicación actual):</label>
+                <label>Habitación:</label>
                 <select id="roomSelect">
                     <option value="">-- Selecciona --</option>
                     <option value="Kitchen">Cocina</option>
@@ -578,27 +596,47 @@
         const SUSPECTS = ['Miss Scarlett', 'Colonel Mustard', 'Mrs White', 'Mr Green', 'Mrs Peacock', 'Professor Plum'];
         const WEAPONS = ['Candlestick', 'Knife', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench'];
         
-        // Mapeo de distancias fijas simuladas en el tablero 3x3 (índices del 0 al 8)
-        const ROOMS_GRID = [
-            { id: 'Study', name: 'Estudio', index: 0, icon: '📚' },
-            { id: 'Hall', name: 'Vestíbulo', index: 1, icon: '🏛️' },
-            { id: 'Lounge', name: 'Salón', index: 2, icon: '🛋️' },
-            { id: 'Library', name: 'Biblioteca', index: 3, icon: '📖' },
-            { id: 'Billiard Room', name: 'Sala de Billar', index: 4, icon: '🎱' },
-            { id: 'Dining Room', name: 'Comedor', index: 5, icon: '🍽️' },
-            { id: 'Conservatory', name: 'Conservatorio', index: 6, icon: '🪴' },
-            { id: 'Ballroom', name: 'Salón de Baile', index: 7, icon: '💃' },
-            { id: 'Kitchen', name: 'Cocina', index: 8, icon: '🍳' }
+        const BOARD_LAYOUT = [
+            { id: 'Study', name: 'Estudio', type: 'room', x: 0, y: 0, icon: '📚' },
+            { id: 'H_0_1', name: 'Pasillo', type: 'hallway', x: 1, y: 0, icon: '🚶‍♂️' },
+            { id: 'Hall', name: 'Vestíbulo', type: 'room', x: 2, y: 0, icon: '🏛️' },
+            { id: 'H_0_3', name: 'Pasillo', type: 'hallway', x: 3, y: 0, icon: '🚶‍♂️' },
+            { id: 'Lounge', name: 'Salón', type: 'room', x: 4, y: 0, icon: '🛋️' },
+
+            { id: 'H_1_0', name: 'Pasillo', type: 'hallway', x: 0, y: 1, icon: '🚶‍♂️' },
+            { id: 'H_1_1', name: 'Pasillo', type: 'hallway', x: 1, y: 1, icon: '🚶‍♂️' },
+            { id: 'H_1_2', name: 'Pasillo', type: 'hallway', x: 2, y: 1, icon: '🚶‍♂️' },
+            { id: 'H_1_3', name: 'Pasillo', type: 'hallway', x: 3, y: 1, icon: '🚶‍♂️' },
+            { id: 'H_1_4', name: 'Pasillo', type: 'hallway', x: 4, y: 1, icon: '🚶‍♂️' },
+
+            { id: 'Library', name: 'Biblioteca', type: 'room', x: 0, y: 2, icon: '📖' },
+            { id: 'H_2_1', name: 'Pasillo', type: 'hallway', x: 1, y: 2, icon: '🚶‍♂️' },
+            { id: 'CENTER', name: 'Mansión', type: 'center', x: 2, y: 2, icon: '✉️' },
+            { id: 'H_2_3', name: 'Pasillo', type: 'hallway', x: 3, y: 2, icon: '🚶‍♂️' },
+            { id: 'Dining Room', name: 'Comedor', type: 'room', x: 4, y: 2, icon: '🍽️' },
+
+            { id: 'H_3_0', name: 'Pasillo', type: 'hallway', x: 0, y: 3, icon: '🚶‍♂️' },
+            { id: 'H_3_1', name: 'Pasillo', type: 'hallway', x: 1, y: 3, icon: '🚶‍♂️' },
+            { id: 'H_3_2', name: 'Pasillo', type: 'hallway', x: 2, y: 3, icon: '🚶‍♂️' },
+            { id: 'H_3_3', name: 'Pasillo', type: 'hallway', x: 3, y: 3, icon: '🚶‍♂️' },
+            { id: 'H_3_4', name: 'Pasillo', type: 'hallway', x: 4, y: 3, icon: '🚶‍♂️' },
+
+            { id: 'Conservatory', name: 'Conservatorio', type: 'room', x: 0, y: 4, icon: '🪴' },
+            { id: 'H_4_1', name: 'Pasillo', type: 'hallway', x: 1, y: 4, icon: '🚶‍♂️' },
+            { id: 'Ballroom', name: 'Salón de Baile', type: 'room', x: 2, y: 4, icon: '💃' },
+            { id: 'H_4_3', name: 'Pasillo', type: 'hallway', x: 3, y: 4, icon: '🚶‍♂️' },
+            { id: 'Kitchen', name: 'Cocina', type: 'room', x: 4, y: 4, icon: '🍳' }
         ];
 
         let gameState = {
             userId: null,
             playerName: '',
             roomCode: '',
+            isHost: false,
             players: {},
+            playerIdsOrder: [],
             myCards: [],
-            currentPlayer: 0,
-            mystery: {},
+            currentIndex: 0,
             myLocation: 'Kitchen',
             stepsAvailable: 0,
             hasRolled: false,
@@ -631,6 +669,7 @@
 
             gameState.playerName = name;
             gameState.roomCode = Math.random().toString(36).substr(2, 6).toUpperCase();
+            gameState.isHost = true;
             showStatus('⏳ Creando sala...', 'loading');
 
             try {
@@ -639,7 +678,7 @@
                     players: {
                         [gameState.userId]: { name: gameState.playerName, location: 'Kitchen', cards: [] }
                     },
-                    gameState: { currentPlayer: 0, dice: 0, messages: [] }
+                    gameState: { currentIndex: 0, dice: 0, messages: [] }
                 };
                 await database.ref(`rooms/${gameState.roomCode}`).set(roomData);
                 initializeMysteryQuietly();
@@ -661,6 +700,9 @@
             try {
                 const roomSnapshot = await database.ref(`rooms/${code}`).get();
                 if (!roomSnapshot.exists()) { showStatus('❌ Sala no encontrada', 'error'); return; }
+
+                const roomData = roomSnapshot.val();
+                gameState.isHost = (roomData.host === gameState.userId);
 
                 await database.ref(`rooms/${code}/players/${gameState.userId}`).set({
                     name: gameState.playerName, location: 'Kitchen', cards: []
@@ -697,13 +739,24 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('gameScreen').classList.add('active');
             document.getElementById('roomCodeDisplay').textContent = gameState.roomCode;
+            
+            if (gameState.isHost) {
+                const actionsContainer = document.getElementById('actionButtonsContainer');
+                const distributeBtn = document.createElement('button');
+                distributeBtn.className = 'btn btn-secondary btn-small';
+                distributeBtn.style.background = '#8e44ad';
+                distributeBtn.textContent = '🃏 Repartir Cartas';
+                distributeBtn.onclick = manualDistributeCards;
+                actionsContainer.insertBefore(distributeBtn, actionsContainer.lastElementChild);
+            }
+
             setupGameListeners();
             buildNotebookUI();
             addMessage('system', `¡Bienvenido a la mansión! Código: ${gameState.roomCode}`);
         }
 
         function initializeMysteryQuietly() {
-            const allRoomsNames = ROOMS_GRID.map(r => r.id);
+            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room').map(r => r.id);
             const mystery = {
                 suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
                 weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
@@ -713,9 +766,14 @@
         }
 
         async function manualDistributeCards() {
+            if (!gameState.isHost) {
+                addMessage('error', '❌ Solo el creador del grupo puede repartir cartas.');
+                return;
+            }
+
             const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
             let mystery = mysterySnap.val();
-            const allRoomsNames = ROOMS_GRID.map(r => r.id);
+            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room').map(r => r.id);
 
             if (!mystery) {
                 mystery = {
@@ -739,13 +797,21 @@
                 database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(filteredCards);
             });
 
-            addMessage('success', '🃏 ¡Cartas repartidas exitosamente!');
+            addMessage('success', '🃏 ¡Cartas repartidas exitosamente por el creador!');
         }
 
-        // SISTEMA DE DADOS Y PASOS DE MOVIMIENTO
+        // VALIDACIÓN ESTRICTA DE TURNOS Y DADOS
         function rollDice() {
+            const playerIds = Object.keys(gameState.players);
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+
+            if (currentTurnUserId !== gameState.userId) {
+                addMessage('error', '❌ No es tu turno. Debes esperar a que los demás jugadores realicen su jugada.');
+                return;
+            }
+
             if (gameState.hasRolled) {
-                addMessage('error', '⚠️ Ya tiraste los dados en este turno. Muévete a una habitación.');
+                addMessage('error', '⚠️ Ya tiraste los dados en este turno. Mueve tu ficha a una casilla o habitación.');
                 return;
             }
 
@@ -754,55 +820,70 @@
             gameState.hasRolled = true;
             document.getElementById('stepsAvailable').textContent = dice;
             document.getElementById('diceResult').textContent = `🎲 ${dice}`;
-            document.getElementById('boardInstruction').textContent = `✅ ¡Tienes ${dice} pasos! Haz clic en una habitación resaltada en el tablero.`;
+            document.getElementById('boardInstruction').textContent = `✅ ¡Tienes ${dice} pasos! Haz clic en las casillas o habitaciones accesibles.`;
             
             database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
             addMessage('info', `🎲 Sacaste un ${dice}. Tienes ${dice} pasos de movimiento.`);
             updateGameBoard();
         }
 
-        function calculateDistance(roomAId, roomBId) {
-            const rA = ROOMS_GRID.find(r => r.id === roomAId);
-            const rB = ROOMS_GRID.find(r => r.id === roomBId);
-            if (!rA || !rB) return 99;
-            const x1 = rA.index % 3, y1 = Math.floor(rA.index / 3);
-            const x2 = rB.index % 3, y2 = Math.floor(rB.index / 3);
-            return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+        function calculateDistance(tileAId, tileBId) {
+            const tileA = BOARD_LAYOUT.find(b => b.id === tileAId);
+            const tileB = BOARD_LAYOUT.find(b => b.id === tileBId);
+            if (!tileA || !tileB) return 99;
+            return Math.abs(tileA.x - tileB.x) + Math.abs(tileA.y - tileB.y);
         }
 
-        function moveToRoom(roomName) {
+        function moveToTile(tileId) {
+            const playerIds = Object.keys(gameState.players);
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+
+            if (currentTurnUserId !== gameState.userId) {
+                addMessage('error', '❌ No es tu turno.');
+                return;
+            }
+
             if (!gameState.hasRolled || gameState.stepsAvailable <= 0) {
-                addMessage('error', '❌ ¡Debes hacer clic en "Tirar Dados" primero para obtener pasos de movimiento!');
+                addMessage('error', '❌ ¡Debes hacer clic en "Tirar Dados" primero!');
                 return;
             }
 
-            const distance = calculateDistance(gameState.myLocation, roomName);
+            const distance = calculateDistance(gameState.myLocation, tileId);
             if (distance > gameState.stepsAvailable) {
-                addMessage('error', `❌ Distancia muy lejos. Estás a ${distance} pasos y solo tienes ${gameState.stepsAvailable} disponibles.`);
+                addMessage('error', `❌ Destino muy lejano. Está a ${distance} pasos y solo tienes ${gameState.stepsAvailable} disponibles.`);
                 return;
             }
 
-            // Movimiento válido
-            gameState.myLocation = roomName;
+            // Registrar movimiento y avanzar el turno de manera cíclica
+            gameState.myLocation = tileId;
             gameState.stepsAvailable = 0;
             gameState.hasRolled = false;
-            document.getElementById('myLocation').textContent = roomName;
+            document.getElementById('myLocation').textContent = tileId;
             document.getElementById('stepsAvailable').textContent = 0;
-            document.getElementById('boardInstruction').textContent = '⚠️ Primero debes tirar los dados para moverte.';
+            document.getElementById('boardInstruction').textContent = '⏳ Espera tu turno para tirar los dados.';
 
-            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(roomName);
-            addMessage('success', `🏃‍♂️ Te moviste a ${roomName}. Gira los dados de nuevo en tu siguiente turno.`);
+            const nextIndex = (gameState.currentIndex + 1) % playerIds.length;
+
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(tileId);
+            database.ref(`rooms/${gameState.roomCode}/gameState`).update({
+                currentIndex: nextIndex,
+                dice: 0
+            });
+
+            addMessage('success', `🚶‍♂️ Te moviste a ${tileId}. Turno finalizado.`);
             updateGameBoard();
         }
 
         function setupGameListeners() {
             database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snapshot) => {
                 gameState.players = snapshot.val() || {};
+                gameState.playerIdsOrder = Object.keys(gameState.players);
                 if (gameState.players[gameState.userId] && gameState.players[gameState.userId].location) {
                     gameState.myLocation = gameState.players[gameState.userId].location;
                     document.getElementById('myLocation').textContent = gameState.myLocation;
                 }
                 updatePlayersList();
+                updateTurnControls();
                 updateGameBoard();
             });
 
@@ -814,9 +895,11 @@
             database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snapshot) => {
                 const state = snapshot.val();
                 if (state) {
-                    gameState.currentPlayer = state.currentPlayer || 0;
-                    if (state.dice) document.getElementById('diceResult').textContent = `🎲 ${state.dice}`;
-                    updateCurrentTurn();
+                    gameState.currentIndex = state.currentIndex || 0;
+                    if (state.dice !== undefined) {
+                        document.getElementById('diceResult').textContent = state.dice > 0 ? `🎲 ${state.dice}` : '🎲 -';
+                    }
+                    updateTurnControls();
                 }
             });
 
@@ -826,36 +909,64 @@
             });
         }
 
+        function updateTurnControls() {
+            const playerIds = Object.keys(gameState.players);
+            if (playerIds.length === 0) return;
+
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+            const isMyTurn = (currentTurnUserId === gameState.userId);
+            
+            const rollBtn = document.getElementById('rollDiceBtn');
+            rollBtn.disabled = !isMyTurn || gameState.hasRolled;
+
+            if (isMyTurn) {
+                document.getElementById('currentTurnInfo').textContent = '¡Es tu turno!';
+                document.getElementById('currentTurnInfo').style.color = '#2ecc71';
+                if (!gameState.hasRolled) {
+                    document.getElementById('boardInstruction').textContent = '🎲 ¡Es tu turno! Haz clic en "Tirar Dados".';
+                }
+            } else {
+                const activePlayerName = gameState.players[currentTurnUserId]?.name || 'Alguien';
+                document.getElementById('currentTurnInfo').textContent = activePlayerName;
+                document.getElementById('currentTurnInfo').style.color = '#f39c12';
+                document.getElementById('boardInstruction').textContent = `⏳ Esperando el turno de ${activePlayerName}...`;
+            }
+            updatePlayersList();
+        }
+
         function updateGameBoard() {
             const board = document.getElementById('gameBoard');
             let boardHtml = '';
 
-            ROOMS_GRID.forEach((roomObj, index) => {
-                if (index === 4) {
+            BOARD_LAYOUT.forEach((tile) => {
+                if (tile.type === 'center') {
                     boardHtml += `
                         <div class="board-center">
-                            <h3>✉️ Mansión Clue</h3>
-                            <p>Sobre Secreto del Crimen</p>
+                            <h3>✉️ Clue</h3>
+                            <p style="font-size: 0.65em;">Mansión Central</p>
                         </div>
                     `;
+                    return;
                 }
 
-                let playersInRoomHtml = '';
+                let playersInTileHtml = '';
                 Object.entries(gameState.players).forEach(([id, p]) => {
-                    if (p.location === roomObj.id) {
-                        playersInRoomHtml += `<span class="player-token">${p.name}</span>`;
+                    if (p.location === tile.id) {
+                        playersInTileHtml += `<span class="player-token">${p.name}</span>`;
                     }
                 });
 
-                const isMyRoom = (roomObj.id === gameState.myLocation);
-                const distance = calculateDistance(gameState.myLocation, roomObj.id);
-                const isReachable = (gameState.hasRolled && distance <= gameState.stepsAvailable && !isMyRoom);
+                const isMyLocation = (tile.id === gameState.myLocation);
+                const playerIds = Object.keys(gameState.players);
+                const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
+                const distance = calculateDistance(gameState.myLocation, tile.id);
+                const isReachable = (isMyTurn && gameState.hasRolled && distance <= gameState.stepsAvailable && !isMyLocation);
 
                 boardHtml += `
-                    <div class="room-tile ${isMyRoom ? 'my-current-room' : ''} ${isReachable ? 'reachable' : ''}" onclick="moveToRoom('${roomObj.id}')">
-                        <div class="room-name">${roomObj.name}</div>
-                        <div class="room-icon">${roomObj.icon}</div>
-                        <div class="players-in-room">${playersInRoomHtml}</div>
+                    <div class="board-tile ${tile.type} ${isMyLocation ? 'my-current-location' : ''} ${isReachable ? 'reachable' : ''}" onclick="moveToTile('${tile.id}')">
+                        <div class="room-name">${tile.name}</div>
+                        <div class="room-icon">${tile.icon}</div>
+                        <div class="players-in-tile">${playersInTileHtml}</div>
                     </div>
                 `;
             });
@@ -867,10 +978,11 @@
             const playerIds = Object.keys(gameState.players);
             list.innerHTML = playerIds.map((id, idx) => {
                 const player = gameState.players[id] || {};
+                const isCurrent = (idx === gameState.currentIndex);
                 return `
-                    <div class="player-info ${idx === gameState.currentPlayer ? 'current' : ''}">
-                        <div>${idx === gameState.currentPlayer ? '▶ ' : ''}<strong>${player.name}</strong></div>
-                        <div style="font-size: 0.75em; color: #aaa;">📍 ${player.location || 'Cocina'}</div>
+                    <div class="player-info ${isCurrent ? 'current' : ''}">
+                        <div>${isCurrent ? '▶ ' : ''}<strong>${player.name}</strong> ${id === gameState.userId ? '(Tú)' : ''}</div>
+                        <div style="font-size: 0.75em; color: #aaa;">📍 ${player.location || 'Kitchen'}</div>
                     </div>
                 `;
             }).join('');
@@ -888,16 +1000,10 @@
             }).join('');
         }
 
-        function updateCurrentTurn() {
-            const playerIds = Object.keys(gameState.players);
-            if (playerIds.length > 0 && gameState.currentPlayer !== null) {
-                document.getElementById('currentTurnInfo').textContent = gameState.players[playerIds[gameState.currentPlayer]]?.name || '-';
-            }
-        }
-
         // LIBRETA DE NOTAS
         function buildNotebookUI() {
             const container = document.getElementById('notebookContainer');
+            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room');
             let html = `
                 <table class="detective-table">
                     <tr><th>Sospechosos</th><th>Tachado / Descarta</th></tr>
@@ -909,7 +1015,7 @@
                 </table>
                 <table class="detective-table" style="margin-top: 15px;">
                     <tr><th>Habitaciones</th><th>Tachado / Descarta</th></tr>
-                    ${ROOMS_GRID.map(r => `<tr><td>${r.name} (${r.id})</td><td><input type="checkbox" onchange="toggleNotebook('${r.id}', this.checked)"></td></tr>`).join('')}
+                    ${allRoomsNames.map(r => `<tr><td>${r.name} (${r.id})</td><td><input type="checkbox" onchange="toggleNotebook('${r.id}', this.checked)"></td></tr>`).join('')}
                 </table>
             `;
             container.innerHTML = html;
@@ -925,15 +1031,18 @@
         function showAccusationModal() { document.getElementById('accusationModal').classList.add('active'); }
         function closeAccusationModal() { document.getElementById('accusationModal').classList.remove('active'); }
 
-        function submitAccusation() {
+        async function submitAccusation() {
             const suspect = document.getElementById('suspectSelect').value;
             const weapon = document.getElementById('weaponSelect').value;
             const room = document.getElementById('roomSelect').value;
 
             if (!suspect || !weapon || !room) { addMessage('error', '❌ Completa los 3 campos'); return; }
-            if (room !== gameState.myLocation) { addMessage('error', `❌ Debes estar en ${room} para acusar.`); return; }
+            if (room !== gameState.myLocation) { addMessage('error', `❌ Debes estar físicamente en la habitación ${room} para acusar.`); return; }
 
-            const isCorrect = (suspect === gameState.mystery.suspect && weapon === gameState.mystery.weapon && room === gameState.mystery.room);
+            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
+            const mystery = mysterySnap.val();
+
+            const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
             const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO! Acertó el misterio.` : `❌ ${gameState.playerName} falló su acusación.`;
             
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
@@ -956,7 +1065,7 @@
         }
 
         function leaveGame() {
-            if (confirm('¿Abandonar partida?')) {
+            if (confirm('¿Deseas abandonar la partida?')) {
                 database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}`).remove();
                 location.reload();
             }
