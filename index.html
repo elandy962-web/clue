@@ -1,1324 +1,188 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clue - Edición Clásica en Español</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content5="width=device-width, initial-scale=1.0">
+  <title>Clue - Edición Clásica en Español</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #12141d;
-            min-height: 100vh;
-            color: #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex: 1;
-        }
+    h1 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #38bdf8;
+    }
 
-        .header {
-            text-align: center;
-            color: white;
-            padding: 4px 0;
-            flex-shrink: 0;
-        }
+    .main-container {
+      display: flex;
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-        .header h1 {
-            font-size: 1.2rem;
-            color: #f6ad55;
-        }
+    /* Tablero de Clue basado en CSS Grid de 10x10 */
+    .tablero {
+      display: grid;
+      grid-template-columns: repeat(10, 50px);
+      grid-template-rows: repeat(10, 50px);
+      gap: 3px;
+      background-color: #1e293b;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
 
-        .header p {
-            font-size: 0.75rem;
-            color: #a0aec0;
-        }
+    /* Celdas estándar del pasillo o casillas normales */
+    .celda {
+      background-color: #334155;
+      border: 1px solid #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      border-radius: 4px;
+    }
 
-        /* PANTALLA DE LOGIN */
-        .login-screen {
-            background: #1a202c;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            max-width: 400px;
-            margin: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 2px solid #2d3748;
-            width: 90%;
-        }
+    /* Habitaciones de las esquinas transformadas en UN SOLO CUADRO GRANDE (bloque continuo de 2x2 celdas) */
+    .habitacion-esquina {
+      background-color: #1e293b;
+      border: 2px solid #ef4444;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: #f8fafc;
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
+      z-index: 2;
+    }
 
-        .login-screen h2 {
-            color: #f6ad55;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
+    /* Posicionamiento exacto de las esquinas en el grid de 10x10 */
+    .estudio { grid-area: 1 / 1 / span 2 / span 2; }
+    .vestibulo { grid-area: 1 / 5 / span 2 / span 2; }
+    .salon { grid-area: 1 / 9 / span 2 / span 2; }
+    .biblioteca { grid-area: 5 / 1 / span 2 / span 2; }
+    .comedor { grid-area: 5 / 9 / span 2 / span 2; }
+    .billar { grid-area: 9 / 1 / span 2 / span 2; }
+    .invernadero { grid-area: 9 / 8 / span 2 / span 2; }
 
-        .input-group {
-            margin-bottom: 10px;
-        }
+    /* Habitaciones centrales u otros elementos decorativos */
+    .centro-mansion {
+      grid-area: 4 / 4 / span 4 / span 4;
+      background-color: #020617;
+      border: 2px solid #a855f7;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #c084fc;
+    }
 
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #4a5568;
-            background: #111827;
-            color: white;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
+    /* Panel derecho de controles, jugadores y acciones */
+    .panel-derecho {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 320px;
+    }
 
-        .room-selection {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 15px 0;
-        }
+    .card-panel {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      padding: 12px;
+      border-radius: 8px;
+    }
 
-        .btn {
-            padding: 12px;
-            font-size: 0.95rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
+    .card-panel h3 {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: #38bdf8;
+    }
 
-        .btn-primary { background: #dd6b20; color: white; width: 100%; }
-        .btn-primary:hover { background: #ed8936; }
-        .btn-secondary { background: #2b6cb0; color: white; width: 100%; }
-        .btn-secondary:hover { background: #3182ce; }
-        .btn-small { padding: 8px 12px; font-size: 0.85rem; width: auto; }
-        .btn:disabled { background: #2d3748 !important; color: #718096 !important; cursor: not-allowed; }
+    .btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+    }
 
-        .status-message {
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-        .status-message.error { background: #742a2a; color: #fed7d7; }
-        .status-message.success { background: #22543d; color: #c6f6d5; }
-        .status-message.loading { background: #744210; color: #feebc8; }
-
-        .rooms-list {
-            margin-top: 10px;
-            text-align: left;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        .room-item {
-            background: #111827;
-            padding: 8px;
-            margin: 4px 0;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 3px solid #dd6b20;
-            font-size: 0.85rem;
-        }
-
-        /* JUEGO PRINCIPAL ADAPTABLE */
-        .game-container {
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .game-container.active {
-            display: flex;
-        }
-
-        @media (min-width: 900px) {
-            .game-container {
-                display: none;
-                grid-template-columns: 1.3fr 1fr;
-                align-items: start;
-            }
-            .game-container.active {
-                display: grid;
-            }
-        }
-
-        .board-section {
-            background: #0d1b1e;
-            border-radius: 12px;
-            padding: 8px;
-            border: 2px solid #2d3748;
-            display: flex;
-            flex-direction: column;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
-            width: 100%;
-        }
-
-        .board-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        .board-header h2 {
-            color: #f6ad55;
-            font-size: 1rem;
-        }
-
-        .game-info {
-            background: rgba(26, 32, 44, 0.95);
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            font-size: 0.8rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #4a5568;
-        }
-
-        .dice-display {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #f6ad55;
-            background: #111827;
-            padding: 4px 8px;
-            border-radius: 6px;
-            border: 1px solid #4a5568;
-        }
-
-        /* TABLERO CLUE 10x10 ADAPTABLE */
-        .clue-board-wrapper {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            max-width: 550px;
-            margin: 0 auto;
-        }
-
-        .clue-board {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(10, 1fr);
-            gap: 2px;
-            background: #0d1b1e;
-            width: 100%;
-            height: 100%;
-        }
-
-        .board-tile {
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            position: relative;
-            font-size: 0.5rem;
-            overflow: hidden;
-        }
-
-        /* Habitaciones (2x2) */
-        .board-tile.room {
-            background: #1f2937;
-            color: #f3f4f6;
-            border: 1.5px solid #9b2c2c;
-        }
-        .board-tile.room:hover { background: #374151; }
-        .board-tile.room.my-current-location {
-            border-color: #48bb78;
-            background: #22543d;
-            box-shadow: 0 0 6px #48bb78;
-        }
-        .board-tile.room.reachable {
-            border-color: #ecc94b;
-            background: #744210;
-        }
-
-        /* Pasillos */
-        .board-tile.hallway {
-            background: #2b3b4e;
-            color: #cbd5e0;
-            border: 1px solid #4a5568;
-        }
-        .board-tile.hallway:hover { background: #3b4f68; }
-        .board-tile.hallway.my-current-location {
-            border-color: #48bb78;
-            background: #22543d;
-        }
-        .board-tile.hallway.reachable {
-            border-color: #ecc94b;
-            background: #4a3510;
-        }
-
-        .board-tile.event-tile {
-            background: #44337a;
-            color: #e9d8fd;
-            border: 1px solid #b794f4;
-        }
-
-        .board-tile.center-tile {
-            background: #2a1b15;
-            color: #fbd38d;
-            border: 2px solid #dd6b20;
-        }
-
-        .room-name {
-            font-weight: bold;
-            font-size: 0.52rem;
-            line-height: 1;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.9);
-            padding: 0 1px;
-        }
-
-        .players-in-tile {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1px;
-            justify-content: center;
-            z-index: 2;
-        }
-
-        .player-token {
-            background: #dd6b20;
-            color: white;
-            font-size: 0.45rem;
-            padding: 1px 2px;
-            border-radius: 3px;
-            font-weight: bold;
-            border: 1px solid #fff;
-        }
-
-        /* SIDEBAR Y CONTROLES */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
-        }
-
-        .panel {
-            background: #1a202c;
-            border-radius: 10px;
-            padding: 10px;
-            border: 1px solid #2d3748;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .panel h3 {
-            color: #f6ad55;
-            margin-bottom: 6px;
-            border-bottom: 1px solid #2d3748;
-            padding-bottom: 4px;
-            font-size: 0.9rem;
-        }
-
-        .players-list-box {
-            max-height: 90px;
-            overflow-y: auto;
-        }
-
-        .player-info {
-            padding: 4px 6px;
-            background: #111827;
-            border-radius: 6px;
-            margin-bottom: 4px;
-            border-left: 3px solid #4a5568;
-            font-size: 0.8rem;
-        }
-
-        .player-info.current {
-            background: #2d261b;
-            border-left-color: #dd6b20;
-            font-weight: bold;
-        }
-
-        .cards-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
-            gap: 6px;
-            max-height: 110px;
-            overflow-y: auto;
-        }
-
-        .card {
-            background: #f7fafc;
-            color: #1a202c;
-            border-radius: 6px;
-            padding: 6px 4px;
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .card.suspect { border-top: 3px solid #e53e3e; }
-        .card.weapon { border-top: 3px solid #3182ce; }
-        .card.room { border-top: 3px solid #38a169; }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            margin-top: 4px;
-        }
-        .action-buttons button { width: 100%; }
-
-        .message-log {
-            background: #111827;
-            border-radius: 6px;
-            padding: 8px;
-            height: 120px;
-            overflow-y: auto;
-            font-size: 0.78rem;
-            border: 1px solid #2d3748;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .message {
-            padding: 4px 6px;
-            border-radius: 4px;
-        }
-
-        .message.system { background: #1a365d; color: #bee3f8; font-weight: bold; }
-        .message.success { background: #22543d; color: #c6f6d5; }
-        .message.error { background: #742a2a; color: #fed7d7; }
-        .message.info { background: #44337a; color: #e9d8fd; }
-        .message.suggestion { background: #234e52; color: #e6fffa; font-weight: bold; }
-
-        .detective-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-            margin-top: 4px;
-        }
-
-        .detective-table th, .detective-table td {
-            border: 1px solid #4a5568;
-            padding: 4px;
-            text-align: center;
-        }
-
-        .detective-table th { background: #111827; color: #f6ad55; }
-        .detective-table td:first-child { text-align: left; font-weight: bold; }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-        }
-
-        .modal.active { display: flex; }
-
-        .modal-content {
-            background: #1a202c;
-            border-radius: 12px;
-            padding: 18px;
-            max-width: 450px;
-            width: 100%;
-            border: 2px solid #4a5568;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .modal-content h2 {
-            color: #f6ad55;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .selection-group {
-            margin-bottom: 10px;
-        }
-
-        .selection-group label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-        }
-
-        .selection-group select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #4a5568;
-            background: #111827;
-            color: white;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        .room-code {
-            background: #111827;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-weight: bold;
-            color: #f6ad55;
-            border: 1px solid #4a5568;
-            font-size: 0.85rem;
-        }
-
-        .event-popup-box {
-            background: linear-gradient(135deg, #44337a, #553c9a);
-            color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 10px 0;
-            border: 2px solid #ecc94b;
-        }
-        .event-popup-box h3 {
-            color: #ecc94b;
-            font-size: 1.1rem;
-            margin-bottom: 6px;
-        }
-    </style>
+    .btn-tirar { background-color: #f59e0b; }
+    .btn-libreta { background-color: #3b82f6; }
+    .btn-acusar { background-color: #a855f7; }
+    .btn-salir { background-color: #ef4444; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🔍 Clue - Edición Clásica en Español</h1>
-            <p>Tablero Adaptable para Móviles</p>
-        </div>
 
-        <!-- PANTALLA DE INICIO -->
-        <div id="loginScreen" class="login-screen">
-            <h2>Bienvenido Detective</h2>
-            <div class="input-group">
-                <input type="text" id="playerName" placeholder="Tu nombre" maxlength="15">
-            </div>
-            <div class="input-group">
-                <input type="text" id="roomCode" placeholder="Código de sala (opcional)" maxlength="6">
-            </div>
-            <div class="room-selection">
-                <button class="btn btn-primary" onclick="createNewRoom()">➕ Crear Sala</button>
-                <button class="btn btn-secondary" onclick="joinExistingRoom()">🚪 Entrar</button>
-            </div>
-            <div id="statusMessage"></div>
-            <div id="roomsList" class="rooms-list"></div>
-        </div>
+  <h1>Clue - Edición Clásica en Español (Tablero Ajustado)</h1>
 
-        <!-- PANTALLA DE JUEGO -->
-        <div id="gameScreen" class="game-container">
-            <div class="board-section">
-                <div class="board-header">
-                    <h2>📍 Mansión Tudor</h2>
-                    <div class="room-code" id="roomCodeDisplay"></div>
-                </div>
-
-                <div class="game-info">
-                    <div>
-                        <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #f6ad55;">-</span><br>
-                        <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Cocina</span> | 
-                        <strong>Pasos:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
-                    </div>
-                    <div>
-                        <div class="dice-display" id="diceResult">🎲 -</div>
-                    </div>
-                </div>
-                
-                <div class="clue-board-wrapper">
-                    <div class="clue-board" id="gameBoard"></div>
-                </div>
-                <p id="boardInstruction" style="text-align: center; font-size: 0.75rem; color: #ecc94b; margin-top: 6px;">⏳ Espera tu turno para tirar los dados.</p>
-            </div>
-
-            <div class="sidebar">
-                <div class="panel">
-                    <h3>👥 Jugadores</h3>
-                    <div class="players-list-box" id="playersList"></div>
-                </div>
-
-                <div class="panel">
-                    <h3>🎴 Tus Cartas</h3>
-                    <div class="cards-section" id="myCards"></div>
-                </div>
-
-                <div class="panel">
-                    <h3>💬 Registro de Sucesos</h3>
-                    <div class="message-log" id="messageLog"></div>
-                </div>
-
-                <div class="panel">
-                    <h3>⚙️ Acciones</h3>
-                    <div class="action-buttons" id="actionButtonsContainer">
-                        <button id="rollDiceBtn" class="btn btn-primary btn-small" onclick="rollDice()" style="background: #38a169;" disabled>🎲 Tirar</button>
-                        <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #3182ce;">📓 Libreta</button>
-                        <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">💡 Sugerencia</button>
-                        <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
-                        <button class="btn btn-secondary btn-small" onclick="leaveGame()" style="background: #e53e3e; grid-column: span 2;">🚪 Salir</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="main-container">
+    <!-- Tablero con esquinas unificadas -->
+    <div class="tablero" id="tablero">
+      <!-- Esquinas unificadas en un solo cuadro -->
+      <div class="habitacion-esquina estudio">Estudio</div>
+      <div class="habitacion-esquina vestibulo">Vestíbulo</div>
+      <div class="habitacion-esquina salon">Salón</div>
+      
+      <div class="habitacion-esquina biblioteca">Biblioteca</div>
+      <div class="centro-mansion">Centro (Mansión)</div>
+      <div class="habitacion-esquina comedor">Comedor</div>
+      
+      <div class="habitacion-esquina billar">Billar</div>
+      <div class="habitacion-esquina invernadero">Invernadero</div>
     </div>
 
-    <!-- MODAL DE LIBRETA DE NOTAS -->
-    <div id="notebookModal" class="modal">
-        <div class="modal-content">
-            <h2>📓 Libreta de Detective</h2>
-            <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 10px;">Marca lo que vas descartando para tus teorías.</p>
-            <div id="notebookContainer"></div>
-            <div style="margin-top: 12px; text-align: right;">
-                <button class="btn btn-secondary btn-small" onclick="closeNotebookModal()">Cerrar</button>
-            </div>
-        </div>
+    <!-- Panel lateral de acciones -->
+    <div class="panel-derecho">
+      <div class="card-panel">
+        <h3>Jugadores en Sala</h3>
+        <p>🟢 ASD (Cocina)</p>
+      </div>
+
+      <div class="card-panel">
+        <h3>Tus Cartas</h3>
+        <p style="font-size: 0.8rem; color: #94a3b8;">Sin cartas asignadas.</p>
+      </div>
+
+      <div class="card-panel">
+        <h3>Registro de Sucesos</h3>
+        <p style="font-size: 0.8rem; color: #38bdf8;">Partida iniciada. Sala: TWUTK1</p>
+      </div>
+
+      <div class="card-panel">
+        <h3>Acciones</h3>
+        <button class="btn btn-tirar">Tirar Dados</button>
+        <button class="btn btn-libreta">Libreta</button>
+        <button class="btn btn-acusar">Acusar</button>
+        <button class="btn btn-salir">Salir</button>
+      </div>
     </div>
+  </div>
 
-    <!-- MODAL DE SUGERENCIA -->
-    <div id="suggestionModal" class="modal">
-        <div class="modal-content">
-            <h2>💡 Hacer Sugerencia</h2>
-            <div class="selection-group">
-                <label>Sospechoso:</label>
-                <select id="sugSuspectSelect"><option value="">-- Selecciona --</option></select>
-            </div>
-            <div class="selection-group">
-                <label>Arma:</label>
-                <select id="sugWeaponSelect"><option value="">-- Selecciona --</option></select>
-            </div>
-            <div class="selection-group">
-                <label>Habitación:</label>
-                <select id="sugRoomSelect"><option value="">-- Selecciona --</option></select>
-            </div>
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="submitSuggestion()">✅ Preguntar</button>
-                <button class="btn btn-secondary" onclick="closeSuggestionModal()">❌ Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE RESPUESTA DE SUGERENCIA -->
-    <div id="replySuggestionModal" class="modal">
-        <div class="modal-content" style="text-align: center;">
-            <h2>👁️ Responder Sugerencia</h2>
-            <p style="color: #a0aec0; margin-bottom: 10px; font-size: 0.85rem;" id="replySuggestionPrompt">Posees cartas coincidentes. Elige cuál mostrarle:</p>
-            <div class="selection-group">
-                <label>Carta a mostrar en privado:</label>
-                <select id="matchingCardsSelect"></select>
-            </div>
-            <button class="btn btn-primary" onclick="confirmReplySuggestion()">✅ Mostrar Carta</button>
-        </div>
-    </div>
-
-    <!-- MODAL DE ACUSACIÓN -->
-    <div id="accusationModal" class="modal">
-        <div class="modal-content">
-            <h2>🔍 Plantear Teoría / Acusación Final</h2>
-            <div class="selection-group">
-                <label>Sospechoso:</label>
-                <select id="suspectSelect"><option value="">-- Selecciona --</option></select>
-            </div>
-            <div class="selection-group">
-                <label>Arma:</label>
-                <select id="weaponSelect"><option value="">-- Selecciona --</option></select>
-            </div>
-            <div class="selection-group">
-                <label>Habitación:</label>
-                <select id="roomSelect"><option value="">-- Selecciona --</option></select>
-            </div>
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="submitAccusation()">✅ Enviar</button>
-                <button class="btn btn-secondary" onclick="closeAccusationModal()">❌ Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE EVENTO -->
-    <div id="eventModal" class="modal">
-        <div class="modal-content" style="text-align: center;">
-            <h2>✨ ¡Casilla de Evento Especial! ✨</h2>
-            <div class="event-popup-box" id="eventPopupContent">
-                <h3 id="eventTitleTitle">Título del Evento</h3>
-                <p id="eventDescriptionText" style="font-size: 0.9rem;">Descripción detallada.</p>
-            </div>
-            <button class="btn btn-primary" onclick="closeEventModal()">¡Entendido!</button>
-        </div>
-    </div>
-
-    <!-- SCRIPTS DE FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
-            authDomain: "clue-game-47c7e.firebaseapp.com",
-            databaseURL: "https://clue-game-47c7e-default-rtdb.firebaseio.com",
-            projectId: "clue-game-47c7e",
-            storageBucket: "clue-game-47c7e.firebasestorage.app",
-            messagingSenderId: "133188091784",
-            appId: "1:133188091784:web:1d6c070ddc535951b0043d"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        const SUSPECTS = ['Señorita Amapola', 'Coronel Mostaza', 'Señora White', 'Prado', 'Señora Fucsia', 'Profesor Cerillo'];
-        const WEAPONS = ['Candelabro', 'Cuchillo', 'Tubo de Plomo', 'Revólver', 'Cuerda', 'Llave Inglesa'];
-        
-        const EVENT_CARDS = [
-            { title: "🌟 Comodín de Avance Rápido", desc: "Duplicas tus pasos en tu siguiente turno." },
-            { title: "📜 Pasadizo Secreto", desc: "Puedes declarar una sospecha libre sin importar la habitación." },
-            { title: "🛡️ Escudo del Detective", desc: "Protección contra teorías erróneas en el centro." },
-            { title: "💰 Recompensa de Inteligencia", desc: "Un jugador aleatorio debe mostrarte una carta." },
-            { title: "⚡ Paso Relámpago", desc: "Se te conceden 3 pasos extra de movimiento inmediato." }
-        ];
-
-        const BOARD_LAYOUT = [];
-        // Habitaciones exactas de 2x2 casillas distribuidas simétricamente en el tablero 10x10
-        const roomsDef = [
-            { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, endX: 1, startY: 0, endY: 1 },
-            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, endX: 5, startY: 0, endY: 1 },
-            { id: 'Salon', name: 'Salón', type: 'room', startX: 8, endX: 9, startY: 0, endY: 1 },
-            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', startX: 0, endX: 1, startY: 4, endY: 5 },
-            { id: 'Centro', name: 'Centro', type: 'center', startX: 4, endX: 5, startY: 4, endY: 5 },
-            { id: 'Comedor', name: 'Comedor', type: 'room', startX: 8, endX: 9, startY: 4, endY: 5 },
-            { id: 'Billar', name: 'Billar', type: 'room', startX: 0, endX: 1, startY: 8, endY: 9 },
-            { id: 'Invernadero', name: 'Invernadero', type: 'room', startX: 4, endX: 5, startY: 8, endY: 9 },
-            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', startX: 8, endX: 9, startY: 8, endY: 9 }
-        ];
-
-        // Se usa Cocina como la 9va habitación o equivalente si se requiere mantener la lista de 10 únicas
-        // (Ajustamos para completar el set clásico de 9 habitaciones principales de 2x2)
-        const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
-
-        for (let y = 0; y < 10; y++) {
-            for (let x = 0; x < 10; x++) {
-                let foundRoom = roomsDef.find(r => x >= r.startX && x <= r.endX && y >= r.startY && y <= r.endY);
-                if (foundRoom) {
-                    let isPrimary = (x === foundRoom.startX && y === foundRoom.startY);
-                    BOARD_LAYOUT.push({
-                        id: foundRoom.id,
-                        name: isPrimary ? foundRoom.name : '',
-                        type: foundRoom.type,
-                        x: x,
-                        y: y,
-                        isPrimary: isPrimary
-                    });
-                } else {
-                    let isEvent = (x === 2 && y === 2) || (x === 7 && y === 7);
-                    BOARD_LAYOUT.push({
-                        id: `Pasillo_${x}_${y}`,
-                        name: isEvent ? '✨' : '',
-                        type: isEvent ? 'event-tile' : 'hallway',
-                        x: x,
-                        y: y,
-                        isPrimary: true
-                    });
-                }
-            }
-        }
-
-        let gameState = {
-            userId: null,
-            playerName: '',
-            roomCode: '',
-            isHost: false,
-            players: {},
-            playerIdsOrder: [],
-            myCards: [],
-            currentIndex: 0,
-            myLocation: 'Estudio',
-            stepsAvailable: 0,
-            hasRolled: false,
-            notebookMarks: {},
-            activeSuggestion: null
-        };
-
-        async function authenticateUser() {
-            try {
-                const result = await auth.signInAnonymously();
-                gameState.userId = result.user.uid;
-                showStatus('✅ Conectado', 'success');
-                setTimeout(() => {
-                    document.getElementById('statusMessage').innerHTML = '';
-                    loadPublicRooms();
-                }, 800);
-            } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            }
-        }
-
-        function showStatus(message, type = 'loading') {
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.className = 'status-message ' + type;
-            statusDiv.textContent = message;
-        }
-
-        async function createNewRoom() {
-            const name = document.getElementById('playerName').value.trim();
-            if (!name) { showStatus('❌ Ingresa tu nombre', 'error'); return; }
-
-            gameState.playerName = name;
-            gameState.roomCode = Math.random().toString(36).substr(2, 6).toUpperCase();
-            gameState.isHost = true;
-            showStatus('⏳ Creando sala...', 'loading');
-
-            try {
-                const roomData = {
-                    host: gameState.userId,
-                    players: {
-                        [gameState.userId]: { name: gameState.playerName, location: 'Estudio', cards: [] }
-                    },
-                    gameState: { currentIndex: 0, dice: 0, messages: [] }
-                };
-                await database.ref(`rooms/${gameState.roomCode}`).set(roomData);
-                initializeMysteryQuietly();
-                startGame();
-            } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            }
-        }
-
-        async function joinExistingRoom() {
-            const name = document.getElementById('playerName').value.trim();
-            const code = document.getElementById('roomCode').value.trim().toUpperCase();
-            if (!name || !code) { showStatus('❌ Ingresa nombre y código', 'error'); return; }
-
-            gameState.playerName = name;
-            gameState.roomCode = code;
-            showStatus('⏳ Conectando...', 'loading');
-
-            try {
-                const roomSnapshot = await database.ref(`rooms/${code}`).get();
-                if (!roomSnapshot.exists()) { showStatus('❌ Sala no encontrada', 'error'); return; }
-
-                const roomData = roomSnapshot.val();
-                gameState.isHost = (roomData.host === gameState.userId);
-
-                await database.ref(`rooms/${code}/players/${gameState.userId}`).set({
-                    name: gameState.playerName, location: 'Estudio', cards: []
-                });
-                startGame();
-            } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            }
-        }
-
-        function loadPublicRooms() {
-            database.ref('rooms').on('value', (snapshot) => {
-                const roomsList = document.getElementById('roomsList');
-                const data = snapshot.val();
-                if (!data) { roomsList.innerHTML = '<p style="color: #888; font-size: 0.8rem;">No hay salas activas</p>'; return; }
-
-                let html = '<strong>Salas Disponibles:</strong>';
-                Object.entries(data).slice(-4).forEach(([code, room]) => {
-                    const playerCount = Object.keys(room.players || {}).length;
-                    html += `
-                        <div class="room-item">
-                            <div><strong>${code}</strong> (${playerCount} jug.)</div>
-                            <button class="btn btn-secondary btn-small" onclick="setRoomCode('${code}')">Entrar</button>
-                        </div>
-                    `;
-                });
-                roomsList.innerHTML = html;
-            });
-        }
-
-        function setRoomCode(code) { document.getElementById('roomCode').value = code; }
-
-        function startGame() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('gameScreen').classList.add('active');
-            document.getElementById('roomCodeDisplay').textContent = gameState.roomCode;
-            
-            if (gameState.isHost) {
-                const actionsContainer = document.getElementById('actionButtonsContainer');
-                if (!document.getElementById('distributeBtn')) {
-                    const distributeBtn = document.createElement('button');
-                    distributeBtn.id = 'distributeBtn';
-                    distributeBtn.className = 'btn btn-secondary btn-small';
-                    distributeBtn.style.background = '#805ad5';
-                    distributeBtn.textContent = '🃏 Repartir';
-                    distributeBtn.onclick = manualDistributeCards;
-                    actionsContainer.insertBefore(distributeBtn, actionsContainer.firstChild);
-                }
-            }
-
-            setupGameListeners();
-            buildNotebookUI();
-            addMessage('system', `¡Partida iniciada! Sala: ${gameState.roomCode}`);
-        }
-
-        function initializeMysteryQuietly() {
-            const mystery = {
-                suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
-                weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
-                room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
-            };
-            database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
-        }
-
-        async function manualDistributeCards() {
-            if (!gameState.isHost) return;
-
-            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
-            let mystery = mysterySnap.val();
-
-            if (!mystery) {
-                mystery = {
-                    suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
-                    weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
-                    room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
-                };
-                await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
-            }
-
-            const allCards = [...SUSPECTS, ...WEAPONS, ...uniqueRoomsList];
-            const shuffled = allCards.sort(() => Math.random() - 0.5);
-            const playerIds = Object.keys(gameState.players);
-            const cardsPerPlayer = Math.floor((allCards.length - 3) / playerIds.length);
-
-            playerIds.forEach((playerId, index) => {
-                const playerCards = shuffled.slice(index * cardsPerPlayer, (index + 1) * cardsPerPlayer);
-                const filteredCards = playerCards.filter(card => 
-                    card !== mystery.suspect && card !== mystery.weapon && card !== mystery.room
-                );
-                database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(filteredCards);
-            });
-
-            addMessage('success', '🃏 ¡Cartas repartidas!');
-        }
-
-        function rollDice() {
-            const playerIds = Object.keys(gameState.players);
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-
-            if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ No es tu turno.');
-                return;
-            }
-
-            if (gameState.hasRolled) {
-                addMessage('error', '⚠️ Ya tiraste los dados.');
-                return;
-            }
-
-            const dice = Math.floor(Math.random() * 6) + 1;
-            gameState.stepsAvailable = dice;
-            gameState.hasRolled = true;
-            document.getElementById('stepsAvailable').textContent = dice;
-            document.getElementById('diceResult').textContent = `🎲 ${dice}`;
-            document.getElementById('boardInstruction').textContent = `✅ Tienes ${dice} pasos. Elige tu destino.`;
-            
-            database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
-            addMessage('info', `🎲 Sacaste un ${dice}.`);
-            updateGameBoard();
-        }
-
-        function calculateDistance(tileAId, tileBId) {
-            const tileA = BOARD_LAYOUT.find(b => b.id === tileAId);
-            const tileB = BOARD_LAYOUT.find(b => b.id === tileBId);
-            if (!tileA || !tileB) return 99;
-            return Math.abs(tileA.x - tileB.x) + Math.abs(tileA.y - tileB.y);
-        }
-
-        function moveToTile(tileId) {
-            const playerIds = Object.keys(gameState.players);
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-
-            if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ No es tu turno.');
-                return;
-            }
-
-            if (!gameState.hasRolled || gameState.stepsAvailable <= 0) {
-                addMessage('error', '❌ ¡Debes tirar los dados primero!');
-                return;
-            }
-
-            const distance = calculateDistance(gameState.myLocation, tileId);
-            if (distance > gameState.stepsAvailable) {
-                addMessage('error', `❌ Demasiado lejos (${distance} pasos, tienes ${gameState.stepsAvailable}).`);
-                return;
-            }
-
-            gameState.myLocation = tileId;
-            gameState.stepsAvailable = 0;
-            gameState.hasRolled = false;
-            document.getElementById('myLocation').textContent = tileId;
-            document.getElementById('stepsAvailable').textContent = 0;
-            document.getElementById('boardInstruction').textContent = '⏳ Espera tu turno.';
-
-            const nextIndex = (gameState.currentIndex + 1) % playerIds.length;
-
-            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(tileId);
-            database.ref(`rooms/${gameState.roomCode}/gameState`).update({
-                currentIndex: nextIndex,
-                dice: 0
-            });
-
-            addMessage('success', `🚶‍♂️ Movimiento a ${tileId}.`);
-
-            if (tileId.startsWith('Pasillo_') && (tileId.includes('_2_2') || tileId.includes('_7_7'))) {
-                triggerRandomEvent();
-            }
-
-            updateGameBoard();
-        }
-
-        function triggerRandomEvent() {
-            const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                type: 'event',
-                text: `✨ [COMODÍN] ${gameState.playerName} cayó en casilla especial: "${randomEvent.title}"`
-            });
-            showEventModal(randomEvent.title, randomEvent.desc);
-        }
-
-        function showEventModal(title, desc) {
-            document.getElementById('eventTitleTitle').textContent = title;
-            document.getElementById('eventDescriptionText').textContent = desc;
-            document.getElementById('eventModal').classList.add('active');
-        }
-
-        function closeEventModal() {
-            document.getElementById('eventModal').classList.remove('active');
-        }
-
-        function setupGameListeners() {
-            database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snapshot) => {
-                gameState.players = snapshot.val() || {};
-                gameState.playerIdsOrder = Object.keys(gameState.players);
-                if (gameState.players[gameState.userId] && gameState.players[gameState.userId].location) {
-                    gameState.myLocation = gameState.players[gameState.userId].location;
-                    document.getElementById('myLocation').textContent = gameState.myLocation;
-                }
-                updatePlayersList();
-                updateTurnControls();
-                updateGameBoard();
-            });
-
-            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
-                gameState.myCards = snapshot.val() || [];
-                updateMyCards();
-            });
-
-            database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snapshot) => {
-                const state = snapshot.val();
-                if (state) {
-                    gameState.currentIndex = state.currentIndex || 0;
-                    if (state.dice !== undefined) {
-                        document.getElementById('diceResult').textContent = state.dice > 0 ? `🎲 ${state.dice}` : '🎲 -';
-                    }
-                    updateTurnControls();
-
-                    if (state.activeSuggestion && state.activeSuggestion.targetPlayerId === gameState.userId) {
-                        handleIncomingSuggestion(state.activeSuggestion);
-                    }
-                }
-            });
-
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).on('child_added', (snapshot) => {
-                const message = snapshot.val();
-                if (message) addMessage(message.type, message.text);
-            });
-        }
-
-        function updateTurnControls() {
-            const playerIds = Object.keys(gameState.players);
-            if (playerIds.length === 0) return;
-
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-            const isMyTurn = (currentTurnUserId === gameState.userId);
-            
-            const rollBtn = document.getElementById('rollDiceBtn');
-            rollBtn.disabled = !isMyTurn || gameState.hasRolled;
-
-            if (isMyTurn) {
-                document.getElementById('currentTurnInfo').textContent = '¡Tu Turno!';
-                document.getElementById('currentTurnInfo').style.color = '#48bb78';
-                if (!gameState.hasRolled) {
-                    document.getElementById('boardInstruction').textContent = '🎲 Tira los dados.';
-                }
-            } else {
-                const activePlayerName = gameState.players[currentTurnUserId]?.name || 'Alguien';
-                document.getElementById('currentTurnInfo').textContent = activePlayerName;
-                document.getElementById('currentTurnInfo').style.color = '#f6ad55';
-                document.getElementById('boardInstruction').textContent = `⏳ Esperando a ${activePlayerName}...`;
-            }
-            updatePlayersList();
-        }
-
-        function updateGameBoard() {
-            const board = document.getElementById('gameBoard');
-            let boardHtml = '';
-
-            BOARD_LAYOUT.forEach((tile) => {
-                let playersInTileHtml = '';
-                Object.entries(gameState.players).forEach(([id, p]) => {
-                    if (p.location === tile.id) {
-                        playersInTileHtml += `<span class="player-token">${p.name}</span>`;
-                    }
-                });
-
-                const isMyLocation = (tile.id === gameState.myLocation);
-                const playerIds = Object.keys(gameState.players);
-                const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
-                const distance = calculateDistance(gameState.myLocation, tile.id);
-                const isReachable = (isMyTurn && gameState.hasRolled && distance <= gameState.stepsAvailable && !isMyLocation);
-
-                let tileClass = tile.type;
-                if (isMyLocation) tileClass += ' my-current-location';
-                if (isReachable) tileClass += ' reachable';
-
-                boardHtml += `
-                    <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
-                        ${tile.isPrimary && tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
-                        <div class="players-in-tile">${playersInTileHtml}</div>
-                    </div>
-                `;
-            });
-            board.innerHTML = boardHtml;
-        }
-
-        function updatePlayersList() {
-            const list = document.getElementById('playersList');
-            const playerIds = Object.keys(gameState.players);
-            list.innerHTML = playerIds.map((id, idx) => {
-                const player = gameState.players[id] || {};
-                const isCurrent = (idx === gameState.currentIndex);
-                return `
-                    <div class="player-info ${isCurrent ? 'current' : ''}">
-                        <div>${isCurrent ? '▶ ' : ''}<strong>${player.name}</strong></div>
-                        <div style="font-size: 0.7rem; color: #a0aec0;">📍 ${player.location || 'Estudio'}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateMyCards() {
-            const cardsDiv = document.getElementById('myCards');
-            if (gameState.myCards.length === 0) {
-                cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.8rem;">Sin cartas.</p>';
-                return;
-            }
-            cardsDiv.innerHTML = gameState.myCards.map(card => {
-                let type = SUSPECTS.includes(card) ? 'suspect' : WEAPONS.includes(card) ? 'weapon' : 'room';
-                return `<div class="card ${type}"><strong>${card}</strong></div>`;
-            }).join('');
-        }
-
-        function buildNotebookUI() {
-            const container = document.getElementById('notebookContainer');
-            let html = `
-                <table class="detective-table">
-                    <tr><th>Sospechosos</th><th>Tachado</th></tr>
-                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
-                </table>
-                <table class="detective-table" style="margin-top: 8px;">
-                    <tr><th>Armas</th><th>Tachado</th></tr>
-                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
-                </table>
-                <table class="detective-table" style="margin-top: 8px;">
-                    <tr><th>Habitaciones</th><th>Tachado</th></tr>
-                    ${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
-                </table>
-            `;
-            container.innerHTML = html;
-        }
-
-        function toggleNotebook(item, isChecked) {
-            gameState.notebookMarks[item] = isChecked;
-        }
-
-        function showNotebookModal() { document.getElementById('notebookModal').classList.add('active'); }
-        function closeNotebookModal() { document.getElementById('notebookModal').classList.remove('active'); }
-
-        function showSuggestionModal() {
-            const playerIds = Object.keys(gameState.players);
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-
-            if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ Solo puedes hacer sugerencias en tu turno.');
-                return;
-            }
-
-            const suspectSel = document.getElementById('sugSuspectSelect');
-            const weaponSel = document.getElementById('sugWeaponSelect');
-            const roomSel = document.getElementById('sugRoomSelect');
-
-            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
-            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRoomsList.map(r => `<option value="${r}">${r}</option>`).join('');
-
-            document.getElementById('suggestionModal').classList.add('active');
-        }
-
-        function closeSuggestionModal() { document.getElementById('suggestionModal').classList.remove('active'); }
-
-        async function submitSuggestion() {
-            const suspect = document.getElementById('sugSuspectSelect').value;
-            const weapon = document.getElementById('sugWeaponSelect').value;
-            const room = document.getElementById('sugRoomSelect').value;
-
-            if (!suspect || !weapon || !room) {
-                addMessage('error', '❌ Selecciona los tres elementos.');
-                return;
-            }
-
-            closeSuggestionModal();
-
-            const playerIds = Object.keys(gameState.players);
-            const myIdx = playerIds.indexOf(gameState.userId);
-            const nextPlayerId = playerIds[(myIdx + 1) % playerIds.length];
-
-            const suggestionData = {
-                authorId: gameState.userId,
-                authorName: gameState.playerName,
-                targetPlayerId: nextPlayerId,
-                suspect: suspect,
-                weapon: weapon,
-                room: room,
-                originalAuthorId: gameState.userId
-            };
-
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                type: 'suggestion',
-                text: `💡 ${gameState.playerName} sugiere: [ Sospechoso: ${suspect} | Arma: ${weapon} | Habitación: ${room} ]`
-            });
-
-            await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestionData);
-        }
-
-        function handleIncomingSuggestion(suggestion) {
-            gameState.activeSuggestion = suggestion;
-            const matching = gameState.myCards.filter(c => c === suggestion.suspect || c === suggestion.weapon || c === suggestion.room);
-
-            if (matching.length > 0) {
-                const select = document.getElementById('matchingCardsSelect');
-                select.innerHTML = matching.map(c => `<option value="${c}">${c}</option>`).join('');
-                document.getElementById('replySuggestionModal').classList.add('active');
-            } else {
-                if (suggestion.originalAuthorId === gameState.userId) {
-                    database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                        type: 'info',
-                        text: `🛡️ Ningún jugador posee las cartas sugeridas.`
-                    });
-                    database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
-                } else {
-                    passSuggestionToNext(suggestion);
-                }
-            }
-        }
-
-        async function passSuggestionToNext(suggestion) {
-            const playerIds = Object.keys(gameState.players);
-            const currentTargetIdx = playerIds.indexOf(suggestion.targetPlayerId);
-            const nextPlayerId = playerIds[(currentTargetIdx + 1) % playerIds.length];
-
-            if (nextPlayerId === suggestion.originalAuthorId) {
-                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                    type: 'info',
-                    text: `🛡️ Nadie pudo responder a la sugerencia.`
-                });
-                database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
-            } else {
-                suggestion.targetPlayerId = nextPlayerId;
-                database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestion);
-            }
-        }
-
-        async function confirmReplySuggestion() {
-            document.getElementById('replySuggestionModal').classList.remove('active');
-
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                type: 'success',
-                text: `👁️ ${gameState.playerName} mostró una carta en privado.`
-            });
-
-            database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
-        }
-
-        function showAccusationModal() {
-            if (gameState.myLocation !== 'Centro') {
-                addMessage('error', '❌ Debes estar en el Centro para acusar.');
-                return;
-            }
-
-            const suspectSel = document.getElementById('suspectSelect');
-            const weaponSel = document.getElementById('weaponSelect');
-            const roomSel = document.getElementById('roomSelect');
-
-            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
-            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRoomsList.map(r => `<option value="${r}">${r}</option>`).join('');
-
-            document.getElementById('accusationModal').classList.add('active');
-        }
-
-        function closeAccusationModal() { document.getElementById('accusationModal').classList.remove('active'); }
-
-        async function submitAccusation() {
-            const suspect = document.getElementById('suspectSelect').value;
-            const weapon = document.getElementById('weaponSelect').value;
-            const room = document.getElementById('roomSelect').value;
-
-            if (!suspect || !weapon || !room) { addMessage('error', '❌ Completa los 3 campos.'); return; }
-
-            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
-            const mystery = mysterySnap.val();
-
-            const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
-            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación.`;
-            
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
-            closeAccusationModal();
-        }
-
-        function addMessage(type, text) {
-            const log = document.getElementById('messageLog');
-            if(!log) return;
-            const div = document.createElement('div');
-            div.className = `message ${type}`;
-            div.textContent = text;
-            log.appendChild(div);
-            log.scrollTop = log.scrollHeight;
-        }
-
-        function leaveGame() {
-            if (confirm('¿Abandonar partida?')) {
-                database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}`).remove();
-                location.reload();
-            }
-        }
-
-        authenticateUser();
-    </script>
 </body>
 </html>
