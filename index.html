@@ -206,7 +206,7 @@
             border: 1px solid #4a5568;
         }
 
-        /* TABLERO CLUE 10x10 CON ESQUINAS UNIFICADAS 2X2 Y PASILLOS UNIFORMES */
+        /* TABLERO CLUE 10x10 */
         .clue-board-wrapper {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -240,7 +240,6 @@
             aspect-ratio: 1 / 1;
         }
 
-        /* Bloques de Habitaciones en Esquina (Unificados a 2x2 exactas) */
         .board-tile.room {
             background: #1f2937;
             color: #f3f4f6;
@@ -257,7 +256,6 @@
             background: #744210;
         }
 
-        /* Asignación de áreas fijas para las esquinas 2x2 y centro en la matriz 10x10 */
         .room-estudio { grid-area: 1 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
         .room-vestibulo { grid-area: 1 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
         .room-salon { grid-area: 1 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
@@ -268,7 +266,6 @@
         .room-invernadero { grid-area: 9 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
         .room-salonbaile { grid-area: 9 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
 
-        /* Pasillos */
         .board-tile.hallway {
             background: #2b3b4e;
             color: #cbd5e0;
@@ -317,7 +314,6 @@
             border: 1px solid #fff;
         }
 
-        /* SIDEBAR Y CONTROLES */
         .sidebar {
             display: flex;
             flex-direction: column;
@@ -393,7 +389,6 @@
         }
         .action-buttons button { width: 100%; }
 
-        /* Botón de Salir Ajustado y Seguro */
         .btn-leave-safe {
             grid-column: span 2;
             background: #4a1515 !important;
@@ -535,7 +530,6 @@
             <p>Pasillos Uniformes, Preguntas por Ubicación y Marcado Automático de Libreta</p>
         </div>
 
-        <!-- PANTALLA DE INICIO -->
         <div id="loginScreen" class="login-screen">
             <h2>Bienvenido Detective</h2>
             <div class="input-group">
@@ -552,7 +546,6 @@
             <div id="roomsList" class="rooms-list"></div>
         </div>
 
-        <!-- PANTALLA DE JUEGO -->
         <div id="gameScreen" class="game-container">
             <div class="board-section">
                 <div class="board-header">
@@ -607,7 +600,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE LIBRETA DE NOTAS -->
     <div id="notebookModal" class="modal">
         <div class="modal-content">
             <h2>📓 Libreta de Detective</h2>
@@ -619,7 +611,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE PREGUNTA -->
     <div id="suggestionModal" class="modal">
         <div class="modal-content">
             <h2>❓ Hacer Pregunta</h2>
@@ -643,7 +634,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE RESPUESTA DE PREGUNTA -->
     <div id="replySuggestionModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <h2>👁️ Responder Pregunta</h2>
@@ -656,7 +646,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE ACUSACIÓN -->
     <div id="accusationModal" class="modal">
         <div class="modal-content">
             <h2>🔍 Plantear Teoría / Acusación Final</h2>
@@ -679,7 +668,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE EVENTO -->
     <div id="eventModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <h2>✨ ¡Casilla de Evento Especial! ✨</h2>
@@ -691,7 +679,6 @@
         </div>
     </div>
 
-    <!-- SCRIPTS DE FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -923,20 +910,34 @@
                 await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
             }
 
-            const allCards = [...SUSPECTS, ...WEAPONS, ...uniqueRoomsList];
-            const shuffled = allCards.sort(() => Math.random() - 0.5);
-            const playerIds = Object.keys(gameState.players);
-            const cardsPerPlayer = Math.floor((allCards.length - 3) / playerIds.length);
+            const availableSuspects = [...SUSPECTS];
+            const availableWeapons = [...WEAPONS];
+            const availableRooms = [...uniqueRoomsList];
 
-            playerIds.forEach((playerId, index) => {
-                const playerCards = shuffled.slice(index * cardsPerPlayer, (index + 1) * cardsPerPlayer);
-                const filteredCards = playerCards.filter(card => 
-                    card !== mystery.suspect && card !== mystery.weapon && card !== mystery.room
-                );
-                database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(filteredCards);
+            const secretSuspect = availableSuspects.splice(Math.floor(Math.random() * availableSuspects.length), 1)[0];
+            const secretWeapon = availableWeapons.splice(Math.floor(Math.random() * availableWeapons.length), 1)[0];
+            const secretRoom = availableRooms.splice(Math.floor(Math.random() * availableRooms.length), 1)[0];
+
+            const mazoRestante = [...availableSuspects, ...availableWeapons, ...availableRooms].sort(() => Math.random() - 0.5);
+            const playerIds = Object.keys(gameState.players);
+
+            playerIds.forEach(id => {
+                database.ref(`rooms/${gameState.roomCode}/players/${id}/cards`).set([]);
             });
 
-            addMessage('success', '🃏 ¡Cartas repartidas!');
+            let playerHands = {};
+            playerIds.forEach(id => playerHands[id] = []);
+
+            mazoRestante.forEach((carta, index) => {
+                const targetPlayerId = playerIds[index % playerIds.length];
+                playerHands[targetPlayerId].push(carta);
+            });
+
+            for (const [playerId, cards] of Object.entries(playerHands)) {
+                await database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(cards);
+            }
+
+            addMessage('success', '🃏 ¡Cartas repartidas equitativamente!');
         }
 
         function rollDice() {
@@ -1051,11 +1052,10 @@
             database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
                 gameState.myCards = snapshot.val() || [];
                 updateMyCards();
-                // Marcar automáticamente en la libreta cada carta que te ha correspondido
                 gameState.myCards.forEach(card => {
                     gameState.notebookMarks[card] = true;
                 });
-                buildNotebookUI(); // Refrescar la libreta visualmente
+                buildNotebookUI();
             });
 
             database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snapshot) => {
@@ -1309,9 +1309,13 @@
             const weaponSel = document.getElementById('weaponSelect');
             const roomSel = document.getElementById('roomSelect');
 
-            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
-            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRoomsList.map(r => `<option value="${r}">${r}</option>`).join('');
+            const unmarketSuspects = SUSPECTS.filter(s => !gameState.notebookMarks[s]);
+            const unmarketWeapons = WEAPONS.filter(w => !gameState.notebookMarks[w]);
+            const unmarketRooms = uniqueRoomsList.filter(r => !gameState.notebookMarks[r]);
+
+            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketSuspects.map(s => `<option value="${s}">${s}</option>`).join('');
+            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketWeapons.map(w => `<option value="${w}">${w}</option>`).join('');
+            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketRooms.map(r => `<option value="${r}">${r}</option>`).join('');
 
             document.getElementById('accusationModal').classList.add('active');
         }
