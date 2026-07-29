@@ -256,15 +256,15 @@
             background: #744210;
         }
 
-        .room-estudio { grid-area: 1 / 1 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
-        .room-vestibulo { grid-area: 1 / 5 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
-        .room-salon { grid-area: 1 / 10 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
-        .room-biblioteca { grid-area: 5 / 1 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
-        .room-centro { grid-area: 5 / 5 / span 1 / span 1; z-index: 2; background: #2a1b15 !important; border: 2px solid #dd6b20 !important; color: #fbd38d !important; aspect-ratio: auto; }
-        .room-comedor { grid-area: 5 / 10 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
-        .room-billar { grid-area: 10 / 1 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
-        .room-invernadero { grid-area: 10 / 5 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
-        .room-salonbaile { grid-area: 10 / 10 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
+        .room-estudio { grid-area: 1 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-vestibulo { grid-area: 1 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-salon { grid-area: 1 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-biblioteca { grid-area: 5 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-centro { grid-area: 5 / 5 / span 2 / span 2; z-index: 2; background: #2a1b15 !important; border: 2px solid #dd6b20 !important; color: #fbd38d !important; aspect-ratio: auto; }
+        .room-comedor { grid-area: 5 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-billar { grid-area: 9 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-invernadero { grid-area: 9 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-salonbaile { grid-area: 9 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
 
         .board-tile.hallway {
             background: #2b3b4e;
@@ -289,7 +289,7 @@
 
         .room-name {
             font-weight: bold;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             line-height: 1;
             text-shadow: 0 1px 1px rgba(0,0,0,0.9);
             padding: 0 1px;
@@ -527,7 +527,7 @@
     <div class="container">
         <div class="header">
             <h1>🔍 Clue - Edición Clásica en Español</h1>
-            <p>Pasillos Uniformes, Preguntas por Ubicación y Marcado Automático de Libreta</p>
+            <p>Habitaciones 2x2, Movimiento Libre por Pasos y Libreta Automática</p>
         </div>
 
         <div id="loginScreen" class="login-screen">
@@ -557,7 +557,7 @@
                     <div>
                         <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #f6ad55;">-</span><br>
                         <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Estudio</span> | 
-                        <strong>Pasos:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
+                        <strong>Pasos Restantes:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
                     </div>
                     <div>
                         <div class="dice-display" id="diceResult">🎲 -</div>
@@ -593,6 +593,7 @@
                         <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #3182ce;">📓 Libreta</button>
                         <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">❓ Preguntar</button>
                         <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
+                        <button id="endMoveBtn" class="btn btn-secondary btn-small" onclick="finishMovement()" style="background: #d69e2e; grid-column: span 2; display:none;">✅ Terminar Movimiento</button>
                         <button class="btn btn-secondary btn-small btn-leave-safe" onclick="leaveGame()">🚪 Salir de la partida</button>
                     </div>
                 </div>
@@ -614,7 +615,7 @@
     <div id="suggestionModal" class="modal">
         <div class="modal-content">
             <h2>❓ Hacer Pregunta</h2>
-            <p style="font-size: 0.75rem; color: #a0aec0; margin-bottom: 8px;">La pregunta se realiza automáticamente en tu ubicación actual.</p>
+            <p style="font-size: 0.75rem; color: #a0aec0; margin-bottom: 8px;">La pregunta se realiza automáticamente en tu habitación actual.</p>
             <div class="selection-group">
                 <label>Sospechoso:</label>
                 <select id="sugSuspectSelect"><option value="">-- Selecciona --</option></select>
@@ -712,30 +713,31 @@
         const BOARD_LAYOUT = [];
         
         const roomsDef = [
-            { id: 'Estudio', name: 'Estudio', type: 'room', x: 0, y: 0, cssClass: 'room-estudio' },
-            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', x: 4, y: 0, cssClass: 'room-vestibulo' },
-            { id: 'Salon', name: 'Salón', type: 'room', x: 9, y: 0, cssClass: 'room-salon' },
-            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', x: 0, y: 4, cssClass: 'room-biblioteca' },
-            { id: 'Centro', name: 'Centro', type: 'center', x: 4, y: 4, cssClass: 'room-centro' },
-            { id: 'Comedor', name: 'Comedor', type: 'room', x: 9, y: 4, cssClass: 'room-comedor' },
-            { id: 'Billar', name: 'Billar', type: 'room', x: 0, y: 9, cssClass: 'room-billar' },
-            { id: 'Invernadero', name: 'Invernadero', type: 'room', x: 4, y: 9, cssClass: 'room-invernadero' },
-            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', x: 9, y: 9, cssClass: 'room-salonbaile' }
+            { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, startY: 0, cssClass: 'room-estudio' },
+            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, startY: 0, cssClass: 'room-vestibulo' },
+            { id: 'Salon', name: 'Salón', type: 'room', startX: 8, startY: 0, cssClass: 'room-salon' },
+            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', startX: 0, startY: 4, cssClass: 'room-biblioteca' },
+            { id: 'Centro', name: 'Centro', type: 'center', startX: 4, startY: 4, cssClass: 'room-centro' },
+            { id: 'Comedor', name: 'Comedor', type: 'room', startX: 8, startY: 4, cssClass: 'room-comedor' },
+            { id: 'Billar', name: 'Billar', type: 'room', startX: 0, startY: 8, cssClass: 'room-billar' },
+            { id: 'Invernadero', name: 'Invernadero', type: 'room', startX: 4, startY: 8, cssClass: 'room-invernadero' },
+            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', startX: 8, startY: 8, cssClass: 'room-salonbaile' }
         ];
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
         for (let y = 0; y < 10; y++) {
             for (let x = 0; x < 10; x++) {
-                let foundRoom = roomsDef.find(r => r.x === x && r.y === y);
+                let foundRoom = roomsDef.find(r => x >= r.startX && x < r.startX + 2 && y >= r.startY && y < r.startY + 2);
                 if (foundRoom) {
+                    let isTopLeft = (x === foundRoom.startX && y === foundRoom.startY);
                     BOARD_LAYOUT.push({
                         id: foundRoom.id,
-                        name: foundRoom.name,
+                        name: isTopLeft ? foundRoom.name : '',
                         type: foundRoom.type,
                         x: x,
                         y: y,
-                        isPrimary: true,
+                        isPrimary: isTopLeft,
                         cssClass: foundRoom.cssClass
                     });
                 } else {
@@ -952,16 +954,27 @@
             gameState.hasRolled = true;
             document.getElementById('stepsAvailable').textContent = dice;
             document.getElementById('diceResult').textContent = `🎲 ${dice}`;
-            document.getElementById('boardInstruction').textContent = `✅ Debes moverte exactamente ${dice} pasos.`;
+            document.getElementById('boardInstruction').textContent = `✅ Moverás paso a paso (Te quedan ${dice} pasos). Puedes terminar cuando gustes.`;
+            document.getElementById('endMoveBtn').style.display = 'block';
             
             database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
             addMessage('info', `🎲 Sacaste un ${dice}.`);
             updateGameBoard();
         }
 
+        function getRepresentativeTileId(locationString) {
+            let found = BOARD_LAYOUT.find(b => b.id === locationString);
+            if (found) return found.id;
+            let roomObj = roomsDef.find(r => r.id === locationString);
+            if (roomObj) return roomObj.id;
+            return locationString;
+        }
+
         function calculateDistance(tileAId, tileBId) {
-            const tileA = BOARD_LAYOUT.find(b => b.id === tileAId);
-            const tileB = BOARD_LAYOUT.find(b => b.id === tileBId);
+            let repA = getRepresentativeTileId(tileAId);
+            let repB = getRepresentativeTileId(tileBId);
+            const tileA = BOARD_LAYOUT.find(b => b.id === repA);
+            const tileB = BOARD_LAYOUT.find(b => b.id === repB);
             if (!tileA || !tileB) return 99;
             return Math.abs(tileA.x - tileB.x) + Math.abs(tileA.y - tileB.y);
         }
@@ -976,38 +989,55 @@
             }
 
             if (!gameState.hasRolled || gameState.stepsAvailable <= 0) {
-                addMessage('error', '❌ ¡Debes tirar los dados primero!');
+                addMessage('error', '❌ ¡Debes tirar los dados primero o ya no te quedan pasos!');
                 return;
             }
 
-            const distance = calculateDistance(gameState.myLocation, tileId);
+            let targetRepId = getRepresentativeTileId(tileId);
+            const distance = calculateDistance(gameState.myLocation, targetRepId);
             
-            if (distance !== gameState.stepsAvailable) {
-                addMessage('error', `❌ Debes dar exactamente ${gameState.stepsAvailable} pasos (la casilla seleccionada está a distancia ${distance}).`);
+            if (distance !== 1) {
+                addMessage('error', `❌ Solo puedes moverte a casillas adyacentes directas (a distancia 1).`);
                 return;
             }
 
-            gameState.myLocation = tileId;
+            gameState.stepsAvailable -= 1;
+            gameState.myLocation = targetRepId;
+            document.getElementById('myLocation').textContent = targetRepId;
+            document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
+
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRepId);
+            addMessage('success', `🚶‍♂️ Paso dado hacia ${targetRepId}. Te quedan ${gameState.stepsAvailable} pasos.`);
+
+            if (targetRepId.startsWith('Pasillo_') && (targetRepId.includes('_2_2') || targetRepId.includes('_7_7'))) {
+                triggerRandomEvent();
+            }
+
+            if (gameState.stepsAvailable === 0) {
+                finishMovement();
+            } else {
+                updateGameBoard();
+            }
+        }
+
+        function finishMovement() {
+            const playerIds = Object.keys(gameState.players);
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+            if (currentTurnUserId !== gameState.userId) return;
+
             gameState.stepsAvailable = 0;
             gameState.hasRolled = false;
-            document.getElementById('myLocation').textContent = tileId;
             document.getElementById('stepsAvailable').textContent = 0;
+            document.getElementById('endMoveBtn').style.display = 'none';
             document.getElementById('boardInstruction').textContent = '⏳ Espera tu turno.';
 
             const nextIndex = (gameState.currentIndex + 1) % playerIds.length;
-
-            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(tileId);
             database.ref(`rooms/${gameState.roomCode}/gameState`).update({
                 currentIndex: nextIndex,
                 dice: 0
             });
 
-            addMessage('success', `🚶‍♂️ Movimiento a ${tileId}.`);
-
-            if (tileId.startsWith('Pasillo_') && (tileId.includes('_2_2') || tileId.includes('_7_7'))) {
-                triggerRandomEvent();
-            }
-
+            addMessage('info', `🏁 Turno finalizado. Pasa al siguiente jugador.`);
             updateGameBoard();
         }
 
@@ -1094,6 +1124,7 @@
                 document.getElementById('currentTurnInfo').textContent = activePlayerName;
                 document.getElementById('currentTurnInfo').style.color = '#f6ad55';
                 document.getElementById('boardInstruction').textContent = `⏳ Esperando a ${activePlayerName}...`;
+                document.getElementById('endMoveBtn').style.display = 'none';
             }
             updatePlayersList();
         }
@@ -1105,17 +1136,21 @@
             BOARD_LAYOUT.forEach((tile) => {
                 let playersInTileHtml = '';
                 Object.entries(gameState.players).forEach(([id, p]) => {
-                    if (p.location === tile.id) {
+                    let pRep = getRepresentativeTileId(p.location);
+                    let tileRep = getRepresentativeTileId(tile.id);
+                    if (pRep === tileRep) {
                         playersInTileHtml += `<span class="player-token">${p.name}</span>`;
                     }
                 });
 
-                const isMyLocation = (tile.id === gameState.myLocation);
+                let tileRep = getRepresentativeTileId(tile.id);
+                let myRep = getRepresentativeTileId(gameState.myLocation);
+                const isMyLocation = (tileRep === myRep);
                 const playerIds = Object.keys(gameState.players);
                 const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
-                const distance = calculateDistance(gameState.myLocation, tile.id);
+                const distance = calculateDistance(gameState.myLocation, tileRep);
                 
-                const isReachable = (isMyTurn && gameState.hasRolled && distance === gameState.stepsAvailable && !isMyLocation);
+                const isReachable = (isMyTurn && gameState.hasRolled && distance === 1 && gameState.stepsAvailable > 0 && !isMyLocation);
 
                 let tileClass = `${tile.type} ${tile.cssClass}`;
                 if (isMyLocation) tileClass += ' my-current-location';
