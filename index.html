@@ -256,15 +256,15 @@
             background: #744210;
         }
 
-        .room-estudio { grid-area: 1 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-vestibulo { grid-area: 1 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-salon { grid-area: 1 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-biblioteca { grid-area: 5 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-centro { grid-area: 4 / 4 / span 4 / span 4; z-index: 2; background: #2a1b15 !important; border: 2px solid #dd6b20 !important; color: #fbd38d !important; aspect-ratio: auto; }
-        .room-comedor { grid-area: 5 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-billar { grid-area: 9 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-invernadero { grid-area: 9 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-salonbaile { grid-area: 9 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-estudio { grid-area: 1 / 1 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
+        .room-vestibulo { grid-area: 1 / 5 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
+        .room-salon { grid-area: 1 / 10 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
+        .room-biblioteca { grid-area: 5 / 1 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
+        .room-centro { grid-area: 5 / 5 / span 1 / span 1; z-index: 2; background: #2a1b15 !important; border: 2px solid #dd6b20 !important; color: #fbd38d !important; aspect-ratio: auto; }
+        .room-comedor { grid-area: 5 / 10 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
+        .room-billar { grid-area: 10 / 1 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
+        .room-invernadero { grid-area: 10 / 5 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
+        .room-salonbaile { grid-area: 10 / 10 / span 1 / span 1; z-index: 2; aspect-ratio: auto; }
 
         .board-tile.hallway {
             background: #2b3b4e;
@@ -289,10 +289,10 @@
 
         .room-name {
             font-weight: bold;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             line-height: 1;
             text-shadow: 0 1px 1px rgba(0,0,0,0.9);
-            padding: 0 2px;
+            padding: 0 1px;
         }
 
         .players-in-tile {
@@ -712,34 +712,32 @@
         const BOARD_LAYOUT = [];
         
         const roomsDef = [
-            { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, endX: 1, startY: 0, endY: 1, cssClass: 'room-estudio' },
-            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, endX: 5, startY: 0, endY: 1, cssClass: 'room-vestibulo' },
-            { id: 'Salon', name: 'Salón', type: 'room', startX: 8, endX: 9, startY: 0, endY: 1, cssClass: 'room-salon' },
-            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', startX: 0, endX: 1, startY: 4, endY: 5, cssClass: 'room-biblioteca' },
-            { id: 'Centro', name: 'Centro', type: 'center', startX: 4, endX: 5, startY: 4, endY: 5, cssClass: 'room-centro' },
-            { id: 'Comedor', name: 'Comedor', type: 'room', startX: 8, endX: 9, startY: 4, endY: 5, cssClass: 'room-comedor' },
-            { id: 'Billar', name: 'Billar', type: 'room', startX: 0, endX: 1, startY: 8, endY: 9, cssClass: 'room-billar' },
-            { id: 'Invernadero', name: 'Invernadero', type: 'room', startX: 4, endX: 5, startY: 8, endY: 9, cssClass: 'room-invernadero' },
-            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', startX: 8, endX: 9, startY: 8, endY: 9, cssClass: 'room-salonbaile' }
+            { id: 'Estudio', name: 'Estudio', type: 'room', x: 0, y: 0, cssClass: 'room-estudio' },
+            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', x: 4, y: 0, cssClass: 'room-vestibulo' },
+            { id: 'Salon', name: 'Salón', type: 'room', x: 9, y: 0, cssClass: 'room-salon' },
+            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', x: 0, y: 4, cssClass: 'room-biblioteca' },
+            { id: 'Centro', name: 'Centro', type: 'center', x: 4, y: 4, cssClass: 'room-centro' },
+            { id: 'Comedor', name: 'Comedor', type: 'room', x: 9, y: 4, cssClass: 'room-comedor' },
+            { id: 'Billar', name: 'Billar', type: 'room', x: 0, y: 9, cssClass: 'room-billar' },
+            { id: 'Invernadero', name: 'Invernadero', type: 'room', x: 4, y: 9, cssClass: 'room-invernadero' },
+            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', x: 9, y: 9, cssClass: 'room-salonbaile' }
         ];
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
         for (let y = 0; y < 10; y++) {
             for (let x = 0; x < 10; x++) {
-                let foundRoom = roomsDef.find(r => x >= r.startX && x <= r.endX && y >= r.startY && y <= r.endY);
+                let foundRoom = roomsDef.find(r => r.x === x && r.y === y);
                 if (foundRoom) {
-                    if (x === foundRoom.startX && y === foundRoom.startY) {
-                        BOARD_LAYOUT.push({
-                            id: foundRoom.id,
-                            name: foundRoom.name,
-                            type: foundRoom.type,
-                            x: x,
-                            y: y,
-                            isPrimary: true,
-                            cssClass: foundRoom.cssClass
-                        });
-                    }
+                    BOARD_LAYOUT.push({
+                        id: foundRoom.id,
+                        name: foundRoom.name,
+                        type: foundRoom.type,
+                        x: x,
+                        y: y,
+                        isPrimary: true,
+                        cssClass: foundRoom.cssClass
+                    });
                 } else {
                     let isEvent = (x === 2 && y === 2) || (x === 7 && y === 7);
                     BOARD_LAYOUT.push({
@@ -898,18 +896,6 @@
         async function manualDistributeCards() {
             if (!gameState.isHost) return;
 
-            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
-            let mystery = mysterySnap.val();
-
-            if (!mystery) {
-                mystery = {
-                    suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
-                    weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
-                    room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
-                };
-                await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
-            }
-
             const availableSuspects = [...SUSPECTS];
             const availableWeapons = [...WEAPONS];
             const availableRooms = [...uniqueRoomsList];
@@ -917,6 +903,13 @@
             const secretSuspect = availableSuspects.splice(Math.floor(Math.random() * availableSuspects.length), 1)[0];
             const secretWeapon = availableWeapons.splice(Math.floor(Math.random() * availableWeapons.length), 1)[0];
             const secretRoom = availableRooms.splice(Math.floor(Math.random() * availableRooms.length), 1)[0];
+
+            const mystery = {
+                suspect: secretSuspect,
+                weapon: secretWeapon,
+                room: secretRoom
+            };
+            await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
 
             const mazoRestante = [...availableSuspects, ...availableWeapons, ...availableRooms].sort(() => Math.random() - 0.5);
             const playerIds = Object.keys(gameState.players);
@@ -937,7 +930,7 @@
                 await database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(cards);
             }
 
-            addMessage('success', '🃏 ¡Cartas repartidas equitativamente!');
+            addMessage('success', '🃏 ¡Misterio guardado y cartas repartidas equitativamente!');
         }
 
         function rollDice() {
@@ -959,7 +952,7 @@
             gameState.hasRolled = true;
             document.getElementById('stepsAvailable').textContent = dice;
             document.getElementById('diceResult').textContent = `🎲 ${dice}`;
-            document.getElementById('boardInstruction').textContent = `✅ Tienes ${dice} pasos. Elige tu destino.`;
+            document.getElementById('boardInstruction').textContent = `✅ Debes moverte exactamente ${dice} pasos.`;
             
             database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
             addMessage('info', `🎲 Sacaste un ${dice}.`);
@@ -988,8 +981,9 @@
             }
 
             const distance = calculateDistance(gameState.myLocation, tileId);
-            if (distance > gameState.stepsAvailable) {
-                addMessage('error', `❌ Demasiado lejos (${distance} pasos, tienes ${gameState.stepsAvailable}).`);
+            
+            if (distance !== gameState.stepsAvailable) {
+                addMessage('error', `❌ Debes dar exactamente ${gameState.stepsAvailable} pasos (la casilla seleccionada está a distancia ${distance}).`);
                 return;
             }
 
@@ -1120,7 +1114,8 @@
                 const playerIds = Object.keys(gameState.players);
                 const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
                 const distance = calculateDistance(gameState.myLocation, tile.id);
-                const isReachable = (isMyTurn && gameState.hasRolled && distance <= gameState.stepsAvailable && !isMyLocation);
+                
+                const isReachable = (isMyTurn && gameState.hasRolled && distance === gameState.stepsAvailable && !isMyLocation);
 
                 let tileClass = `${tile.type} ${tile.cssClass}`;
                 if (isMyLocation) tileClass += ' my-current-location';
@@ -1333,7 +1328,7 @@
             const mystery = mysterySnap.val();
 
             const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
-            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación.`;
+            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación. Era: ${mystery.suspect}, ${mystery.weapon}, ${mystery.room}`;
             
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
             closeAccusationModal();
