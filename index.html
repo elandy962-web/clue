@@ -1,4 +1,4 @@
-[cite: 1]<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -206,7 +206,7 @@
             border: 1px solid #4a5568;
         }
 
-        /* TABLERO CLUE 10x10 CON ESQUINAS UNIFICADAS 2X2 */
+        /* TABLERO CLUE 10x10 CON ESQUINAS UNIFICADAS 2X2 Y PASILLOS UNIFORMES */
         .clue-board-wrapper {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -237,6 +237,7 @@
             position: relative;
             font-size: 0.5rem;
             overflow: hidden;
+            aspect-ratio: 1 / 1;
         }
 
         /* Bloques de Habitaciones en Esquina (Unificados a 2x2 exactas) */
@@ -257,15 +258,15 @@
         }
 
         /* Asignación de áreas fijas para las esquinas 2x2 y centro en la matriz 10x10 */
-        .room-estudio { grid-area: 1 / 1 / span 2 / span 2; z-index: 2; }
-        .room-vestibulo { grid-area: 1 / 5 / span 2 / span 2; z-index: 2; }
-        .room-salon { grid-area: 1 / 9 / span 2 / span 2; z-index: 2; }
-        .room-biblioteca { grid-area: 5 / 1 / span 2 / span 2; z-index: 2; }
-        .room-centro { grid-area: 4 / 4 / span 4 / span 4; z-index: 2; background: #2a1b15 !important; border: 2px solid #dd6b20 !important; color: #fbd38d !important; }
-        .room-comedor { grid-area: 5 / 9 / span 2 / span 2; z-index: 2; }
-        .room-billar { grid-area: 9 / 1 / span 2 / span 2; z-index: 2; }
-        .room-invernadero { grid-area: 9 / 5 / span 2 / span 2; z-index: 2; }
-        .room-salonbaile { grid-area: 9 / 9 / span 2 / span 2; z-index: 2; }
+        .room-estudio { grid-area: 1 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-vestibulo { grid-area: 1 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-salon { grid-area: 1 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-biblioteca { grid-area: 5 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-centro { grid-area: 4 / 4 / span 4 / span 4; z-index: 2; background: #2a1b15 !important; border: 2px solid #dd6b20 !important; color: #fbd38d !important; aspect-ratio: auto; }
+        .room-comedor { grid-area: 5 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-billar { grid-area: 9 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-invernadero { grid-area: 9 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-salonbaile { grid-area: 9 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
 
         /* Pasillos */
         .board-tile.hallway {
@@ -392,6 +393,21 @@
         }
         .action-buttons button { width: 100%; }
 
+        /* Botón de Salir Ajustado y Seguro */
+        .btn-leave-safe {
+            grid-column: span 2;
+            background: #4a1515 !important;
+            color: #fc8181 !important;
+            font-size: 0.75rem !important;
+            padding: 6px !important;
+            opacity: 0.85;
+            border: 1px dashed #e53e3e !important;
+        }
+        .btn-leave-safe:hover {
+            opacity: 1;
+            background: #742a2a !important;
+        }
+
         .message-log {
             background: #111827;
             border-radius: 6px;
@@ -516,7 +532,7 @@
     <div class="container">
         <div class="header">
             <h1>🔍 Clue - Edición Clásica en Español</h1>
-            <p>Tablero Adaptable para Móviles (Esquinas unificadas 2x2)</p>
+            <p>Pasillos Uniformes, Preguntas por Ubicación y Marcado Automático de Libreta</p>
         </div>
 
         <!-- PANTALLA DE INICIO -->
@@ -582,9 +598,9 @@
                     <div class="action-buttons" id="actionButtonsContainer">
                         <button id="rollDiceBtn" class="btn btn-primary btn-small" onclick="rollDice()" style="background: #38a169;" disabled>🎲 Tirar</button>
                         <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #3182ce;">📓 Libreta</button>
-                        <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">💡 Sugerencia</button>
+                        <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">❓ Preguntar</button>
                         <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
-                        <button class="btn btn-secondary btn-small" onclick="leaveGame()" style="background: #e53e3e; grid-column: span 2;">🚪 Salir</button>
+                        <button class="btn btn-secondary btn-small btn-leave-safe" onclick="leaveGame()">🚪 Salir de la partida</button>
                     </div>
                 </div>
             </div>
@@ -595,7 +611,7 @@
     <div id="notebookModal" class="modal">
         <div class="modal-content">
             <h2>📓 Libreta de Detective</h2>
-            <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 10px;">Marca lo que vas descartando para tus teorías.</p>
+            <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 10px;">Tus cartas iniciales se marcan automáticamente.</p>
             <div id="notebookContainer"></div>
             <div style="margin-top: 12px; text-align: right;">
                 <button class="btn btn-secondary btn-small" onclick="closeNotebookModal()">Cerrar</button>
@@ -603,10 +619,11 @@
         </div>
     </div>
 
-    <!-- MODAL DE SUGERENCIA -->
+    <!-- MODAL DE PREGUNTA -->
     <div id="suggestionModal" class="modal">
         <div class="modal-content">
-            <h2>💡 Hacer Sugerencia</h2>
+            <h2>❓ Hacer Pregunta</h2>
+            <p style="font-size: 0.75rem; color: #a0aec0; margin-bottom: 8px;">La pregunta se realiza automáticamente en tu ubicación actual.</p>
             <div class="selection-group">
                 <label>Sospechoso:</label>
                 <select id="sugSuspectSelect"><option value="">-- Selecciona --</option></select>
@@ -616,8 +633,8 @@
                 <select id="sugWeaponSelect"><option value="">-- Selecciona --</option></select>
             </div>
             <div class="selection-group">
-                <label>Habitación:</label>
-                <select id="sugRoomSelect"><option value="">-- Selecciona --</option></select>
+                <label>Habitación (Tu posición actual):</label>
+                <input type="text" id="sugRoomInput" readonly style="width: 100%; padding: 10px; border: 2px solid #4a5568; background: #111827; color: #f6ad55; border-radius: 8px; font-size: 0.9rem; font-weight: bold;">
             </div>
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="submitSuggestion()">✅ Preguntar</button>
@@ -626,10 +643,10 @@
         </div>
     </div>
 
-    <!-- MODAL DE RESPUESTA DE SUGERENCIA -->
+    <!-- MODAL DE RESPUESTA DE PREGUNTA -->
     <div id="replySuggestionModal" class="modal">
         <div class="modal-content" style="text-align: center;">
-            <h2>👁️ Responder Sugerencia</h2>
+            <h2>👁️ Responder Pregunta</h2>
             <p style="color: #a0aec0; margin-bottom: 10px; font-size: 0.85rem;" id="replySuggestionPrompt">Posees cartas coincidentes. Elige cuál mostrarle:</p>
             <div class="selection-group">
                 <label>Carta a mostrar en privado:</label>
@@ -699,7 +716,7 @@
         
         const EVENT_CARDS = [
             { title: "🌟 Comodín de Avance Rápido", desc: "Duplicas tus pasos en tu siguiente turno." },
-            { title: "📜 Pasadizo Secreto", desc: "Puedes declarar una sospecha libre sin importar la habitación." },
+            { title: "📜 Pasadizo Secreto", desc: "Puedes formular una pregunta libre sin importar la habitación." },
             { title: "🛡️ Escudo del Detective", desc: "Protección contra teorías erróneas en el centro." },
             { title: "💰 Recompensa de Inteligencia", desc: "Un jugador aleatorio debe mostrarte una carta." },
             { title: "⚡ Paso Relámpago", desc: "Se te conceden 3 pasos extra de movimiento inmediato." }
@@ -707,7 +724,6 @@
 
         const BOARD_LAYOUT = [];
         
-        // Habitaciones exactas de 2x2 casillas distribuidas simétricamente en el tablero 10x10
         const roomsDef = [
             { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, endX: 1, startY: 0, endY: 1, cssClass: 'room-estudio' },
             { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, endX: 5, startY: 0, endY: 1, cssClass: 'room-vestibulo' },
@@ -726,7 +742,6 @@
             for (let x = 0; x < 10; x++) {
                 let foundRoom = roomsDef.find(r => x >= r.startX && x <= r.endX && y >= r.startY && y <= r.endY);
                 if (foundRoom) {
-                    // Solo renderizamos la celda principal superior-izquierda de cada habitación 2x2 para que actúe como un bloque único sólido
                     if (x === foundRoom.startX && y === foundRoom.startY) {
                         BOARD_LAYOUT.push({
                             id: foundRoom.id,
@@ -1036,6 +1051,11 @@
             database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
                 gameState.myCards = snapshot.val() || [];
                 updateMyCards();
+                // Marcar automáticamente en la libreta cada carta que te ha correspondido
+                gameState.myCards.forEach(card => {
+                    gameState.notebookMarks[card] = true;
+                });
+                buildNotebookUI(); // Refrescar la libreta visualmente
             });
 
             database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snapshot) => {
@@ -1148,15 +1168,15 @@
             let html = `
                 <table class="detective-table">
                     <tr><th>Sospechosos</th><th>Tachado</th></tr>
-                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
+                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" ${gameState.notebookMarks[s] ? 'checked' : ''} onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
                 </table>
                 <table class="detective-table" style="margin-top: 8px;">
                     <tr><th>Armas</th><th>Tachado</th></tr>
-                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
+                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" ${gameState.notebookMarks[w] ? 'checked' : ''} onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
                 </table>
                 <table class="detective-table" style="margin-top: 8px;">
                     <tr><th>Habitaciones</th><th>Tachado</th></tr>
-                    ${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
+                    ${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" ${gameState.notebookMarks[r] ? 'checked' : ''} onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
                 </table>
             `;
             container.innerHTML = html;
@@ -1174,17 +1194,22 @@
             const currentTurnUserId = playerIds[gameState.currentIndex];
 
             if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ Solo puedes hacer sugerencias en tu turno.');
+                addMessage('error', '❌ Solo puedes hacer preguntas en tu turno.');
+                return;
+            }
+
+            if (gameState.myLocation.startsWith('Pasillo_')) {
+                addMessage('error', '❌ Debes estar dentro de una habitación para hacer una pregunta.');
                 return;
             }
 
             const suspectSel = document.getElementById('sugSuspectSelect');
             const weaponSel = document.getElementById('sugWeaponSelect');
-            const roomSel = document.getElementById('sugRoomSelect');
+            const roomInput = document.getElementById('sugRoomInput');
 
             suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
             weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRoomsList.map(r => `<option value="${r}">${r}</option>`).join('');
+            roomInput.value = gameState.myLocation;
 
             document.getElementById('suggestionModal').classList.add('active');
         }
@@ -1194,10 +1219,10 @@
         async function submitSuggestion() {
             const suspect = document.getElementById('sugSuspectSelect').value;
             const weapon = document.getElementById('sugWeaponSelect').value;
-            const room = document.getElementById('sugRoomSelect').value;
+            const room = document.getElementById('sugRoomInput').value;
 
             if (!suspect || !weapon || !room) {
-                addMessage('error', '❌ Selecciona los tres elementos.');
+                addMessage('error', '❌ Selecciona el sospechoso y el arma.');
                 return;
             }
 
@@ -1219,7 +1244,7 @@
 
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                 type: 'suggestion',
-                text: `💡 ${gameState.playerName} sugiere: [ Sospechoso: ${suspect} | Arma: ${weapon} | Habitación: ${room} ]`
+                text: `❓ ${gameState.playerName} pregunta en [${room}]: [ Sospechoso: ${suspect} | Arma: ${weapon} ]`
             });
 
             await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestionData);
@@ -1237,7 +1262,7 @@
                 if (suggestion.originalAuthorId === gameState.userId) {
                     database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                         type: 'info',
-                        text: `🛡️ Ningún jugador posee las cartas sugeridas.`
+                        text: `🛡️ Ningún jugador posee las cartas de la pregunta.`
                     });
                     database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
                 } else {
@@ -1254,7 +1279,7 @@
             if (nextPlayerId === suggestion.originalAuthorId) {
                 database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                     type: 'info',
-                    text: `🛡️ Nadie pudo responder a la sugerencia.`
+                    text: `🛡️ Nadie pudo responder a la pregunta.`
                 });
                 database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
             } else {
@@ -1321,7 +1346,7 @@
         }
 
         function leaveGame() {
-            if (confirm('¿Abandonar partida?')) {
+            if (confirm('¿Estás seguro de que deseas abandonar la partida?')) {
                 database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}`).remove();
                 location.reload();
             }
