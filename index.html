@@ -245,7 +245,7 @@
             box-shadow: 0 0 5px rgba(241, 196, 15, 0.5);
         }
 
-        /* Pasillos limpios sin iconos */
+        /* Pasillos normales */
         .board-tile.hallway {
             background: #181822;
             border: 1px dotted #33334d;
@@ -264,19 +264,23 @@
             box-shadow: 0 0 4px rgba(241, 196, 15, 0.4);
         }
 
-        /* Casillas de Evento / Beneficio en Pasillos */
-        .board-tile.event-tile {
-            background: #281e3a;
-            border: 1px dashed #9b59b6;
+        /* Casillas de Evento / Beneficio en Pasillos (AHORA DESTACADAS) */
+        .board-tile.event {
+            background: #3a2256;
+            border: 1px solid #9b59b6;
         }
-        .board-tile.event-tile:hover {
+        .board-tile.event:hover {
             border-color: #f39c12;
-            background: #35264f;
+            background: #4a2c6d;
         }
-        .board-tile.event-tile.reachable {
-            border-color: #9b59b6;
-            background: #3c2a52;
-            box-shadow: 0 0 6px rgba(155, 89, 182, 0.6);
+        .board-tile.event.my-current-location {
+            border-color: #2ecc71;
+            background: #23362a;
+        }
+        .board-tile.event.reachable {
+            border-color: #f1c40f;
+            background: #4a3325;
+            box-shadow: 0 0 6px rgba(155, 89, 182, 0.8);
         }
 
         .room-name {
@@ -319,7 +323,11 @@
             justify-content: center;
             padding: 2px;
             text-align: center;
+            cursor: pointer;
         }
+        .board-center:hover { border-color: #f39c12; }
+        .board-center.my-current-location { border-color: #2ecc71; background: #1b4332; }
+        .board-center.reachable { border-color: #f1c40f; background: #3d3a22; box-shadow: 0 0 5px rgba(241, 196, 15, 0.5); }
 
         .sidebar {
             display: flex;
@@ -504,7 +512,6 @@
             font-size: 0.8em;
         }
 
-        /* Estilo especial para la tarjeta de evento emergente */
         .event-popup-box {
             background: linear-gradient(135deg, #3f2b96, #a8c0ff);
             color: #fff;
@@ -524,7 +531,6 @@
             line-height: 1.3;
         }
 
-        /* Ajustes responsivos para celulares pequeños */
         @media (max-width: 900px) {
             body { overflow: auto; height: auto; min-height: 100vh; }
             .game-container { display: flex; flex-direction: column; overflow: visible; }
@@ -699,7 +705,6 @@
         const SUSPECTS = ['Miss Scarlett', 'Colonel Mustard', 'Mrs White', 'Mr Green', 'Mrs Peacock', 'Professor Plum'];
         const WEAPONS = ['Candlestick', 'Knife', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench'];
         
-        // Catálogo de eventos y beneficios en pasillos (estilo Clue clásico)
         const EVENT_CARDS = [
             { title: "🌟 Comodín de Avance Rápido", desc: "Un soplo de aire fresco te impulsa: el jugador recibe un beneficio temporal para duplicar sus pasos en su siguiente turno." },
             { title: "📜 Pasadizo Secreto Descubierto", desc: "Has hallado una nota oculta en la pared. Puedes declarar una sospecha libre sin importar en qué habitación estés." },
@@ -709,7 +714,6 @@
             { title: "🔮 Revelación Oculta", desc: "Una corriente de aire disipa la niebla: se anuncia públicamente una categoría general de las cartas que no están en el sobre secreto." }
         ];
 
-        // Tablero extendido 7x7 combinando pasillos normales y pasillos con casillas de evento (tipo 'event')
         const BOARD_LAYOUT = [
             { id: 'Study', name: 'Estudio', type: 'room', x: 0, y: 0, icon: '📚' },
             { id: 'H_0_1', name: '', type: 'hallway', x: 1, y: 0 },
@@ -883,12 +887,15 @@
             
             if (gameState.isHost) {
                 const actionsContainer = document.getElementById('actionButtonsContainer');
-                const distributeBtn = document.createElement('button');
-                distributeBtn.className = 'btn btn-secondary btn-small';
-                distributeBtn.style.background = '#8e44ad';
-                distributeBtn.textContent = '🃏 Repartir';
-                distributeBtn.onclick = manualDistributeCards;
-                actionsContainer.insertBefore(distributeBtn, actionsContainer.firstChild);
+                if (!document.getElementById('distributeBtn')) {
+                    const distributeBtn = document.createElement('button');
+                    distributeBtn.id = 'distributeBtn';
+                    distributeBtn.className = 'btn btn-secondary btn-small';
+                    distributeBtn.style.background = '#8e44ad';
+                    distributeBtn.textContent = '🃏 Repartir';
+                    distributeBtn.onclick = manualDistributeCards;
+                    actionsContainer.insertBefore(distributeBtn, actionsContainer.firstChild);
+                }
             }
 
             setupGameListeners();
@@ -1008,7 +1015,6 @@
 
             addMessage('success', `🚶‍♂️ Movimiento a ${tileId}.`);
 
-            // VERIFICAR SI CAYÓ EN CASILLA DE EVENTO / COMODÍN
             const targetTileObj = BOARD_LAYOUT.find(b => b.id === tileId);
             if (targetTileObj && targetTileObj.type === 'event') {
                 triggerRandomEvent();
@@ -1020,7 +1026,6 @@
         function triggerRandomEvent() {
             const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
             
-            // Publicar el evento para que TODOS los participantes lo lean en su registro y modal
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                 type: 'event',
                 text: `✨ [EVENTO DE PASILLO] ${gameState.playerName} cayó en una casilla de beneficio: "${randomEvent.title}" - ${randomEvent.desc}`
