@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clue - Sugerencias en Cadena</title>
+    <title>Clue - Tablero Clásico Detallado</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #12121c;
+            background: #0f0f13;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -41,16 +41,16 @@
         }
 
         .header h1 {
-            font-size: 1.3em;
+            font-size: 1.2em;
             color: #e74c3c;
         }
 
         .header p {
-            font-size: 0.75em;
+            font-size: 0.7em;
             color: #aaa;
         }
 
-        /* LOGIN SCREEN */
+        /* PANTALLA DE LOGIN */
         .login-screen {
             background: #1f1f2e;
             border-radius: 12px;
@@ -141,7 +141,7 @@
         .game-container {
             display: none;
             flex: 1;
-            grid-template-columns: 1.7fr 1fr;
+            grid-template-columns: 1.8fr 1fr;
             gap: 10px;
             min-height: 0;
             overflow: hidden;
@@ -152,88 +152,73 @@
         }
 
         .board-section {
-            background: #1f1f2e;
+            background: #16261c; /* Fondo verde clásico del tablero físico */
             border-radius: 10px;
-            padding: 8px;
-            border: 2px solid #33334d;
+            padding: 6px;
+            border: 3px solid #3d2314; /* Marco de madera */
             display: flex;
             flex-direction: column;
             height: 100%;
             overflow: hidden;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
         }
 
         .board-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             flex-shrink: 0;
         }
 
         .board-header h2 {
-            color: #e74c3c;
-            font-size: 1em;
+            color: #f1c40f;
+            font-size: 0.95em;
+            text-shadow: 1px 1px 2px #000;
         }
 
         .game-info {
-            background: #12121c;
-            padding: 5px 8px;
+            background: rgba(18, 18, 28, 0.85);
+            padding: 4px 8px;
             border-radius: 6px;
-            margin-bottom: 5px;
-            font-size: 0.75em;
+            margin-bottom: 4px;
+            font-size: 0.72em;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #333;
+            border: 1px solid #444;
             flex-shrink: 0;
         }
 
         .dice-display {
-            font-size: 1em;
+            font-size: 0.95em;
             font-weight: bold;
             color: #f1c40f;
             background: #1f1f2e;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 4px;
-            border: 1px solid #444;
+            border: 1px solid #555;
         }
 
-        /* TABLERO ESTILO CLÁSICO CLUE RETRO */
+        /* TABLERO CLUE 5x5 (Distribución exacta al físico) */
         .clue-board {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            grid-template-rows: repeat(7, 1fr);
-            gap: 1px;
-            background: linear-gradient(135deg, #7dd3c0 0%, #6ecfba 100%);
-            padding: 10px;
-            border-radius: 6px;
-            border: 8px solid #8dd9c4;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 3px;
+            background: #16261c;
+            padding: 4px;
             flex: 1;
             min-height: 0;
-            box-shadow: inset 0 0 8px rgba(0,0,0,0.2), 0 6px 12px rgba(0,0,0,0.3);
-            position: relative;
-        }
-
-        .clue-board::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 2px dashed #d9a573;
-            border-radius: 3px;
-            pointer-events: none;
-            opacity: 0.15;
         }
 
         .board-tile {
-            border-radius: 1px;
+            border-radius: 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2px;
+            padding: 3px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -242,116 +227,56 @@
             overflow: hidden;
         }
 
+        /* Estilo Habitaciones Clásicas (Papel tapiz / tonos pergamino/madera con bordes rojos) */
         .board-tile.room {
-            background: linear-gradient(135deg, #c9897a 0%, #b87a6b 100%);
-            color: #fff;
-            border: 2px solid #8b6654;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-            font-weight: bold;
+            background: #fdf6e2;
+            color: #2c1d0c;
+            border: 3px solid #8b0000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .board-tile.room:hover {
-            background: linear-gradient(135deg, #d4968c 0%, #c38779 100%);
+            background: #fff;
             border-color: #e74c3c;
-            box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+            transform: scale(1.01);
         }
         .board-tile.room.my-current-location {
             border-color: #2ecc71;
-            background: linear-gradient(135deg, #52c77a 0%, #3fa566 100%);
-            color: #fff;
+            background: #d4efdf;
+            box-shadow: 0 0 8px #2ecc71;
         }
         .board-tile.room.reachable {
             border-color: #f1c40f;
-            background: linear-gradient(135deg, #f9e79f 0%, #f5dd90 100%);
-            box-shadow: 0 0 6px rgba(241, 196, 15, 0.8), inset 0 0 3px rgba(0,0,0,0.1);
-            color: #2a2a2a;
+            background: #fcf3cf;
+            box-shadow: 0 0 8px rgba(241, 196, 15, 0.9);
         }
 
+        /* Estilo Pasillos / Cuadrícula Amarilla */
         .board-tile.hallway {
-            background: #f4d9b8;
-            color: #2a2a2a;
-            border: 1px solid #d9a573;
+            background: #f4d03f;
+            color: #7d6608;
+            border: 1px solid #b7950b;
+            box-shadow: inset 0 0 3px rgba(0,0,0,0.15);
         }
         .board-tile.hallway:hover {
-            background: #f9e4c8;
-            border-color: #c9897a;
+            background: #f7dc6f;
+            border-color: #7d6608;
         }
         .board-tile.hallway.my-current-location {
             border-color: #2ecc71;
             background: #a9dfbf;
-            color: #0a3622;
         }
         .board-tile.hallway.reachable {
-            border-color: #f1c40f;
-            background: #f9e79f;
-            box-shadow: 0 0 5px rgba(241, 196, 15, 0.7);
-            color: #2a2a2a;
-        }
-
-        .board-tile.event {
-            background: linear-gradient(135deg, #f4d9b8 0%, #e8c9a8 100%);
-            color: #2a2a2a;
-            border: 2px dashed #c9897a;
-        }
-        .board-tile.event:hover {
-            background: linear-gradient(135deg, #f9e4c8 0%, #f0d4b8 100%);
-            border-color: #f1c40f;
-        }
-        .board-tile.event.my-current-location {
-            border-color: #2ecc71;
-            background: linear-gradient(135deg, #52c77a 0%, #3fa566 100%);
-            color: #fff;
-        }
-        .board-tile.event.reachable {
-            border-color: #f1c40f;
-            background: linear-gradient(135deg, #f9e79f 0%, #f5dd90 100%);
-            color: #2a2a2a;
+            border-color: #27ae60;
+            background: #fcf3cf;
             box-shadow: 0 0 6px rgba(241, 196, 15, 0.8);
         }
 
-        .room-name {
-            font-weight: bold;
-            font-size: 0.75em;
-            line-height: 1.2;
-            letter-spacing: 0.3px;
-        }
-
-        .board-tile.room .room-name {
-            color: #fff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
-        }
-
-        .room-icon {
-            font-size: 0.9em;
-            margin: 1px 0;
-        }
-
-        .board-tile.room .room-icon {
-            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.4));
-        }
-
-        .players-in-tile {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1px;
-            justify-content: center;
-            margin-top: 1px;
-        }
-
-        .player-token {
-            background: #e74c3c;
-            color: white;
-            font-size: 0.55em;
-            padding: 1px 3px;
-            border-radius: 6px;
-            font-weight: bold;
-            border: 1px solid #fff;
-        }
-
+        /* Centro del Tablero (Escalera y Logo Clue) */
         .board-center {
-            background: #fdfbf7;
+            background: #fdf6e2;
             color: #222;
-            border: 3px solid #8b0000;
-            border-radius: 4px;
+            border: 4px solid #8b0000;
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -359,15 +284,49 @@
             padding: 2px;
             text-align: center;
             cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
         }
         .board-center:hover { background: #fff; border-color: #e74c3c; }
-        .board-center.my-current-location { border-color: #2ecc71; background: #d4efdf; }
-        .board-center.reachable { border-color: #f1c40f; background: #fcf3cf; box-shadow: 0 0 5px rgba(241, 196, 15, 0.8); }
+        .board-center.my-current-location { border-color: #2ecc71; background: #d4efdf; box-shadow: 0 0 8px #2ecc71; }
+        .board-center.reachable { border-color: #f1c40f; background: #fcf3cf; box-shadow: 0 0 8px rgba(241, 196, 15, 0.9); }
 
+        .room-name {
+            font-weight: bold;
+            font-size: 0.72em;
+            line-height: 1.1;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+        }
+
+        .room-icon {
+            font-size: 0.9em;
+            margin: 1px 0;
+        }
+
+        .players-in-tile {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1px;
+            justify-content: center;
+            margin-top: 2px;
+            z-index: 2;
+        }
+
+        .player-token {
+            background: #c0392b;
+            color: white;
+            font-size: 0.52em;
+            padding: 1px 4px;
+            border-radius: 6px;
+            font-weight: bold;
+            border: 1px solid #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+
+        /* SIDEBAR Y CONTROLES */
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             height: 100%;
             min-height: 0;
             overflow: hidden;
@@ -375,8 +334,8 @@
 
         .panel {
             background: #1f1f2e;
-            border-radius: 10px;
-            padding: 8px 10px;
+            border-radius: 8px;
+            padding: 6px 8px;
             border: 1px solid #33334d;
             display: flex;
             flex-direction: column;
@@ -384,24 +343,24 @@
 
         .panel h3 {
             color: #e74c3c;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             border-bottom: 1px solid #333;
-            padding-bottom: 4px;
-            font-size: 0.9em;
+            padding-bottom: 3px;
+            font-size: 0.85em;
         }
 
         .players-list-box {
-            max-height: 70px;
+            max-height: 65px;
             overflow-y: auto;
         }
 
         .player-info {
-            padding: 4px 6px;
+            padding: 3px 5px;
             background: #12121c;
-            border-radius: 5px;
-            margin-bottom: 4px;
+            border-radius: 4px;
+            margin-bottom: 3px;
             border-left: 3px solid #555;
-            font-size: 0.75em;
+            font-size: 0.72em;
         }
 
         .player-info.current {
@@ -412,9 +371,9 @@
 
         .cards-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
-            gap: 5px;
-            max-height: 90px;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 4px;
+            max-height: 80px;
             overflow-y: auto;
         }
 
@@ -422,9 +381,9 @@
             background: #fff;
             color: #333;
             border-radius: 4px;
-            padding: 5px 4px;
+            padding: 4px 3px;
             text-align: center;
-            font-size: 0.65em;
+            font-size: 0.62em;
             font-weight: bold;
             line-height: 1.1;
             cursor: pointer;
@@ -439,25 +398,25 @@
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-top: 5px;
+            gap: 4px;
+            margin-top: 4px;
         }
         .action-buttons button { width: 100%; }
 
         .message-log {
             background: #12121c;
             border-radius: 6px;
-            padding: 6px;
+            padding: 5px;
             flex: 1;
             min-height: 0;
             overflow-y: auto;
-            font-size: 0.75em;
+            font-size: 0.72em;
             border: 1px solid #333;
         }
 
         .message {
-            padding: 3px 5px;
-            margin-bottom: 3px;
+            padding: 2px 4px;
+            margin-bottom: 2px;
             border-radius: 3px;
         }
 
@@ -471,13 +430,13 @@
         .detective-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.75em;
-            margin-top: 5px;
+            font-size: 0.72em;
+            margin-top: 4px;
         }
 
         .detective-table th, .detective-table td {
             border: 1px solid #444;
-            padding: 4px;
+            padding: 3px;
             text-align: center;
         }
 
@@ -511,60 +470,60 @@
 
         .modal-content h2 {
             color: #e74c3c;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+            margin-bottom: 8px;
+            font-size: 1.05em;
         }
 
         .selection-group {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .selection-group label {
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             font-weight: bold;
-            font-size: 0.8em;
+            font-size: 0.78em;
             color: #ccc;
         }
 
         .selection-group select {
             width: 100%;
-            padding: 6px;
+            padding: 5px;
             border: 2px solid #444;
             background: #12121c;
             color: white;
             border-radius: 6px;
-            font-size: 0.85em;
+            font-size: 0.82em;
         }
 
         .room-code {
             background: #12121c;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 4px;
             font-family: monospace;
             font-weight: bold;
             color: #e74c3c;
             border: 1px solid #444;
-            font-size: 0.8em;
+            font-size: 0.75em;
         }
 
         .event-popup-box {
             background: linear-gradient(135deg, #4a235a, #8e44ad);
             color: #fff;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
             text-align: center;
-            margin: 10px 0;
+            margin: 8px 0;
             border: 2px solid #ffd700;
         }
         .event-popup-box h3 {
             color: #ffd700;
-            font-size: 1.1em;
-            margin-bottom: 5px;
+            font-size: 1.05em;
+            margin-bottom: 4px;
         }
         .event-popup-box p {
-            font-size: 0.9em;
-            line-height: 1.3;
+            font-size: 0.85em;
+            line-height: 1.2;
         }
 
         @media (max-width: 900px) {
@@ -578,8 +537,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 Clue Clásico Adaptado</h1>
-            <p>Tablero Tradicional con Sugerencias en Cadena</p>
+            <h1>🔍 Clue - Edición Clásica Fiel</h1>
+            <p>Tablero Perimetral Tradicional con Sugerencias en Cadena</p>
         </div>
 
         <!-- PANTALLA DE INICIO -->
@@ -603,7 +562,7 @@
         <div id="gameScreen" class="game-container">
             <div class="board-section">
                 <div class="board-header">
-                    <h2>📍 Mansión Clue</h2>
+                    <h2>📍 Mansión Tudor</h2>
                     <div class="room-code" id="roomCodeDisplay"></div>
                 </div>
 
@@ -619,7 +578,7 @@
                 </div>
                 
                 <div class="clue-board" id="gameBoard"></div>
-                <p id="boardInstruction" style="text-align: center; font-size: 0.7em; color: #f1c40f; margin-top: 4px;">⏳ Espera tu turno para tirar los dados.</p>
+                <p id="boardInstruction" style="text-align: center; font-size: 0.68em; color: #f1c40f; margin-top: 4px;">⏳ Espera tu turno para tirar los dados.</p>
             </div>
 
             <div class="sidebar">
@@ -688,7 +647,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE RESPUESTA DE SUGERENCIA (SI TIENES CARTAS COINCIDENTES) -->
+    <!-- MODAL DE RESPUESTA DE SUGERENCIA -->
     <div id="replySuggestionModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <h2>👁️ Responder Sugerencia</h2>
@@ -725,7 +684,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EVENTO / COMODÍN EN PASILLO -->
+    <!-- MODAL DE EVENTO -->
     <div id="eventModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <h2>✨ ¡Casilla de Evento Especial! ✨</h2>
@@ -768,62 +727,37 @@
             { title: "⚡ Paso Relámpago", desc: "Se te conceden 3 pasos extra de movimiento inmediato." }
         ];
 
+        /* MATRIZ 5x5 EXACTA AL TABLERO CLÁSICO PERIMETRAL DE LA FOTO */
         const BOARD_LAYOUT = [
             { id: 'Study', name: 'Estudio', type: 'room', x: 0, y: 0, icon: '📚' },
-            { id: 'H_0_1', name: '', type: 'hallway', x: 1, y: 0 },
-            { id: 'H_0_2', name: '', type: 'hallway', x: 2, y: 0 },
-            { id: 'Hall', name: 'Vestíbulo', type: 'room', x: 3, y: 0, icon: '🏛️' },
-            { id: 'H_0_4', name: '', type: 'hallway', x: 4, y: 0 },
-            { id: 'H_0_5', name: '', type: 'hallway', x: 5, y: 0 },
-            { id: 'Lounge', name: 'Salón', type: 'room', x: 6, y: 0, icon: '🛋️' },
+            { id: 'H_0_1', name: 'Pasillo', type: 'hallway', x: 1, y: 0 },
+            { id: 'Hall', name: 'Vestíbulo', type: 'room', x: 2, y: 0, icon: '🏛️' },
+            { id: 'H_0_3', name: 'Pasillo', type: 'hallway', x: 3, y: 0 },
+            { id: 'Lounge', name: 'Salón', type: 'room', x: 4, y: 0, icon: '🛋️' },
 
-            { id: 'H_1_0', name: '', type: 'hallway', x: 0, y: 1 },
-            { id: 'H_1_1', name: '', type: 'hallway', x: 1, y: 1 },
-            { id: 'H_1_2', name: '', type: 'hallway', x: 2, y: 1 },
-            { id: 'EV_1_3', name: '✨ Evento', type: 'event', x: 3, y: 1 },
-            { id: 'H_1_4', name: '', type: 'hallway', x: 4, y: 1 },
-            { id: 'H_1_5', name: '', type: 'hallway', x: 5, y: 1 },
-            { id: 'H_1_6', name: '', type: 'hallway', x: 6, y: 1 },
+            { id: 'H_1_0', name: 'Pasillo', type: 'hallway', x: 0, y: 1 },
+            { id: 'EV_1_1', name: '✨ Evento', type: 'event', x: 1, y: 1 },
+            { id: 'H_1_2', name: 'Pasillo', type: 'hallway', x: 2, y: 1 },
+            { id: 'H_1_3', name: 'Pasillo', type: 'hallway', x: 3, y: 1 },
+            { id: 'H_1_4', name: 'Pasillo', type: 'hallway', x: 4, y: 1 },
 
-            { id: 'H_2_0', name: '', type: 'hallway', x: 0, y: 2 },
-            { id: 'H_2_1', name: '', type: 'hallway', x: 1, y: 2 },
-            { id: 'Library', name: 'Biblioteca', type: 'room', x: 2, y: 2, icon: '📖' },
-            { id: 'H_2_3', name: '', type: 'hallway', x: 3, y: 2 },
-            { id: 'Billiard Room', name: 'Billar', type: 'room', x: 4, y: 2, icon: '🎱' },
-            { id: 'H_2_5', name: '', type: 'hallway', x: 5, y: 2 },
-            { id: 'H_2_6', name: '', type: 'hallway', x: 6, y: 2 },
+            { id: 'Library', name: 'Biblioteca', type: 'room', x: 0, y: 2, icon: '📖' },
+            { id: 'H_2_1', name: 'Pasillo', type: 'hallway', x: 1, y: 2 },
+            { id: 'CENTER', name: 'Centro', type: 'center', x: 2, y: 2, icon: '✉️' },
+            { id: 'H_2_3', name: 'Pasillo', type: 'hallway', x: 3, y: 2 },
+            { id: 'Dining Room', name: 'Comedor', type: 'room', x: 4, y: 2, icon: '🍽️' },
 
-            { id: 'H_3_0', name: '', type: 'hallway', x: 0, y: 3 },
-            { id: 'H_3_1', name: '', type: 'hallway', x: 1, y: 3 },
-            { id: 'H_3_2', name: '', type: 'hallway', x: 2, y: 3 },
-            { id: 'CENTER', name: 'Centro', type: 'center', x: 3, y: 3, icon: '✉️' },
-            { id: 'H_3_4', name: '', type: 'hallway', x: 4, y: 3 },
-            { id: 'H_3_5', name: '', type: 'hallway', x: 5, y: 3 },
-            { id: 'H_3_6', name: '', type: 'hallway', x: 6, y: 3 },
+            { id: 'Billiard Room', name: 'Billar', type: 'room', x: 0, y: 3, icon: '🎱' },
+            { id: 'H_3_1', name: 'Pasillo', type: 'hallway', x: 1, y: 3 },
+            { id: 'EV_3_2', name: '✨ Evento', type: 'event', x: 2, y: 3 },
+            { id: 'H_3_3', name: 'Pasillo', type: 'hallway', x: 3, y: 3 },
+            { id: 'Conservatory', name: 'Invernadero', type: 'room', x: 4, y: 3, icon: '🪴' },
 
-            { id: 'H_4_0', name: '', type: 'hallway', x: 0, y: 4 },
-            { id: 'H_4_1', name: '', type: 'hallway', x: 1, y: 4 },
-            { id: 'Dining Room', name: 'Comedor', type: 'room', x: 2, y: 4, icon: '🍽️' },
-            { id: 'H_4_3', name: '', type: 'hallway', x: 3, y: 4 },
-            { id: 'Conservatory', name: 'Invernadero', type: 'room', x: 4, y: 4, icon: '🪴' },
-            { id: 'H_4_5', name: '', type: 'hallway', x: 5, y: 4 },
-            { id: 'H_4_6', name: '', type: 'hallway', x: 6, y: 4 },
-
-            { id: 'H_5_0', name: '', type: 'hallway', x: 0, y: 5 },
-            { id: 'H_5_1', name: '', type: 'hallway', x: 1, y: 5 },
-            { id: 'H_5_2', name: '', type: 'hallway', x: 2, y: 5 },
-            { id: 'EV_5_3', name: '✨ Evento', type: 'event', x: 3, y: 5 },
-            { id: 'H_5_4', name: '', type: 'hallway', x: 4, y: 5 },
-            { id: 'H_5_5', name: '', type: 'hallway', x: 5, y: 5 },
-            { id: 'H_5_6', name: '', type: 'hallway', x: 6, y: 5 },
-
-            { id: 'Ballroom', name: 'Salón Baile', type: 'room', x: 0, y: 6, icon: '💃' },
-            { id: 'H_6_1', name: '', type: 'hallway', x: 1, y: 6 },
-            { id: 'H_6_2', name: '', type: 'hallway', x: 2, y: 6 },
-            { id: 'H_6_3', name: '', type: 'hallway', x: 3, y: 6 },
-            { id: 'H_6_4', name: '', type: 'hallway', x: 4, y: 6 },
-            { id: 'H_6_5', name: '', type: 'hallway', x: 5, y: 6 },
-            { id: 'Kitchen', name: 'Cocina', type: 'room', x: 6, y: 6, icon: '🍳' }
+            { id: 'Ballroom', name: 'Salón Baile', type: 'room', x: 0, y: 4, icon: '💃' },
+            { id: 'H_4_1', name: 'Pasillo', type: 'hallway', x: 1, y: 4 },
+            { id: 'H_4_2', name: 'Pasillo', type: 'hallway', x: 2, y: 4 },
+            { id: 'H_4_3', name: 'Pasillo', type: 'hallway', x: 3, y: 4 },
+            { id: 'Kitchen', name: 'Cocina', type: 'room', x: 4, y: 4, icon: '🍳' }
         ];
 
         let gameState = {
@@ -1123,7 +1057,6 @@
                     }
                     updateTurnControls();
 
-                    // Revisar si hay una sugerencia activa dirigida a mí
                     if (state.activeSuggestion && state.activeSuggestion.targetPlayerId === gameState.userId) {
                         handleIncomingSuggestion(state.activeSuggestion);
                     }
@@ -1182,7 +1115,8 @@
                 if (tile.type === 'center') {
                     boardHtml += `
                         <div class="board-center ${isMyLocation ? 'my-current-location' : ''} ${isReachable ? 'reachable' : ''}" onclick="moveToTile('${tile.id}')">
-                            <span style="font-size:0.75em; font-weight:bold; color:#8b0000;">✉️ Centro</span>
+                            <span style="font-size:0.72em; font-weight:bold; color:#8b0000;">Clue</span>
+                            <span style="font-size:0.5em; color:#444;">Escalera</span>
                             <div class="players-in-tile">${playersInTileHtml}</div>
                         </div>
                     `;
@@ -1209,7 +1143,7 @@
                 return `
                     <div class="player-info ${isCurrent ? 'current' : ''}">
                         <div>${isCurrent ? '▶ ' : ''}<strong>${player.name}</strong></div>
-                        <div style="font-size: 0.65em; color: #aaa;">📍 ${player.location || 'Kitchen'}</div>
+                        <div style="font-size: 0.62em; color: #aaa;">📍 ${player.location || 'Kitchen'}</div>
                     </div>
                 `;
             }).join('');
@@ -1218,7 +1152,7 @@
         function updateMyCards() {
             const cardsDiv = document.getElementById('myCards');
             if (gameState.myCards.length === 0) {
-                cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.75em;">Sin cartas.</p>';
+                cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.72em;">Sin cartas.</p>';
                 return;
             }
             cardsDiv.innerHTML = gameState.myCards.map(card => {
@@ -1235,11 +1169,11 @@
                     <tr><th>Sospechosos</th><th>Tachado</th></tr>
                     ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
                 </table>
-                <table class="detective-table" style="margin-top: 8px;">
+                <table class="detective-table" style="margin-top: 6px;">
                     <tr><th>Armas</th><th>Tachado</th></tr>
                     ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
                 </table>
-                <table class="detective-table" style="margin-top: 8px;">
+                <table class="detective-table" style="margin-top: 6px;">
                     <tr><th>Habitaciones</th><th>Tachado</th></tr>
                     ${allRoomsNames.map(r => `<tr><td>${r.name || r.id}</td><td><input type="checkbox" onchange="toggleNotebook('${r.id}', this.checked)"></td></tr>`).join('')}
                 </table>
@@ -1254,7 +1188,6 @@
         function showNotebookModal() { document.getElementById('notebookModal').classList.add('active'); }
         function closeNotebookModal() { document.getElementById('notebookModal').classList.remove('active'); }
 
-        // --- SISTEMA DE SUGERENCIAS EN CADENA ---
         function showSuggestionModal() {
             const playerIds = Object.keys(gameState.players);
             const currentTurnUserId = playerIds[gameState.currentIndex];
@@ -1318,14 +1251,11 @@
             const matching = gameState.myCards.filter(c => c === suggestion.suspect || c === suggestion.weapon || c === suggestion.room);
 
             if (matching.length > 0) {
-                // Tengo cartas coincidentes, debo responder mostrando una
                 const select = document.getElementById('matchingCardsSelect');
                 select.innerHTML = matching.map(c => `<option value="${c}">${c}</option>`).join('');
                 document.getElementById('replySuggestionModal').classList.add('active');
             } else {
-                // No tengo ninguna, pasa la pregunta al siguiente jugador en la cadena
                 if (suggestion.originalAuthorId === gameState.userId) {
-                    // Dio toda la vuelta y nadie tiene cartas
                     database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                         type: 'info',
                         text: `🛡️ Ningún jugador posee ninguna de las cartas sugeridas.`
@@ -1343,7 +1273,6 @@
             const nextPlayerId = playerIds[(currentTargetIdx + 1) % playerIds.length];
 
             if (nextPlayerId === suggestion.originalAuthorId) {
-                // Dio la vuelta completa
                 database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                     type: 'info',
                     text: `🛡️ Ningún jugador pudo responder a la sugerencia.`
@@ -1365,7 +1294,6 @@
 
             document.getElementById('replySuggestionModal').classList.remove('active');
 
-            // Notificar al autor en privado / mensaje general discreto
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                 type: 'success',
                 text: `👁️ ${gameState.playerName} le mostró una carta a ${gameState.players[suggestion.originalAuthorId]?.name || 'el autor'}.`
@@ -1374,7 +1302,6 @@
             database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
         }
 
-        // --- ACUSACIÓN FINAL ---
         function showAccusationModal() {
             if (gameState.myLocation !== 'CENTER') {
                 addMessage('error', '❌ Debes estar en el Centro (✉️) para acusar.');
