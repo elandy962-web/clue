@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clue - Tablero Clásico Detallado</title>
+    <title>Clue - Edición Clásica en Español</title>
     <style>
         * {
             margin: 0;
@@ -14,11 +14,11 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f0f13;
+            background: #12141d;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            color: #ddd;
+            color: #e2e8f0;
             display: flex;
             flex-direction: column;
         }
@@ -28,7 +28,7 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            padding: 5px;
+            padding: 6px;
             max-width: 1600px;
             margin: 0 auto;
         }
@@ -42,29 +42,29 @@
 
         .header h1 {
             font-size: 1.2em;
-            color: #e74c3c;
+            color: #f6ad55;
         }
 
         .header p {
             font-size: 0.7em;
-            color: #aaa;
+            color: #a0aec0;
         }
 
         /* PANTALLA DE LOGIN */
         .login-screen {
-            background: #1f1f2e;
+            background: #1a202c;
             border-radius: 12px;
             padding: 20px;
             text-align: center;
             max-width: 400px;
             margin: auto;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 2px solid #333;
+            border: 2px solid #2d3748;
             width: 90%;
         }
 
         .login-screen h2 {
-            color: #e74c3c;
+            color: #f6ad55;
             margin-bottom: 15px;
             font-size: 1.2em;
         }
@@ -76,8 +76,8 @@
         .input-group input {
             width: 100%;
             padding: 10px;
-            border: 2px solid #444;
-            background: #12121c;
+            border: 2px solid #4a5568;
+            background: #111827;
             color: white;
             border-radius: 6px;
             font-size: 0.9em;
@@ -100,12 +100,12 @@
             font-weight: bold;
         }
 
-        .btn-primary { background: #c0392b; color: white; width: 100%; }
-        .btn-primary:hover { background: #e74c3c; }
-        .btn-secondary { background: #2c3e50; color: white; width: 100%; }
-        .btn-secondary:hover { background: #34495e; }
+        .btn-primary { background: #dd6b20; color: white; width: 100%; }
+        .btn-primary:hover { background: #ed8936; }
+        .btn-secondary { background: #2b6cb0; color: white; width: 100%; }
+        .btn-secondary:hover { background: #3182ce; }
         .btn-small { padding: 6px 10px; font-size: 0.8em; width: auto; }
-        .btn:disabled { background: #444 !important; color: #777 !important; cursor: not-allowed; }
+        .btn:disabled { background: #2d3748 !important; color: #718096 !important; cursor: not-allowed; }
 
         .status-message {
             padding: 8px;
@@ -114,9 +114,9 @@
             font-size: 0.8em;
             font-weight: bold;
         }
-        .status-message.error { background: #512e2f; color: #ff8a80; }
-        .status-message.success { background: #1b5e20; color: #b9f6ca; }
-        .status-message.loading { background: #fff3cd; color: #856404; }
+        .status-message.error { background: #742a2a; color: #fed7d7; }
+        .status-message.success { background: #22543d; color: #c6f6d5; }
+        .status-message.loading { background: #744210; color: #feebc8; }
 
         .rooms-list {
             margin-top: 10px;
@@ -126,14 +126,14 @@
         }
 
         .room-item {
-            background: #12121c;
+            background: #111827;
             padding: 8px;
             margin: 4px 0;
             border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 3px solid #e74c3c;
+            border-left: 3px solid #dd6b20;
             font-size: 0.85em;
         }
 
@@ -152,10 +152,10 @@
         }
 
         .board-section {
-            background: #16261c; /* Fondo verde clásico del tablero físico */
+            background: #0d1b1e;
             border-radius: 10px;
             padding: 6px;
-            border: 3px solid #3d2314; /* Marco de madera */
+            border: 3px solid #2d3748;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -172,13 +172,13 @@
         }
 
         .board-header h2 {
-            color: #f1c40f;
+            color: #f6ad55;
             font-size: 0.95em;
             text-shadow: 1px 1px 2px #000;
         }
 
         .game-info {
-            background: rgba(18, 18, 28, 0.85);
+            background: rgba(26, 32, 44, 0.9);
             padding: 4px 8px;
             border-radius: 6px;
             margin-bottom: 4px;
@@ -186,120 +186,109 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #444;
+            border: 1px solid #4a5568;
             flex-shrink: 0;
         }
 
         .dice-display {
             font-size: 0.95em;
             font-weight: bold;
-            color: #f1c40f;
-            background: #1f1f2e;
+            color: #f6ad55;
+            background: #111827;
             padding: 3px 6px;
             border-radius: 4px;
-            border: 1px solid #555;
+            border: 1px solid #4a5568;
         }
 
-        /* TABLERO CLUE 5x5 (Distribución exacta al físico) */
+        /* TABLERO CLUE 10x10 (Pasillos subdivididos en 4) */
         .clue-board {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            gap: 3px;
-            background: #16261c;
-            padding: 4px;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            gap: 2px;
+            background: #0d1b1e;
+            padding: 2px;
             flex: 1;
             min-height: 0;
         }
 
         .board-tile {
-            border-radius: 4px;
+            border-radius: 3px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 3px;
+            padding: 1px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
-            font-size: 0.65em;
+            font-size: 0.55em;
             overflow: hidden;
         }
 
-        /* Estilo Habitaciones Clásicas (Papel tapiz / tonos pergamino/madera con bordes rojos) */
+        /* Habitaciones (ocupan bloques de celdas) */
         .board-tile.room {
-            background: #fdf6e2;
-            color: #2c1d0c;
-            border: 3px solid #8b0000;
+            background: #1f2937;
+            color: #f3f4f6;
+            border: 2px solid #9b2c2c;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .board-tile.room:hover {
-            background: #fff;
-            border-color: #e74c3c;
-            transform: scale(1.01);
+            background: #374151;
+            border-color: #f56565;
         }
         .board-tile.room.my-current-location {
-            border-color: #2ecc71;
-            background: #d4efdf;
-            box-shadow: 0 0 8px #2ecc71;
+            border-color: #48bb78;
+            background: #22543d;
+            box-shadow: 0 0 8px #48bb78;
         }
         .board-tile.room.reachable {
-            border-color: #f1c40f;
-            background: #fcf3cf;
-            box-shadow: 0 0 8px rgba(241, 196, 15, 0.9);
+            border-color: #ecc94b;
+            background: #744210;
+            box-shadow: 0 0 6px rgba(236, 201, 75, 0.9);
         }
 
-        /* Estilo Pasillos / Cuadrícula Amarilla */
+        /* Pasillos (Nuevos colores azulados/grises oscuros y elegantes) */
         .board-tile.hallway {
-            background: #f4d03f;
-            color: #7d6608;
-            border: 1px solid #b7950b;
-            box-shadow: inset 0 0 3px rgba(0,0,0,0.15);
+            background: #2b3b4e;
+            color: #a0aec0;
+            border: 1px solid #4a5568;
+            box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
         }
         .board-tile.hallway:hover {
-            background: #f7dc6f;
-            border-color: #7d6608;
+            background: #3b4f68;
+            border-color: #718096;
         }
         .board-tile.hallway.my-current-location {
-            border-color: #2ecc71;
-            background: #a9dfbf;
+            border-color: #48bb78;
+            background: #22543d;
         }
         .board-tile.hallway.reachable {
-            border-color: #27ae60;
-            background: #fcf3cf;
-            box-shadow: 0 0 6px rgba(241, 196, 15, 0.8);
+            border-color: #ecc94b;
+            background: #4a3510;
+            box-shadow: 0 0 5px rgba(236, 201, 75, 0.8);
         }
 
-        /* Centro del Tablero (Escalera y Logo Clue) */
-        .board-center {
-            background: #fdf6e2;
-            color: #222;
-            border: 4px solid #8b0000;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2px;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+        /* Casillas de Evento o Centro */
+        .board-tile.event-tile {
+            background: #44337a;
+            color: #e9d8fd;
+            border: 1px solid #b794f4;
         }
-        .board-center:hover { background: #fff; border-color: #e74c3c; }
-        .board-center.my-current-location { border-color: #2ecc71; background: #d4efdf; box-shadow: 0 0 8px #2ecc71; }
-        .board-center.reachable { border-color: #f1c40f; background: #fcf3cf; box-shadow: 0 0 8px rgba(241, 196, 15, 0.9); }
+        .board-tile.event-tile:hover { background: #553c9a; }
+
+        .board-tile.center-tile {
+            background: #2a1b15;
+            color: #fbd38d;
+            border: 2px solid #dd6b20;
+        }
 
         .room-name {
             font-weight: bold;
-            font-size: 0.72em;
-            line-height: 1.1;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.6);
-        }
-
-        .room-icon {
-            font-size: 0.9em;
-            margin: 1px 0;
+            font-size: 0.65em;
+            line-height: 1;
+            text-shadow: 0 1px 0 rgba(0,0,0,0.8);
         }
 
         .players-in-tile {
@@ -307,16 +296,16 @@
             flex-wrap: wrap;
             gap: 1px;
             justify-content: center;
-            margin-top: 2px;
+            margin-top: 1px;
             z-index: 2;
         }
 
         .player-token {
-            background: #c0392b;
+            background: #dd6b20;
             color: white;
-            font-size: 0.52em;
-            padding: 1px 4px;
-            border-radius: 6px;
+            font-size: 0.48em;
+            padding: 1px 3px;
+            border-radius: 4px;
             font-weight: bold;
             border: 1px solid #fff;
             box-shadow: 0 1px 2px rgba(0,0,0,0.4);
@@ -333,18 +322,18 @@
         }
 
         .panel {
-            background: #1f1f2e;
+            background: #1a202c;
             border-radius: 8px;
             padding: 6px 8px;
-            border: 1px solid #33334d;
+            border: 1px solid #2d3748;
             display: flex;
             flex-direction: column;
         }
 
         .panel h3 {
-            color: #e74c3c;
+            color: #f6ad55;
             margin-bottom: 4px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #2d3748;
             padding-bottom: 3px;
             font-size: 0.85em;
         }
@@ -356,16 +345,16 @@
 
         .player-info {
             padding: 3px 5px;
-            background: #12121c;
+            background: #111827;
             border-radius: 4px;
             margin-bottom: 3px;
-            border-left: 3px solid #555;
+            border-left: 3px solid #4a5568;
             font-size: 0.72em;
         }
 
         .player-info.current {
-            background: #2b1f1f;
-            border-left-color: #e74c3c;
+            background: #2d261b;
+            border-left-color: #dd6b20;
             font-weight: bold;
         }
 
@@ -378,8 +367,8 @@
         }
 
         .card {
-            background: #fff;
-            color: #333;
+            background: #f7fafc;
+            color: #1a202c;
             border-radius: 4px;
             padding: 4px 3px;
             text-align: center;
@@ -391,9 +380,9 @@
         }
         .card:hover { transform: translateY(-2px); }
 
-        .card.suspect { border-top: 3px solid #e74c3c; }
-        .card.weapon { border-top: 3px solid #3498db; }
-        .card.room { border-top: 3px solid #2ecc71; }
+        .card.suspect { border-top: 3px solid #e53e3e; }
+        .card.weapon { border-top: 3px solid #3182ce; }
+        .card.room { border-top: 3px solid #38a169; }
 
         .action-buttons {
             display: grid;
@@ -404,14 +393,14 @@
         .action-buttons button { width: 100%; }
 
         .message-log {
-            background: #12121c;
+            background: #111827;
             border-radius: 6px;
             padding: 5px;
             flex: 1;
             min-height: 0;
             overflow-y: auto;
             font-size: 0.72em;
-            border: 1px solid #333;
+            border: 1px solid #2d3748;
         }
 
         .message {
@@ -420,12 +409,12 @@
             border-radius: 3px;
         }
 
-        .message.system { background: #1a237e; color: #9fa8da; font-weight: bold; }
-        .message.success { background: #1b5e20; color: #c8e6c9; }
-        .message.error { background: #b71c1c; color: #ffcdd2; }
-        .message.info { background: #4a148c; color: #e1bee7; }
-        .message.event { background: #512da8; color: #e1bee7; font-weight: bold; border-left: 3px solid #ffd700; }
-        .message.suggestion { background: #006064; color: #e0f7fa; font-weight: bold; }
+        .message.system { background: #1a365d; color: #bee3f8; font-weight: bold; }
+        .message.success { background: #22543d; color: #c6f6d5; }
+        .message.error { background: #742a2a; color: #fed7d7; }
+        .message.info { background: #44337a; color: #e9d8fd; }
+        .message.event { background: #553c9a; color: #e9d8fd; font-weight: bold; border-left: 3px solid #ecc94b; }
+        .message.suggestion { background: #234e52; color: #e6fffa; font-weight: bold; }
 
         .detective-table {
             width: 100%;
@@ -435,12 +424,12 @@
         }
 
         .detective-table th, .detective-table td {
-            border: 1px solid #444;
+            border: 1px solid #4a5568;
             padding: 3px;
             text-align: center;
         }
 
-        .detective-table th { background: #12121c; color: #e74c3c; }
+        .detective-table th { background: #111827; color: #f6ad55; }
         .detective-table td:first-child { text-align: left; font-weight: bold; }
 
         .modal {
@@ -457,19 +446,19 @@
         .modal.active { display: flex; }
 
         .modal-content {
-            background: #1f1f2e;
+            background: #1a202c;
             border-radius: 12px;
             padding: 15px;
             max-width: 500px;
             width: 100%;
-            border: 2px solid #444;
+            border: 2px solid #4a5568;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             max-height: 90vh;
             overflow-y: auto;
         }
 
         .modal-content h2 {
-            color: #e74c3c;
+            color: #f6ad55;
             margin-bottom: 8px;
             font-size: 1.05em;
         }
@@ -483,41 +472,41 @@
             margin-bottom: 2px;
             font-weight: bold;
             font-size: 0.78em;
-            color: #ccc;
+            color: #e2e8f0;
         }
 
         .selection-group select {
             width: 100%;
             padding: 5px;
-            border: 2px solid #444;
-            background: #12121c;
+            border: 2px solid #4a5568;
+            background: #111827;
             color: white;
             border-radius: 6px;
             font-size: 0.82em;
         }
 
         .room-code {
-            background: #12121c;
+            background: #111827;
             padding: 3px 6px;
             border-radius: 4px;
             font-family: monospace;
             font-weight: bold;
-            color: #e74c3c;
-            border: 1px solid #444;
+            color: #f6ad55;
+            border: 1px solid #4a5568;
             font-size: 0.75em;
         }
 
         .event-popup-box {
-            background: linear-gradient(135deg, #4a235a, #8e44ad);
+            background: linear-gradient(135deg, #44337a, #553c9a);
             color: #fff;
             padding: 12px;
             border-radius: 8px;
             text-align: center;
             margin: 8px 0;
-            border: 2px solid #ffd700;
+            border: 2px solid #ecc94b;
         }
         .event-popup-box h3 {
-            color: #ffd700;
+            color: #ecc94b;
             font-size: 1.05em;
             margin-bottom: 4px;
         }
@@ -529,7 +518,7 @@
         @media (max-width: 900px) {
             body { overflow: auto; height: auto; min-height: 100vh; }
             .game-container { display: flex; flex-direction: column; overflow: visible; }
-            .clue-board { min-height: 380px; }
+            .clue-board { min-height: 420px; }
             .sidebar { height: auto; overflow: visible; }
         }
     </style>
@@ -537,8 +526,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 Clue - Edición Clásica Fiel</h1>
-            <p>Tablero Perimetral Tradicional con Sugerencias en Cadena</p>
+            <h1>🔍 Clue - Edición Clásica en Español</h1>
+            <p>Tablero Detallado (Cuadrícula 10x10) con Sugerencias en Cadena</p>
         </div>
 
         <!-- PANTALLA DE INICIO -->
@@ -568,9 +557,9 @@
 
                 <div class="game-info">
                     <div>
-                        <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #e74c3c;">-</span><br>
-                        <strong>Posición:</strong> <span id="myLocation" style="color: #2ecc71; font-weight: bold;">Cocina</span> | 
-                        <strong>Pasos:</strong> <span id="stepsAvailable" style="color: #f1c40f; font-weight: bold;">0</span>
+                        <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #f6ad55;">-</span><br>
+                        <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Cocina</span> | 
+                        <strong>Pasos:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
                     </div>
                     <div>
                         <div class="dice-display" id="diceResult">🎲 -</div>
@@ -578,7 +567,7 @@
                 </div>
                 
                 <div class="clue-board" id="gameBoard"></div>
-                <p id="boardInstruction" style="text-align: center; font-size: 0.68em; color: #f1c40f; margin-top: 4px;">⏳ Espera tu turno para tirar los dados.</p>
+                <p id="boardInstruction" style="text-align: center; font-size: 0.68em; color: #ecc94b; margin-top: 4px;">⏳ Espera tu turno para tirar los dados.</p>
             </div>
 
             <div class="sidebar">
@@ -600,11 +589,11 @@
                 <div class="panel">
                     <h3>⚙️ Acciones</h3>
                     <div class="action-buttons" id="actionButtonsContainer">
-                        <button id="rollDiceBtn" class="btn btn-primary btn-small" onclick="rollDice()" style="background: #27ae60;" disabled>🎲 Tirar</button>
-                        <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #2980b9;">📓 Libreta</button>
-                        <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #d35400;">💡 Sugerencia</button>
-                        <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #8e44ad;">🎯 Acusar</button>
-                        <button class="btn btn-secondary btn-small" onclick="leaveGame()" style="background: #c0392b;">🚪 Salir</button>
+                        <button id="rollDiceBtn" class="btn btn-primary btn-small" onclick="rollDice()" style="background: #38a169;" disabled>🎲 Tirar</button>
+                        <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #3182ce;">📓 Libreta</button>
+                        <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">💡 Sugerencia</button>
+                        <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
+                        <button class="btn btn-secondary btn-small" onclick="leaveGame()" style="background: #e53e3e;">🚪 Salir</button>
                     </div>
                 </div>
             </div>
@@ -615,7 +604,7 @@
     <div id="notebookModal" class="modal">
         <div class="modal-content">
             <h2>📓 Libreta de Detective</h2>
-            <p style="font-size: 0.75em; color: #aaa; margin-bottom: 8px;">Marca lo que vas descartando para tus teorías.</p>
+            <p style="font-size: 0.75em; color: #a0aec0; margin-bottom: 8px;">Marca lo que vas descartando para tus teorías.</p>
             <div id="notebookContainer"></div>
             <div style="margin-top: 10px; text-align: right;">
                 <button class="btn btn-secondary btn-small" onclick="closeNotebookModal()">Cerrar</button>
@@ -623,11 +612,11 @@
         </div>
     </div>
 
-    <!-- MODAL DE SUGERENCIA / PREGUNTA EN CADENA -->
+    <!-- MODAL DE SUGERENCIA -->
     <div id="suggestionModal" class="modal">
         <div class="modal-content">
             <h2>💡 Hacer Sugerencia</h2>
-            <p style="color: #aaa; margin-bottom: 10px; font-size: 0.8em;">Pregunta al siguiente jugador por un Lugar, Arma y Sospechoso.</p>
+            <p style="color: #a0aec0; margin-bottom: 10px; font-size: 0.8em;">Pregunta al siguiente jugador por un Sospechoso, Arma y Habitación.</p>
             <div class="selection-group">
                 <label>Sospechoso:</label>
                 <select id="sugSuspectSelect"><option value="">-- Selecciona --</option></select>
@@ -637,7 +626,7 @@
                 <select id="sugWeaponSelect"><option value="">-- Selecciona --</option></select>
             </div>
             <div class="selection-group">
-                <label>Habitación / Lugar:</label>
+                <label>Habitación:</label>
                 <select id="sugRoomSelect"><option value="">-- Selecciona --</option></select>
             </div>
             <div class="action-buttons">
@@ -651,7 +640,7 @@
     <div id="replySuggestionModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <h2>👁️ Responder Sugerencia</h2>
-            <p style="color: #aaa; margin-bottom: 10px; font-size: 0.8em;" id="replySuggestionPrompt">El jugador anterior hizo una sugerencia y posees cartas coincidentes. Elige cuál mostrarle:</p>
+            <p style="color: #a0aec0; margin-bottom: 10px; font-size: 0.8em;" id="replySuggestionPrompt">Posees cartas coincidentes. Elige cuál mostrarle:</p>
             <div class="selection-group">
                 <label>Carta a mostrar en privado:</label>
                 <select id="matchingCardsSelect"></select>
@@ -664,7 +653,7 @@
     <div id="accusationModal" class="modal">
         <div class="modal-content">
             <h2>🔍 Plantear Teoría / Acusación Final</h2>
-            <p style="color: #aaa; margin-bottom: 10px; font-size: 0.8em;">Debes estar en el <strong>Centro (✉️)</strong>.</p>
+            <p style="color: #a0aec0; margin-bottom: 10px; font-size: 0.8em;">Debes estar en el <strong>Centro</strong>.</p>
             <div class="selection-group">
                 <label>Sospechoso:</label>
                 <select id="suspectSelect"><option value="">-- Selecciona --</option></select>
@@ -716,8 +705,9 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        const SUSPECTS = ['Miss Scarlett', 'Colonel Mustard', 'Mrs White', 'Mr Green', 'Mrs Peacock', 'Professor Plum'];
-        const WEAPONS = ['Candlestick', 'Knife', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench'];
+        // Nombres estrictamente en Español
+        const SUSPECTS = ['Señorita Amapola', 'Coronel Mostaza', 'Señora White', 'Prado', 'Señora Fucsia', 'Profesor Cerillo'];
+        const WEAPONS = ['Candelabro', 'Cuchillo', 'Tubo de Plomo', 'Revólver', 'Cuerda', 'Llave Inglesa'];
         
         const EVENT_CARDS = [
             { title: "🌟 Comodín de Avance Rápido", desc: "Duplicas tus pasos en tu siguiente turno." },
@@ -727,38 +717,54 @@
             { title: "⚡ Paso Relámpago", desc: "Se te conceden 3 pasos extra de movimiento inmediato." }
         ];
 
-        /* MATRIZ 5x5 EXACTA AL TABLERO CLÁSICO PERIMETRAL DE LA FOTO */
-        const BOARD_LAYOUT = [
-            { id: 'Study', name: 'Estudio', type: 'room', x: 0, y: 0, icon: '📚' },
-            { id: 'H_0_1', name: 'Pasillo', type: 'hallway', x: 1, y: 0 },
-            { id: 'Hall', name: 'Vestíbulo', type: 'room', x: 2, y: 0, icon: '🏛️' },
-            { id: 'H_0_3', name: 'Pasillo', type: 'hallway', x: 3, y: 0 },
-            { id: 'Lounge', name: 'Salón', type: 'room', x: 4, y: 0, icon: '🛋️' },
-
-            { id: 'H_1_0', name: 'Pasillo', type: 'hallway', x: 0, y: 1 },
-            { id: 'EV_1_1', name: '✨ Evento', type: 'event', x: 1, y: 1 },
-            { id: 'H_1_2', name: 'Pasillo', type: 'hallway', x: 2, y: 1 },
-            { id: 'H_1_3', name: 'Pasillo', type: 'hallway', x: 3, y: 1 },
-            { id: 'H_1_4', name: 'Pasillo', type: 'hallway', x: 4, y: 1 },
-
-            { id: 'Library', name: 'Biblioteca', type: 'room', x: 0, y: 2, icon: '📖' },
-            { id: 'H_2_1', name: 'Pasillo', type: 'hallway', x: 1, y: 2 },
-            { id: 'CENTER', name: 'Centro', type: 'center', x: 2, y: 2, icon: '✉️' },
-            { id: 'H_2_3', name: 'Pasillo', type: 'hallway', x: 3, y: 2 },
-            { id: 'Dining Room', name: 'Comedor', type: 'room', x: 4, y: 2, icon: '🍽️' },
-
-            { id: 'Billiard Room', name: 'Billar', type: 'room', x: 0, y: 3, icon: '🎱' },
-            { id: 'H_3_1', name: 'Pasillo', type: 'hallway', x: 1, y: 3 },
-            { id: 'EV_3_2', name: '✨ Evento', type: 'event', x: 2, y: 3 },
-            { id: 'H_3_3', name: 'Pasillo', type: 'hallway', x: 3, y: 3 },
-            { id: 'Conservatory', name: 'Invernadero', type: 'room', x: 4, y: 3, icon: '🪴' },
-
-            { id: 'Ballroom', name: 'Salón Baile', type: 'room', x: 0, y: 4, icon: '💃' },
-            { id: 'H_4_1', name: 'Pasillo', type: 'hallway', x: 1, y: 4 },
-            { id: 'H_4_2', name: 'Pasillo', type: 'hallway', x: 2, y: 4 },
-            { id: 'H_4_3', name: 'Pasillo', type: 'hallway', x: 3, y: 4 },
-            { id: 'Kitchen', name: 'Cocina', type: 'room', x: 4, y: 4, icon: '🍳' }
+        /* MATRIZ 10x10 (Cada antiguo cuadro de pasillo se divide en 4 baldosas exactas) */
+        const BOARD_LAYOUT = [];
+        
+        // Habitaciones principales (ocupando bloques 3x3 aproximados en la matriz 10x10)
+        // Definiremos las 9 zonas base (Esquinas y centro)
+        const roomsDef = [
+            { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, endX: 2, startY: 0, endY: 2 },
+            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, endX: 5, startY: 0, endY: 2 },
+            { id: 'Salon', name: 'Salón', type: 'room', startX: 7, endX: 9, startY: 0, endY: 2 },
+            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', startX: 0, endX: 2, startY: 4, endY: 5 },
+            { id: 'Centro', name: 'Centro', type: 'center', startX: 4, endX: 5, startY: 4, endY: 5 },
+            { id: 'Comedor', name: 'Comedor', type: 'room', startX: 7, endX: 9, startY: 4, endY: 5 },
+            { id: 'Billar', name: 'Billar', type: 'room', startX: 0, endX: 2, startY: 7, endY: 8 },
+            { id: 'Invernadero', name: 'Invernadero', type: 'room', startX: 7, endX: 9, startY: 7, endY: 8 },
+            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', startX: 0, endX: 2, startY: 9, endY: 9 },
+            { id: 'Cocina', name: 'Cocina', type: 'room', startX: 7, endX: 9, startY: 9, endY: 9 }
         ];
+
+        // Construir cuadrícula completa 10x10 para que los pasillos tengan tamaño subdividido en 4 baldosas
+        for (let y = 0; y < 10; y++) {
+            for (let x = 0; x < 10; x++) {
+                let foundRoom = roomsDef.find(r => x >= r.startX && x <= r.endX && y >= r.startY && y <= r.endY);
+                if (foundRoom) {
+                    // Evitar duplicar celdas de habitaciones grandes, registrar solo una vez por habitación en su celda principal o representar cada celda
+                    let cellId = `${foundRoom.id}_${x}_${y}`;
+                    let isPrimary = (x === foundRoom.startX && y === foundRoom.startY);
+                    BOARD_LAYOUT.push({
+                        id: foundRoom.id,
+                        name: isPrimary ? foundRoom.name : '',
+                        type: foundRoom.type,
+                        x: x,
+                        y: y,
+                        isPrimary: isPrimary
+                    });
+                } else {
+                    // Es un pasillo subdividido (cuatro por cada bloque anterior)
+                    let isEvent = (x === 3 && y === 3) || (x === 6 && y === 6);
+                    BOARD_LAYOUT.push({
+                        id: `Pasillo_${x}_${y}`,
+                        name: isEvent ? '✨ Evento' : '',
+                        type: isEvent ? 'event-tile' : 'hallway',
+                        x: x,
+                        y: y,
+                        isPrimary: true
+                    });
+                }
+            }
+        }
 
         let gameState = {
             userId: null,
@@ -769,7 +775,7 @@
             playerIdsOrder: [],
             myCards: [],
             currentIndex: 0,
-            myLocation: 'Kitchen',
+            myLocation: 'Cocina',
             stepsAvailable: 0,
             hasRolled: false,
             notebookMarks: {},
@@ -809,7 +815,7 @@
                 const roomData = {
                     host: gameState.userId,
                     players: {
-                        [gameState.userId]: { name: gameState.playerName, location: 'Kitchen', cards: [] }
+                        [gameState.userId]: { name: gameState.playerName, location: 'Cocina', cards: [] }
                     },
                     gameState: { currentIndex: 0, dice: 0, messages: [] }
                 };
@@ -838,7 +844,7 @@
                 gameState.isHost = (roomData.host === gameState.userId);
 
                 await database.ref(`rooms/${code}/players/${gameState.userId}`).set({
-                    name: gameState.playerName, location: 'Kitchen', cards: []
+                    name: gameState.playerName, location: 'Cocina', cards: []
                 });
                 startGame();
             } catch (error) {
@@ -879,7 +885,7 @@
                     const distributeBtn = document.createElement('button');
                     distributeBtn.id = 'distributeBtn';
                     distributeBtn.className = 'btn btn-secondary btn-small';
-                    distributeBtn.style.background = '#8e44ad';
+                    distributeBtn.style.background = '#805ad5';
                     distributeBtn.textContent = '🃏 Repartir';
                     distributeBtn.onclick = manualDistributeCards;
                     actionsContainer.insertBefore(distributeBtn, actionsContainer.firstChild);
@@ -892,11 +898,11 @@
         }
 
         function initializeMysteryQuietly() {
-            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center').map(r => r.id);
+            const uniqueRooms = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile', 'Cocina'];
             const mystery = {
                 suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
                 weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
-                room: allRoomsNames[Math.floor(Math.random() * allRoomsNames.length)]
+                room: uniqueRooms[Math.floor(Math.random() * uniqueRooms.length)]
             };
             database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
         }
@@ -906,18 +912,18 @@
 
             const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
             let mystery = mysterySnap.val();
-            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center').map(r => r.id);
+            const uniqueRooms = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile', 'Cocina'];
 
             if (!mystery) {
                 mystery = {
                     suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
                     weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
-                    room: allRoomsNames[Math.floor(Math.random() * allRoomsNames.length)]
+                    room: uniqueRooms[Math.floor(Math.random() * uniqueRooms.length)]
                 };
                 await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
             }
 
-            const allCards = [...SUSPECTS, ...WEAPONS, ...allRoomsNames];
+            const allCards = [...SUSPECTS, ...WEAPONS, ...uniqueRooms];
             const shuffled = allCards.sort(() => Math.random() - 0.5);
             const playerIds = Object.keys(gameState.players);
             const cardsPerPlayer = Math.floor((allCards.length - 3) / playerIds.length);
@@ -1003,8 +1009,7 @@
 
             addMessage('success', `🚶‍♂️ Movimiento a ${tileId}.`);
 
-            const targetTileObj = BOARD_LAYOUT.find(b => b.id === tileId);
-            if (targetTileObj && targetTileObj.type === 'event') {
+            if (tileId.startsWith('Pasillo_') && (tileId.includes('_3_3') || tileId.includes('_6_6'))) {
                 triggerRandomEvent();
             }
 
@@ -1081,14 +1086,14 @@
 
             if (isMyTurn) {
                 document.getElementById('currentTurnInfo').textContent = '¡Tu Turno!';
-                document.getElementById('currentTurnInfo').style.color = '#2ecc71';
+                document.getElementById('currentTurnInfo').style.color = '#48bb78';
                 if (!gameState.hasRolled) {
                     document.getElementById('boardInstruction').textContent = '🎲 Tira los dados.';
                 }
             } else {
                 const activePlayerName = gameState.players[currentTurnUserId]?.name || 'Alguien';
                 document.getElementById('currentTurnInfo').textContent = activePlayerName;
-                document.getElementById('currentTurnInfo').style.color = '#e74c3c';
+                document.getElementById('currentTurnInfo').style.color = '#f6ad55';
                 document.getElementById('boardInstruction').textContent = `⏳ Esperando a ${activePlayerName}...`;
             }
             updatePlayersList();
@@ -1112,21 +1117,13 @@
                 const distance = calculateDistance(gameState.myLocation, tile.id);
                 const isReachable = (isMyTurn && gameState.hasRolled && distance <= gameState.stepsAvailable && !isMyLocation);
 
-                if (tile.type === 'center') {
-                    boardHtml += `
-                        <div class="board-center ${isMyLocation ? 'my-current-location' : ''} ${isReachable ? 'reachable' : ''}" onclick="moveToTile('${tile.id}')">
-                            <span style="font-size:0.72em; font-weight:bold; color:#8b0000;">Clue</span>
-                            <span style="font-size:0.5em; color:#444;">Escalera</span>
-                            <div class="players-in-tile">${playersInTileHtml}</div>
-                        </div>
-                    `;
-                    return;
-                }
+                let tileClass = tile.type;
+                if (isMyLocation) tileClass += ' my-current-location';
+                if (isReachable) tileClass += ' reachable';
 
                 boardHtml += `
-                    <div class="board-tile ${tile.type} ${isMyLocation ? 'my-current-location' : ''} ${isReachable ? 'reachable' : ''}" onclick="moveToTile('${tile.id}')">
-                        <div class="room-name">${tile.name}</div>
-                        ${tile.icon ? `<div class="room-icon">${tile.icon}</div>` : ''}
+                    <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
+                        ${tile.isPrimary && tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
                         <div class="players-in-tile">${playersInTileHtml}</div>
                     </div>
                 `;
@@ -1143,7 +1140,7 @@
                 return `
                     <div class="player-info ${isCurrent ? 'current' : ''}">
                         <div>${isCurrent ? '▶ ' : ''}<strong>${player.name}</strong></div>
-                        <div style="font-size: 0.62em; color: #aaa;">📍 ${player.location || 'Kitchen'}</div>
+                        <div style="font-size: 0.62em; color: #a0aec0;">📍 ${player.location || 'Cocina'}</div>
                     </div>
                 `;
             }).join('');
@@ -1163,7 +1160,7 @@
 
         function buildNotebookUI() {
             const container = document.getElementById('notebookContainer');
-            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center');
+            const uniqueRooms = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile', 'Cocina'];
             let html = `
                 <table class="detective-table">
                     <tr><th>Sospechosos</th><th>Tachado</th></tr>
@@ -1175,7 +1172,7 @@
                 </table>
                 <table class="detective-table" style="margin-top: 6px;">
                     <tr><th>Habitaciones</th><th>Tachado</th></tr>
-                    ${allRoomsNames.map(r => `<tr><td>${r.name || r.id}</td><td><input type="checkbox" onchange="toggleNotebook('${r.id}', this.checked)"></td></tr>`).join('')}
+                    ${uniqueRooms.map(r => `<tr><td>${r}</td><td><input type="checkbox" onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
                 </table>
             `;
             container.innerHTML = html;
@@ -1201,11 +1198,11 @@
             const weaponSel = document.getElementById('sugWeaponSelect');
             const roomSel = document.getElementById('sugRoomSelect');
 
-            const allRooms = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center').map(r => r.id);
+            const uniqueRooms = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile', 'Cocina'];
 
             suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
             weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + allRooms.map(r => `<option value="${r}">${r}</option>`).join('');
+            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRooms.map(r => `<option value="${r}">${r}</option>`).join('');
 
             document.getElementById('suggestionModal').classList.add('active');
         }
@@ -1240,7 +1237,7 @@
 
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                 type: 'suggestion',
-                text: `💡 ${gameState.playerName} sugiere: [ Sospechoso: ${suspect} | Arma: ${weapon} | Lugar: ${room} ]. Preguntando a ${gameState.players[nextPlayerId].name}...`
+                text: `💡 ${gameState.playerName} sugiere: [ Sospechoso: ${suspect} | Arma: ${weapon} | Habitación: ${room} ]. Preguntando a ${gameState.players[nextPlayerId].name}...`
             });
 
             await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestionData);
@@ -1303,8 +1300,8 @@
         }
 
         function showAccusationModal() {
-            if (gameState.myLocation !== 'CENTER') {
-                addMessage('error', '❌ Debes estar en el Centro (✉️) para acusar.');
+            if (gameState.myLocation !== 'Centro') {
+                addMessage('error', '❌ Debes estar en el Centro para acusar.');
                 return;
             }
 
@@ -1312,11 +1309,11 @@
             const weaponSel = document.getElementById('weaponSelect');
             const roomSel = document.getElementById('roomSelect');
 
-            const allRooms = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center').map(r => r.id);
+            const uniqueRooms = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile', 'Cocina'];
 
             suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
             weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + allRooms.map(r => `<option value="${r}">${r}</option>`).join('');
+            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRooms.map(r => `<option value="${r}">${r}</option>`).join('');
 
             document.getElementById('accusationModal').classList.add('active');
         }
