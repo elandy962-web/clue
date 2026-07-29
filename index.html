@@ -198,22 +198,37 @@
             border: 1px solid #444;
         }
 
-        /* TABLERO ESTILO CLÁSICO 7x7 */
+        /* TABLERO ESTILO CLÁSICO CLUE RETRO */
         .clue-board {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             grid-template-rows: repeat(7, 1fr);
-            gap: 2px;
-            background: #0d0d12;
-            padding: 6px;
-            border-radius: 8px;
-            border: 3px solid #4a2c2a;
+            gap: 1px;
+            background: linear-gradient(135deg, #7dd3c0 0%, #6ecfba 100%);
+            padding: 10px;
+            border-radius: 6px;
+            border: 8px solid #8dd9c4;
             flex: 1;
             min-height: 0;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.2), 0 6px 12px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .clue-board::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px dashed #d9a573;
+            border-radius: 3px;
+            pointer-events: none;
+            opacity: 0.15;
         }
 
         .board-tile {
-            border-radius: 2px;
+            border-radius: 1px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -228,72 +243,90 @@
         }
 
         .board-tile.room {
-            background: #fdfbf7;
-            color: #222;
-            border: 2px solid #8b0000;
+            background: linear-gradient(135deg, #c9897a 0%, #b87a6b 100%);
+            color: #fff;
+            border: 2px solid #8b6654;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            font-weight: bold;
         }
         .board-tile.room:hover {
-            background: #fff;
+            background: linear-gradient(135deg, #d4968c 0%, #c38779 100%);
             border-color: #e74c3c;
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
         }
         .board-tile.room.my-current-location {
             border-color: #2ecc71;
-            background: #d4efdf;
+            background: linear-gradient(135deg, #52c77a 0%, #3fa566 100%);
+            color: #fff;
         }
         .board-tile.room.reachable {
             border-color: #f1c40f;
-            background: #fcf3cf;
-            box-shadow: 0 0 5px rgba(241, 196, 15, 0.8);
+            background: linear-gradient(135deg, #f9e79f 0%, #f5dd90 100%);
+            box-shadow: 0 0 6px rgba(241, 196, 15, 0.8), inset 0 0 3px rgba(0,0,0,0.1);
+            color: #2a2a2a;
         }
 
         .board-tile.hallway {
-            background: #e8e8e8;
-            color: #333;
-            border: 1px solid #bbb;
+            background: #f4d9b8;
+            color: #2a2a2a;
+            border: 1px solid #d9a573;
         }
         .board-tile.hallway:hover {
-            background: #f5f5f5;
-            border-color: #333;
+            background: #f9e4c8;
+            border-color: #c9897a;
         }
         .board-tile.hallway.my-current-location {
             border-color: #2ecc71;
             background: #a9dfbf;
+            color: #0a3622;
         }
         .board-tile.hallway.reachable {
             border-color: #f1c40f;
             background: #f9e79f;
-            box-shadow: 0 0 4px rgba(241, 196, 15, 0.6);
+            box-shadow: 0 0 5px rgba(241, 196, 15, 0.7);
+            color: #2a2a2a;
         }
 
         .board-tile.event {
-            background: #4a235a;
-            color: #fff;
-            border: 2px solid #9b59b6;
+            background: linear-gradient(135deg, #f4d9b8 0%, #e8c9a8 100%);
+            color: #2a2a2a;
+            border: 2px dashed #c9897a;
         }
         .board-tile.event:hover {
-            background: #6c3483;
+            background: linear-gradient(135deg, #f9e4c8 0%, #f0d4b8 100%);
             border-color: #f1c40f;
         }
         .board-tile.event.my-current-location {
             border-color: #2ecc71;
-            background: #27ae60;
+            background: linear-gradient(135deg, #52c77a 0%, #3fa566 100%);
+            color: #fff;
         }
         .board-tile.event.reachable {
             border-color: #f1c40f;
-            background: #d7bde2;
-            color: #222;
-            box-shadow: 0 0 6px rgba(155, 89, 182, 0.9);
+            background: linear-gradient(135deg, #f9e79f 0%, #f5dd90 100%);
+            color: #2a2a2a;
+            box-shadow: 0 0 6px rgba(241, 196, 15, 0.8);
         }
 
         .room-name {
             font-weight: bold;
-            font-size: 0.7em;
-            line-height: 1;
+            font-size: 0.75em;
+            line-height: 1.2;
+            letter-spacing: 0.3px;
+        }
+
+        .board-tile.room .room-name {
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
         }
 
         .room-icon {
-            font-size: 0.8em;
+            font-size: 0.9em;
             margin: 1px 0;
+        }
+
+        .board-tile.room .room-icon {
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.4));
         }
 
         .players-in-tile {
