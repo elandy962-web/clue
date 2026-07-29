@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clue - Turnos Estrictos, Pasillos y Libreta</title>
+    <title>Clue - Mansión Extendida, Pasillos Largos y Cartas Interactivas</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
@@ -119,7 +119,7 @@
         /* JUEGO PRINCIPAL */
         .game-container {
             display: none;
-            grid-template-columns: 2fr 1.2fr;
+            grid-template-columns: 2.2fr 1.2fr;
             gap: 20px;
             margin-bottom: 20px;
         }
@@ -141,35 +141,36 @@
             font-size: 1.3em;
         }
 
+        /* TABLERO AMPLIADO 7x7 CON PASILLOS LARGOS */
         .clue-board {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            gap: 5px;
             background: #151522;
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
             border: 2px dashed #4b4b6b;
-            min-height: 520px;
+            min-height: 600px;
         }
 
         .board-tile {
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 6px;
+            padding: 4px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
-            font-size: 0.85em;
+            font-size: 0.75em;
         }
 
         .board-tile.room {
             background: #2c3e50;
-            border: 3px solid #34495e;
+            border: 2px solid #34495e;
         }
         .board-tile.room:hover {
             border-color: #f39c12;
@@ -182,16 +183,17 @@
         .board-tile.room.reachable {
             border-color: #f1c40f;
             background: #3d3a22;
-            box-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+            box-shadow: 0 0 8px rgba(241, 196, 15, 0.5);
         }
 
+        /* Pasillos limpios sin iconos */
         .board-tile.hallway {
-            background: #1a1a24;
-            border: 2px dashed #3f3f5f;
+            background: #181822;
+            border: 1px dotted #33334d;
         }
         .board-tile.hallway:hover {
             border-color: #f39c12;
-            background: #252538;
+            background: #222233;
         }
         .board-tile.hallway.my-current-location {
             border-color: #2ecc71;
@@ -200,34 +202,35 @@
         .board-tile.hallway.reachable {
             border-color: #f1c40f;
             background: #36321b;
-            box-shadow: 0 0 8px rgba(241, 196, 15, 0.4);
+            box-shadow: 0 0 6px rgba(241, 196, 15, 0.4);
         }
 
         .room-name {
             font-weight: bold;
-            font-size: 0.8em;
+            font-size: 0.75em;
             color: #ecf0f1;
+            line-height: 1.1;
         }
 
         .room-icon {
-            font-size: 1.2em;
-            margin: 2px 0;
+            font-size: 1em;
+            margin: 1px 0;
         }
 
         .players-in-tile {
             display: flex;
             flex-wrap: wrap;
-            gap: 3px;
+            gap: 2px;
             justify-content: center;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         .player-token {
             background: #e74c3c;
             color: white;
-            font-size: 0.7em;
-            padding: 1px 5px;
-            border-radius: 10px;
+            font-size: 0.65em;
+            padding: 1px 4px;
+            border-radius: 8px;
             font-weight: bold;
             border: 1px solid #fff;
         }
@@ -240,7 +243,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 5px;
+            padding: 4px;
             text-align: center;
         }
 
@@ -290,11 +293,17 @@
             background: #fff;
             color: #333;
             border-radius: 6px;
-            padding: 6px;
+            padding: 8px 6px;
             text-align: center;
             font-size: 0.75em;
             font-weight: bold;
             line-height: 1.2;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.4);
         }
 
         .card.suspect { border-top: 4px solid #e74c3c; }
@@ -430,8 +439,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 Clue Multijugador</h1>
-            <p>Control de Turnos Estrictos, Pasillos y Libreta de Detectives</p>
+            <h1>🔍 Clue Multijugador Avanzado</h1>
+            <p>Pasillos Largos, Centro de Acusación y Cartas Interactivas</p>
         </div>
 
         <!-- PANTALLA DE INICIO -->
@@ -456,7 +465,7 @@
             <div>
                 <div class="board-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <h2>📍 Tablero de la Mansión</h2>
+                        <h2>📍 Tablero Extendido de la Mansión</h2>
                         <div class="room-code" id="roomCodeDisplay"></div>
                     </div>
 
@@ -476,7 +485,7 @@
                 </div>
 
                 <div class="board-section" style="margin-top: 15px;">
-                    <h2>🎴 Tus Cartas Repartidas</h2>
+                    <h2>🎴 Tus Cartas (Haz clic para mostrar)</h2>
                     <div class="cards-section" id="myCards"></div>
                 </div>
             </div>
@@ -518,22 +527,36 @@
         </div>
     </div>
 
-    <!-- MODAL DE ACUSACIÓN -->
+    <!-- MODAL DE MOSTRAR CARTA A JUGADORES -->
+    <div id="showCardModal" class="modal">
+        <div class="modal-content">
+            <h2>👁️ Mostrar Carta a un Jugador</h2>
+            <p style="color: #aaa; margin-bottom: 15px; font-size: 0.85em;" id="selectedCardTextPrompt">Seleccionaste la carta:</p>
+            
+            <div class="selection-group">
+                <label>¿A quién deseas mostrarla?:</label>
+                <select id="targetPlayerSelect">
+                    <option value="ALL">🌐 A Todos los Jugadores</option>
+                </select>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="confirmShowCard()">✅ Enviar Carta</button>
+                <button class="btn btn-secondary" onclick="closeShowCardModal()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ACUSACIÓN (SOLO NO TACHADOS) -->
     <div id="accusationModal" class="modal">
         <div class="modal-content">
             <h2>🔍 Plantear Teoría / Acusación</h2>
-            <p style="color: #aaa; margin-bottom: 15px; font-size: 0.85em;">Debes estar ubicado físicamente en una habitación para formular tu teoría.</p>
+            <p style="color: #aaa; margin-bottom: 15px; font-size: 0.85em;">Debes estar ubicado en el <strong>Centro de la Mansión (✉️)</strong> para acusar. Solo se muestran opciones no tachadas en tu libreta.</p>
             
             <div class="selection-group">
                 <label>Sospechoso:</label>
                 <select id="suspectSelect">
                     <option value="">-- Selecciona --</option>
-                    <option value="Miss Scarlett">Miss Scarlett</option>
-                    <option value="Colonel Mustard">Colonel Mustard</option>
-                    <option value="Mrs White">Mrs White</option>
-                    <option value="Mr Green">Mr Green</option>
-                    <option value="Mrs Peacock">Mrs Peacock</option>
-                    <option value="Professor Plum">Professor Plum</option>
                 </select>
             </div>
 
@@ -541,12 +564,6 @@
                 <label>Arma:</label>
                 <select id="weaponSelect">
                     <option value="">-- Selecciona --</option>
-                    <option value="Candlestick">Candelabro</option>
-                    <option value="Knife">Cuchillo</option>
-                    <option value="Lead Pipe">Tubo de Plomo</option>
-                    <option value="Revolver">Revólver</option>
-                    <option value="Rope">Cuerda</option>
-                    <option value="Wrench">Llave Inglesa</option>
                 </select>
             </div>
 
@@ -554,15 +571,6 @@
                 <label>Habitación:</label>
                 <select id="roomSelect">
                     <option value="">-- Selecciona --</option>
-                    <option value="Kitchen">Cocina</option>
-                    <option value="Ballroom">Salón de Baile</option>
-                    <option value="Conservatory">Conservatorio</option>
-                    <option value="Dining Room">Comedor</option>
-                    <option value="Billiard Room">Sala de Billar</option>
-                    <option value="Library">Biblioteca</option>
-                    <option value="Lounge">Salón</option>
-                    <option value="Hall">Vestíbulo</option>
-                    <option value="Study">Estudio</option>
                 </select>
             </div>
 
@@ -596,36 +604,63 @@
         const SUSPECTS = ['Miss Scarlett', 'Colonel Mustard', 'Mrs White', 'Mr Green', 'Mrs Peacock', 'Professor Plum'];
         const WEAPONS = ['Candlestick', 'Knife', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench'];
         
+        // Tablero ampliado 7x7 con pasillos más largos y complejos
         const BOARD_LAYOUT = [
             { id: 'Study', name: 'Estudio', type: 'room', x: 0, y: 0, icon: '📚' },
-            { id: 'H_0_1', name: 'Pasillo', type: 'hallway', x: 1, y: 0, icon: '🚶‍♂️' },
-            { id: 'Hall', name: 'Vestíbulo', type: 'room', x: 2, y: 0, icon: '🏛️' },
-            { id: 'H_0_3', name: 'Pasillo', type: 'hallway', x: 3, y: 0, icon: '🚶‍♂️' },
-            { id: 'Lounge', name: 'Salón', type: 'room', x: 4, y: 0, icon: '🛋️' },
+            { id: 'H_0_1', name: '', type: 'hallway', x: 1, y: 0 },
+            { id: 'H_0_2', name: '', type: 'hallway', x: 2, y: 0 },
+            { id: 'Hall', name: 'Vestíbulo', type: 'room', x: 3, y: 0, icon: '🏛️' },
+            { id: 'H_0_4', name: '', type: 'hallway', x: 4, y: 0 },
+            { id: 'H_0_5', name: '', type: 'hallway', x: 5, y: 0 },
+            { id: 'Lounge', name: 'Salón', type: 'room', x: 6, y: 0, icon: '🛋️' },
 
-            { id: 'H_1_0', name: 'Pasillo', type: 'hallway', x: 0, y: 1, icon: '🚶‍♂️' },
-            { id: 'H_1_1', name: 'Pasillo', type: 'hallway', x: 1, y: 1, icon: '🚶‍♂️' },
-            { id: 'H_1_2', name: 'Pasillo', type: 'hallway', x: 2, y: 1, icon: '🚶‍♂️' },
-            { id: 'H_1_3', name: 'Pasillo', type: 'hallway', x: 3, y: 1, icon: '🚶‍♂️' },
-            { id: 'H_1_4', name: 'Pasillo', type: 'hallway', x: 4, y: 1, icon: '🚶‍♂️' },
+            { id: 'H_1_0', name: '', type: 'hallway', x: 0, y: 1 },
+            { id: 'H_1_1', name: '', type: 'hallway', x: 1, y: 1 },
+            { id: 'H_1_2', name: '', type: 'hallway', x: 2, y: 1 },
+            { id: 'H_1_3', name: '', type: 'hallway', x: 3, y: 1 },
+            { id: 'H_1_4', name: '', type: 'hallway', x: 4, y: 1 },
+            { id: 'H_1_5', name: '', type: 'hallway', x: 5, y: 1 },
+            { id: 'H_1_6', name: '', type: 'hallway', x: 6, y: 1 },
 
-            { id: 'Library', name: 'Biblioteca', type: 'room', x: 0, y: 2, icon: '📖' },
-            { id: 'H_2_1', name: 'Pasillo', type: 'hallway', x: 1, y: 2, icon: '🚶‍♂️' },
-            { id: 'CENTER', name: 'Mansión', type: 'center', x: 2, y: 2, icon: '✉️' },
-            { id: 'H_2_3', name: 'Pasillo', type: 'hallway', x: 3, y: 2, icon: '🚶‍♂️' },
-            { id: 'Dining Room', name: 'Comedor', type: 'room', x: 4, y: 2, icon: '🍽️' },
+            { id: 'H_2_0', name: '', type: 'hallway', x: 0, y: 2 },
+            { id: 'H_2_1', name: '', type: 'hallway', x: 1, y: 2 },
+            { id: 'Library', name: 'Biblioteca', type: 'room', x: 2, y: 2, icon: '📖' },
+            { id: 'H_2_3', name: '', type: 'hallway', x: 3, y: 2 },
+            { id: 'Billiard Room', name: 'Sala de Billar', type: 'room', x: 4, y: 2, icon: '🎱' },
+            { id: 'H_2_5', name: '', type: 'hallway', x: 5, y: 2 },
+            { id: 'H_2_6', name: '', type: 'hallway', x: 6, y: 2 },
 
-            { id: 'H_3_0', name: 'Pasillo', type: 'hallway', x: 0, y: 3, icon: '🚶‍♂️' },
-            { id: 'H_3_1', name: 'Pasillo', type: 'hallway', x: 1, y: 3, icon: '🚶‍♂️' },
-            { id: 'H_3_2', name: 'Pasillo', type: 'hallway', x: 2, y: 3, icon: '🚶‍♂️' },
-            { id: 'H_3_3', name: 'Pasillo', type: 'hallway', x: 3, y: 3, icon: '🚶‍♂️' },
-            { id: 'H_3_4', name: 'Pasillo', type: 'hallway', x: 4, y: 3, icon: '🚶‍♂️' },
+            { id: 'H_3_0', name: '', type: 'hallway', x: 0, y: 3 },
+            { id: 'H_3_1', name: '', type: 'hallway', x: 1, y: 3 },
+            { id: 'H_3_2', name: '', type: 'hallway', x: 2, y: 3 },
+            { id: 'CENTER', name: 'Centro Mansión', type: 'center', x: 3, y: 3, icon: '✉️' },
+            { id: 'H_3_4', name: '', type: 'hallway', x: 4, y: 3 },
+            { id: 'H_3_5', name: '', type: 'hallway', x: 5, y: 3 },
+            { id: 'H_3_6', name: '', type: 'hallway', x: 6, y: 3 },
 
-            { id: 'Conservatory', name: 'Conservatorio', type: 'room', x: 0, y: 4, icon: '🪴' },
-            { id: 'H_4_1', name: 'Pasillo', type: 'hallway', x: 1, y: 4, icon: '🚶‍♂️' },
-            { id: 'Ballroom', name: 'Salón de Baile', type: 'room', x: 2, y: 4, icon: '💃' },
-            { id: 'H_4_3', name: 'Pasillo', type: 'hallway', x: 3, y: 4, icon: '🚶‍♂️' },
-            { id: 'Kitchen', name: 'Cocina', type: 'room', x: 4, y: 4, icon: '🍳' }
+            { id: 'H_4_0', name: '', type: 'hallway', x: 0, y: 4 },
+            { id: 'H_4_1', name: '', type: 'hallway', x: 1, y: 4 },
+            { id: 'Dining Room', name: 'Comedor', type: 'room', x: 2, y: 4, icon: '🍽️' },
+            { id: 'H_4_3', name: '', type: 'hallway', x: 3, y: 4 },
+            { id: 'Conservatory', name: 'Conservatorio', type: 'room', x: 4, y: 4, icon: '🪴' },
+            { id: 'H_4_5', name: '', type: 'hallway', x: 5, y: 4 },
+            { id: 'H_4_6', name: '', type: 'hallway', x: 6, y: 4 },
+
+            { id: 'H_5_0', name: '', type: 'hallway', x: 0, y: 5 },
+            { id: 'H_5_1', name: '', type: 'hallway', x: 1, y: 5 },
+            { id: 'H_5_2', name: '', type: 'hallway', x: 2, y: 5 },
+            { id: 'H_5_3', name: '', type: 'hallway', x: 3, y: 5 },
+            { id: 'H_5_4', name: '', type: 'hallway', x: 4, y: 5 },
+            { id: 'H_5_5', name: '', type: 'hallway', x: 5, y: 5 },
+            { id: 'H_5_6', name: '', type: 'hallway', x: 6, y: 5 },
+
+            { id: 'Ballroom', name: 'Salón de Baile', type: 'room', x: 0, y: 6, icon: '💃' },
+            { id: 'H_6_1', name: '', type: 'hallway', x: 1, y: 6 },
+            { id: 'H_6_2', name: '', type: 'hallway', x: 2, y: 6 },
+            { id: 'H_6_3', name: '', type: 'hallway', x: 3, y: 6 },
+            { id: 'H_6_4', name: '', type: 'hallway', x: 4, y: 6 },
+            { id: 'H_6_5', name: '', type: 'hallway', x: 5, y: 6 },
+            { id: 'Kitchen', name: 'Cocina', type: 'room', x: 6, y: 6, icon: '🍳' }
         ];
 
         let gameState = {
@@ -640,7 +675,8 @@
             myLocation: 'Kitchen',
             stepsAvailable: 0,
             hasRolled: false,
-            notebookMarks: {}
+            notebookMarks: {},
+            selectedCardToShow: null
         };
 
         async function authenticateUser() {
@@ -752,11 +788,11 @@
 
             setupGameListeners();
             buildNotebookUI();
-            addMessage('system', `¡Bienvenido a la mansión! Código: ${gameState.roomCode}`);
+            addMessage('system', `¡Bienvenido a la mansión extendida! Código: ${gameState.roomCode}`);
         }
 
         function initializeMysteryQuietly() {
-            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room').map(r => r.id);
+            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center').map(r => r.id);
             const mystery = {
                 suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
                 weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
@@ -773,7 +809,7 @@
 
             const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
             let mystery = mysterySnap.val();
-            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room').map(r => r.id);
+            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center').map(r => r.id);
 
             if (!mystery) {
                 mystery = {
@@ -800,18 +836,17 @@
             addMessage('success', '🃏 ¡Cartas repartidas exitosamente por el creador!');
         }
 
-        // VALIDACIÓN ESTRICTA DE TURNOS Y DADOS
         function rollDice() {
             const playerIds = Object.keys(gameState.players);
             const currentTurnUserId = playerIds[gameState.currentIndex];
 
             if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ No es tu turno. Debes esperar a que los demás jugadores realicen su jugada.');
+                addMessage('error', '❌ No es tu turno.');
                 return;
             }
 
             if (gameState.hasRolled) {
-                addMessage('error', '⚠️ Ya tiraste los dados en este turno. Mueve tu ficha a una casilla o habitación.');
+                addMessage('error', '⚠️ Ya tiraste los dados en este turno.');
                 return;
             }
 
@@ -820,7 +855,7 @@
             gameState.hasRolled = true;
             document.getElementById('stepsAvailable').textContent = dice;
             document.getElementById('diceResult').textContent = `🎲 ${dice}`;
-            document.getElementById('boardInstruction').textContent = `✅ ¡Tienes ${dice} pasos! Haz clic en las casillas o habitaciones accesibles.`;
+            document.getElementById('boardInstruction').textContent = `✅ ¡Tienes ${dice} pasos! Muévete por los pasillos largos.`;
             
             database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
             addMessage('info', `🎲 Sacaste un ${dice}. Tienes ${dice} pasos de movimiento.`);
@@ -854,7 +889,6 @@
                 return;
             }
 
-            // Registrar movimiento y avanzar el turno de manera cíclica
             gameState.myLocation = tileId;
             gameState.stepsAvailable = 0;
             gameState.hasRolled = false;
@@ -885,6 +919,7 @@
                 updatePlayersList();
                 updateTurnControls();
                 updateGameBoard();
+                updateTargetPlayerDropdown();
             });
 
             database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
@@ -939,16 +974,6 @@
             let boardHtml = '';
 
             BOARD_LAYOUT.forEach((tile) => {
-                if (tile.type === 'center') {
-                    boardHtml += `
-                        <div class="board-center">
-                            <h3>✉️ Clue</h3>
-                            <p style="font-size: 0.65em;">Mansión Central</p>
-                        </div>
-                    `;
-                    return;
-                }
-
                 let playersInTileHtml = '';
                 Object.entries(gameState.players).forEach(([id, p]) => {
                     if (p.location === tile.id) {
@@ -962,10 +987,21 @@
                 const distance = calculateDistance(gameState.myLocation, tile.id);
                 const isReachable = (isMyTurn && gameState.hasRolled && distance <= gameState.stepsAvailable && !isMyLocation);
 
+                if (tile.type === 'center') {
+                    boardHtml += `
+                        <div class="board-center ${isMyLocation ? 'my-current-location' : ''} ${isReachable ? 'reachable' : ''}" onclick="moveToTile('${tile.id}')" style="grid-column: span 1; grid-row: span 1; cursor: pointer;">
+                            <h3>✉️ Centro</h3>
+                            <p style="font-size: 0.6em;">Acusación</p>
+                            <div class="players-in-tile">${playersInTileHtml}</div>
+                        </div>
+                    `;
+                    return;
+                }
+
                 boardHtml += `
                     <div class="board-tile ${tile.type} ${isMyLocation ? 'my-current-location' : ''} ${isReachable ? 'reachable' : ''}" onclick="moveToTile('${tile.id}')">
                         <div class="room-name">${tile.name}</div>
-                        <div class="room-icon">${tile.icon}</div>
+                        ${tile.icon ? `<div class="room-icon">${tile.icon}</div>` : ''}
                         <div class="players-in-tile">${playersInTileHtml}</div>
                     </div>
                 `;
@@ -996,26 +1032,66 @@
             }
             cardsDiv.innerHTML = gameState.myCards.map(card => {
                 let type = SUSPECTS.includes(card) ? 'suspect' : WEAPONS.includes(card) ? 'weapon' : 'room';
-                return `<div class="card ${type}"><strong>${card}</strong></div>`;
+                return `<div class="card ${type}" onclick="openShowCardModal('${card}')"><strong>${card}</strong><br><span style="font-size:0.65em; color:#555;">Mostrar 👁️</span></div>`;
             }).join('');
         }
 
-        // LIBRETA DE NOTAS
+        // MOSTRAR CARTA A JUGADOR O TODOS
+        function openShowCardModal(cardName) {
+            gameState.selectedCardToShow = cardName;
+            document.getElementById('selectedCardTextPrompt').textContent = `Vas a mostrar la carta: ${cardName}`;
+            document.getElementById('showCardModal').classList.add('active');
+        }
+
+        function closeShowCardModal() {
+            document.getElementById('showCardModal').classList.remove('active');
+        }
+
+        function updateTargetPlayerDropdown() {
+            const select = document.getElementById('targetPlayerSelect');
+            let html = '<option value="ALL">🌐 A Todos los Jugadores</option>';
+            Object.entries(gameState.players).forEach(([id, player]) => {
+                if (id !== gameState.userId) {
+                    html += `<option value="${id}">${player.name}</option>`;
+                }
+            });
+            select.innerHTML = html;
+        }
+
+        function confirmShowCard() {
+            const targetId = document.getElementById('targetPlayerSelect').value;
+            const card = gameState.selectedCardToShow;
+            let targetName = "Todos";
+
+            if (targetId !== 'ALL') {
+                targetName = gameState.players[targetId]?.name || "un jugador";
+            }
+
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+                type: 'info',
+                text: `👁️ ${gameState.playerName} mostró la carta [ ${card} ] a ${targetName}.`
+            });
+
+            closeShowCardModal();
+            addMessage('success', '✅ Carta mostrada correctamente.');
+        }
+
+        // LIBRETA Y FILTRADO ESTRICTO DE NO TACHADOS PARA ACUSAR
         function buildNotebookUI() {
             const container = document.getElementById('notebookContainer');
-            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room');
+            const allRoomsNames = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center');
             let html = `
                 <table class="detective-table">
                     <tr><th>Sospechosos</th><th>Tachado / Descarta</th></tr>
-                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
+                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" data-item="${s}" onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
                 </table>
                 <table class="detective-table" style="margin-top: 15px;">
                     <tr><th>Armas</th><th>Tachado / Descarta</th></tr>
-                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
+                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" data-item="${w}" onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
                 </table>
                 <table class="detective-table" style="margin-top: 15px;">
                     <tr><th>Habitaciones</th><th>Tachado / Descarta</th></tr>
-                    ${allRoomsNames.map(r => `<tr><td>${r.name} (${r.id})</td><td><input type="checkbox" onchange="toggleNotebook('${r.id}', this.checked)"></td></tr>`).join('')}
+                    ${allRoomsNames.map(r => `<tr><td>${r.name || r.id} (${r.id})</td><td><input type="checkbox" data-item="${r.id}" onchange="toggleNotebook('${r.id}', this.checked)"></td></tr>`).join('')}
                 </table>
             `;
             container.innerHTML = html;
@@ -1028,7 +1104,29 @@
         function showNotebookModal() { document.getElementById('notebookModal').classList.add('active'); }
         function closeNotebookModal() { document.getElementById('notebookModal').classList.remove('active'); }
 
-        function showAccusationModal() { document.getElementById('accusationModal').classList.add('active'); }
+        function showAccusationModal() {
+            if (gameState.myLocation !== 'CENTER') {
+                addMessage('error', '❌ Debes estar ubicado físicamente en el "Centro Mansión" (✉️) para plantear una teoría o acusación.');
+                return;
+            }
+
+            // Rellenar selectores filtrando solo los NO tachados en la libreta
+            const suspectSel = document.getElementById('suspectSelect');
+            const weaponSel = document.getElementById('weaponSelect');
+            const roomSel = document.getElementById('roomSelect');
+
+            const validSuspects = SUSPECTS.filter(s => !gameState.notebookMarks[s]);
+            const validWeapons = WEAPONS.filter(w => !gameState.notebookMarks[w]);
+            const allRooms = BOARD_LAYOUT.filter(b => b.type === 'room' || b.type === 'center').map(r => r.id);
+            const validRooms = allRooms.filter(r => !gameState.notebookMarks[r]);
+
+            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + validSuspects.map(s => `<option value="${s}">${s}</option>`).join('');
+            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + validWeapons.map(w => `<option value="${w}">${w}</option>`).join('');
+            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + validRooms.map(r => `<option value="${r}">${r}</option>`).join('');
+
+            document.getElementById('accusationModal').classList.add('active');
+        }
+
         function closeAccusationModal() { document.getElementById('accusationModal').classList.remove('active'); }
 
         async function submitAccusation() {
@@ -1036,14 +1134,13 @@
             const weapon = document.getElementById('weaponSelect').value;
             const room = document.getElementById('roomSelect').value;
 
-            if (!suspect || !weapon || !room) { addMessage('error', '❌ Completa los 3 campos'); return; }
-            if (room !== gameState.myLocation) { addMessage('error', `❌ Debes estar físicamente en la habitación ${room} para acusar.`); return; }
+            if (!suspect || !weapon || !room) { addMessage('error', '❌ Completa los 3 campos con opciones no tachadas.'); return; }
 
             const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
             const mystery = mysterySnap.val();
 
             const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
-            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO! Acertó el misterio.` : `❌ ${gameState.playerName} falló su acusación.`;
+            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO! Acertó el misterio central.` : `❌ ${gameState.playerName} falló su acusación en el centro.`;
             
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
             closeAccusationModal();
