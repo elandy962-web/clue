@@ -212,6 +212,7 @@
             aspect-ratio: 1 / 1;
             max-width: 550px;
             margin: 0 auto;
+            overflow: hidden;
         }
 
         .clue-board {
@@ -222,6 +223,7 @@
             background: #0d1b1e;
             width: 100%;
             height: 100%;
+            overflow: hidden;
         }
 
         .board-tile {
@@ -239,6 +241,8 @@
             overflow: visible;
             aspect-ratio: 1 / 1;
             gap: 2px;
+            min-width: 0;
+            min-height: 0;
         }
 
         .board-tile.room {
@@ -308,8 +312,8 @@
 
         .door-indicator {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             background: linear-gradient(135deg, #ff1493, #ff0000);
             border: 2px solid #ffff00;
             border-radius: 50%;
@@ -788,8 +792,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.4";
-        const VERSION_INFO = "v1.4 - Jugadores visibles en habitaciones";
+        const GAME_VERSION = "1.4.1";
+        const VERSION_INFO = "v1.4.1 - Puertas más al borde, tablero fijo";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -885,10 +889,10 @@
 
         function getDoorPositionStyle(side) {
             const styles = {
-                'top': 'top: -10px; left: 50%; transform: translateX(-50%);',
-                'bottom': 'bottom: -10px; left: 50%; transform: translateX(-50%);',
-                'left': 'left: -10px; top: 50%; transform: translateY(-50%);',
-                'right': 'right: -10px; top: 50%; transform: translateY(-50%);'
+                'top': 'top: -18px; left: 50%; transform: translateX(-50%);',
+                'bottom': 'bottom: -18px; left: 50%; transform: translateX(-50%);',
+                'left': 'left: -18px; top: 50%; transform: translateY(-50%);',
+                'right': 'right: -18px; top: 50%; transform: translateY(-50%);'
             };
             return styles[side] || '';
         }
