@@ -394,18 +394,19 @@
             position: static;
             background: #48bb78;
             color: white;
-            font-size: 0.5rem;
+            font-size: 0.65rem;
             font-weight: bold;
-            padding: 2px 4px;
+            padding: 3px 6px;
             border-radius: 3px;
             z-index: 2;
-            box-shadow: 0 0 4px rgba(72, 187, 120, 0.8);
+            box-shadow: 0 0 6px rgba(72, 187, 120, 0.9);
             animation: pulse 0.5s ease-in-out infinite;
             pointer-events: none;
             margin: 3px auto 0 auto;
             display: inline-block;
             text-align: center;
-            min-width: 12px;
+            min-width: 20px;
+            white-space: nowrap;
         }
 
         @keyframes pulse {
@@ -812,8 +813,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.7.2";
-        const VERSION_INFO = "v1.7.2 - Entradas en posiciones correctas del borde";
+        const GAME_VERSION = "1.7.3";
+        const VERSION_INFO = "v1.7.3 - Puertas en entrada, pasos restantes mostrados";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -857,46 +858,46 @@
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        // Definición de PUERTAS PRINCIPALES: cada habitación tiene UNA entrada en el borde correcto
+        // Definición de PUERTAS: dentro del tile de la habitación
         const roomDoors = {
             'Estudio': [
-                [0, 0, 'bottom']    // puerta ABAJO (hacia Biblioteca)
+                [1, 0, 'top']       // puerta ARRIBA (entrada desde el pasillo)
             ],
             'Vestibulo': [
-                [4, 0, 'bottom']    // puerta ABAJO (hacia Centro)
+                [4, 0, 'top']       // puerta ARRIBA
             ],
             'Salon': [
-                [9, 0, 'bottom']    // puerta ABAJO (hacia Comedor)
+                [9, 0, 'top']       // puerta ARRIBA
             ],
             'Biblioteca': [
-                [0, 4, 'top']       // puerta ARRIBA (hacia Estudio)
+                [0, 4, 'top']       // puerta ARRIBA (entrada desde el pasillo)
             ],
             'Centro': [
-                [4, 4, 'top'],      // 4 puertas principales (conecta con las 4 direcciones)
+                [4, 4, 'top'],      // 4 puertas principales
                 [4, 5, 'bottom'],
                 [4, 4, 'left'],
                 [5, 4, 'right']
             ],
             'Comedor': [
-                [9, 4, 'top']       // puerta ARRIBA (hacia Salón)
+                [9, 4, 'top']       // puerta ARRIBA
             ],
             'Billar': [
-                [0, 8, 'top']       // puerta ARRIBA (hacia Biblioteca)
+                [0, 8, 'top']       // puerta ARRIBA
             ],
             'Invernadero': [
-                [4, 8, 'top']       // puerta ARRIBA (hacia Centro)
+                [4, 8, 'top']       // puerta ARRIBA
             ],
             'SalonBaile': [
-                [9, 8, 'top']       // puerta ARRIBA (hacia Comedor)
+                [9, 8, 'top']       // puerta ARRIBA
             ]
         };
 
         function getDoorPositionStyle(side) {
             const styles = {
-                'top': 'top: -24px; left: 50%; transform: translateX(-50%);',
-                'bottom': 'bottom: -24px; left: 50%; transform: translateX(-50%);',
-                'left': 'left: -24px; top: 50%; transform: translateY(-50%);',
-                'right': 'right: -24px; top: 50%; transform: translateY(-50%);'
+                'top': 'top: -20px; left: 50%; transform: translateX(-50%);',
+                'bottom': 'bottom: -20px; left: 50%; transform: translateX(-50%);',
+                'left': 'left: -20px; top: 50%; transform: translateY(-50%);',
+                'right': 'right: -20px; top: 50%; transform: translateY(-50%);'
             };
             return styles[side] || '';
         }
@@ -1353,7 +1354,7 @@
 
                 let stepIndicator = '';
                 if (canMoveHere) {
-                    stepIndicator = `<div class="step-indicator">✓</div>`;
+                    stepIndicator = `<div class="step-indicator">${gameState.stepsAvailable} paso${gameState.stepsAvailable > 1 ? 's' : ''}</div>`;
                 }
 
                 // Detectar si esta casilla tiene una puerta
