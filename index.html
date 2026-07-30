@@ -317,12 +317,12 @@
 
         .door-indicator {
             position: absolute;
-            width: 8px;
-            height: 16px;
-            background: linear-gradient(90deg, #ff9500, #ffb700);
-            border: 1px solid #ffcc00;
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(90deg, #22c55e, #4ade80);
+            border: 1.5px solid #86efac;
             border-radius: 2px;
-            box-shadow: 0 0 8px #ff9500, inset 0 0 3px #ffff99;
+            box-shadow: 0 0 10px #22c55e, inset 0 0 4px #dcfce7;
             z-index: 3;
             display: flex;
             align-items: center;
@@ -337,17 +337,17 @@
 
         @keyframes door-flicker {
             0%, 100% { 
-                box-shadow: 0 0 8px #ff9500, inset 0 0 3px #ffff99;
+                box-shadow: 0 0 10px #22c55e, inset 0 0 4px #dcfce7;
                 opacity: 1;
             }
             50% { 
-                box-shadow: 0 0 12px #ff9500, inset 0 0 5px #ffff99;
-                opacity: 0.8;
+                box-shadow: 0 0 15px #22c55e, inset 0 0 6px #86efac;
+                opacity: 0.9;
             }
         }
 
         .door-indicator:hover {
-            box-shadow: 0 0 15px #ff9500, inset 0 0 5px #ffff99 !important;
+            box-shadow: 0 0 18px #22c55e, inset 0 0 6px #86efac !important;
             opacity: 1 !important;
         }
 
@@ -812,8 +812,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.6.3";
-        const VERSION_INFO = "v1.6.3 - Indicador simple de casillas alcanzables";
+        const GAME_VERSION = "1.7";
+        const VERSION_INFO = "v1.7 - Puertas VERDES como indicador de entrada";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
