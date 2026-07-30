@@ -235,8 +235,9 @@
             cursor: pointer;
             transition: all 0.15s ease;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             aspect-ratio: 1 / 1;
+            min-height: 35px;
         }
 
         .board-tile.room {
@@ -289,20 +290,21 @@
         /* CONTENEDOR VISIBLE PARA EL NOMBRE DE CADA HABITACIÓN 2x2 */
         .room-title-box {
             font-weight: bold;
-            font-size: 0.75rem;
-            line-height: 1.2;
+            font-size: 0.9rem;
+            line-height: 1.3;
             color: #fbd38d;
-            background: rgba(15, 23, 42, 0.95);
-            padding: 4px 8px;
+            background: rgba(15, 23, 42, 0.98);
+            padding: 6px 10px;
             border-radius: 4px;
-            border: 1.5px solid #dd6b20;
-            margin-bottom: 3px;
+            border: 2px solid #dd6b20;
+            margin: 0 auto;
             text-align: center;
             z-index: 5;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.7);
-            max-width: 98%;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.8);
+            max-width: 90%;
             word-break: break-word;
             letter-spacing: 0.5px;
+            display: inline-block;
         }
 
         .players-in-tile {
@@ -726,24 +728,14 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- Sin Firebase - Juego local -->
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
-            authDomain: "clue-game-47c7e.firebaseapp.com",
-            databaseURL: "https://clue-game-47c7e-default-rtdb.firebaseio.com",
-            projectId: "clue-game-47c7e",
-            storageBucket: "clue-game-47c7e.firebasestorage.app",
-            messagingSenderId: "133188091784",
-            appId: "1:133188091784:web:1d6c070ddc535951b0043d"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
+        // Juego sin Firebase - Versión Local
+        // Usando generador de ID único local
+        function generateUserId() {
+            return 'user_' + Math.random().toString(36).substr(2, 9);
+        }
 
         const SUSPECTS = ['Señorita Amapola', 'Coronel Mostaza', 'Señora White', 'Prado', 'Señora Fucsia', 'Profesor Cerillo'];
         const WEAPONS = ['Candelabro', 'Cuchillo', 'Tubo de Plomo', 'Revólver', 'Cuerda', 'Llave Inglesa'];
@@ -817,18 +809,14 @@
             activeSuggestion: null
         };
 
-        async function authenticateUser() {
-            try {
-                const result = await auth.signInAnonymously();
-                gameState.userId = result.user.uid;
-                showStatus('✅ Conectado', 'success');
-                setTimeout(() => {
-                    document.getElementById('statusMessage').innerHTML = '';
-                    loadPublicRooms();
-                }, 800);
-            } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            }
+        function authenticateUser() {
+            // Autenticación local - generar ID único
+            gameState.userId = generateUserId();
+            showStatus('✅ Conectado', 'success');
+            setTimeout(() => {
+                document.getElementById('statusMessage').innerHTML = '';
+                loadPublicRooms();
+            }, 800);
         }
 
         function showStatus(message, type = 'loading') {
@@ -837,7 +825,7 @@
             statusDiv.textContent = message;
         }
 
-        async function createNewRoom() {
+        function createNewRoom() {
             const name = document.getElementById('playerName').value.trim();
             if (!name) { showStatus('❌ Ingresa tu nombre', 'error'); return; }
 
@@ -847,22 +835,46 @@
             showStatus('⏳ Creando sala...', 'loading');
 
             try {
+                // Guardar sala en localStorage
+                let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
+                
                 const roomData = {
                     host: gameState.userId,
                     players: {
                         [gameState.userId]: { name: gameState.playerName, location: 'Centro', cards: [] }
                     },
-                    gameState: { currentIndex: 0, dice: 0, messages: [] }
+                    gameState: { currentIndex: 0, dice: 0, messages: [] },
+                    mystery: generateMystery()
                 };
-                await database.ref(`rooms/${gameState.roomCode}`).set(roomData);
-                initializeMysteryQuietly();
-                startGame();
+                
+                allRooms[gameState.roomCode] = roomData;
+                localStorage.setItem('clueRooms', JSON.stringify(allRooms));
+                
+                setTimeout(() => startGame(), 500);
             } catch (error) {
                 showStatus('❌ Error: ' + error.message, 'error');
             }
         }
+        
+        function generateMystery() {
+            return {
+                suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
+                weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
+                room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
+            };
+        }
+        
+        // Función helper para guardar el estado del juego en localStorage
+        function saveGameState() {
+            let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
+            if (allRooms[gameState.roomCode]) {
+                allRooms[gameState.roomCode].players = gameState.players;
+                allRooms[gameState.roomCode].gameState = allRooms[gameState.roomCode].gameState || {};
+                localStorage.setItem('clueRooms', JSON.stringify(allRooms));
+            }
+        }
 
-        async function joinExistingRoom() {
+        function joinExistingRoom() {
             const name = document.getElementById('playerName').value.trim();
             const code = document.getElementById('roomCode').value.trim().toUpperCase();
             if (!name || !code) { showStatus('❌ Ingresa nombre y código', 'error'); return; }
@@ -872,39 +884,54 @@
             showStatus('⏳ Conectando...', 'loading');
 
             try {
-                const roomSnapshot = await database.ref(`rooms/${code}`).get();
-                if (!roomSnapshot.exists()) { showStatus('❌ Sala no encontrada', 'error'); return; }
+                // Buscar sala en localStorage
+                let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
+                
+                if (!allRooms[code]) { 
+                    showStatus('❌ Sala no encontrada', 'error'); 
+                    return; 
+                }
 
-                const roomData = roomSnapshot.val();
+                const roomData = allRooms[code];
                 gameState.isHost = (roomData.host === gameState.userId);
 
-                await database.ref(`rooms/${code}/players/${gameState.userId}`).set({
-                    name: gameState.playerName, location: 'Centro', cards: []
-                });
-                startGame();
+                // Agregar jugador a la sala
+                roomData.players[gameState.userId] = {
+                    name: gameState.playerName, 
+                    location: 'Centro', 
+                    cards: []
+                };
+                
+                allRooms[code] = roomData;
+                localStorage.setItem('clueRooms', JSON.stringify(allRooms));
+                
+                setTimeout(() => startGame(), 500);
             } catch (error) {
                 showStatus('❌ Error: ' + error.message, 'error');
             }
         }
 
         function loadPublicRooms() {
-            database.ref('rooms').on('value', (snapshot) => {
-                const roomsList = document.getElementById('roomsList');
-                const data = snapshot.val();
-                if (!data) { roomsList.innerHTML = '<p style="color: #888; font-size: 0.8rem;">No hay salas activas</p>'; return; }
+            // Cargar salas desde localStorage
+            const roomsList = document.getElementById('roomsList');
+            const allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
+            
+            if (Object.keys(allRooms).length === 0) { 
+                roomsList.innerHTML = '<p style="color: #888; font-size: 0.8rem;">No hay salas activas</p>'; 
+                return; 
+            }
 
-                let html = '<strong>Salas Disponibles:</strong>';
-                Object.entries(data).slice(-4).forEach(([code, room]) => {
-                    const playerCount = Object.keys(room.players || {}).length;
-                    html += `
-                        <div class="room-item">
-                            <div><strong>${code}</strong> (${playerCount} jug.)</div>
-                            <button class="btn btn-secondary btn-small" onclick="setRoomCode('${code}')">Entrar</button>
-                        </div>
-                    `;
-                });
-                roomsList.innerHTML = html;
+            let html = '<strong style="color: #f6ad55;">Salas Disponibles:</strong>';
+            Object.entries(allRooms).forEach(([code, room]) => {
+                const playerCount = Object.keys(room.players || {}).length;
+                html += `
+                    <div class="room-item">
+                        <div><strong>${code}</strong> (${playerCount}/6 jug.)</div>
+                        <button class="btn btn-secondary btn-small" onclick="setRoomCode('${code}')">Entrar</button>
+                    </div>
+                `;
             });
+            roomsList.innerHTML = html;
         }
 
         function setRoomCode(code) { document.getElementById('roomCode').value = code; }
@@ -933,16 +960,16 @@
         }
 
         function initializeMysteryQuietly() {
-            const mystery = {
-                suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
-                weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
-                room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
-            };
-            database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+            // Ya se genera en createNewRoom, no necesita hacer nada aquí
         }
 
-        async function manualDistributeCards() {
+        function manualDistributeCards() {
             if (!gameState.isHost) return;
+
+            let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
+            const roomData = allRooms[gameState.roomCode];
+            
+            if (!roomData) return;
 
             const availableSuspects = [...SUSPECTS];
             const availableWeapons = [...WEAPONS];
@@ -957,26 +984,32 @@
                 weapon: secretWeapon,
                 room: secretRoom
             };
-            await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+            
+            roomData.mystery = mystery;
 
             const mazoRestante = [...availableSuspects, ...availableWeapons, ...availableRooms].sort(() => Math.random() - 0.5);
-            const playerIds = Object.keys(gameState.players);
+            const playerIds = Object.keys(roomData.players);
 
+            // Limpiar cartas de todos
             playerIds.forEach(id => {
-                database.ref(`rooms/${gameState.roomCode}/players/${id}/cards`).set([]);
+                roomData.players[id].cards = [];
             });
 
             let playerHands = {};
             playerIds.forEach(id => playerHands[id] = []);
 
+            // Distribuir cartas
             mazoRestante.forEach((carta, index) => {
                 const targetPlayerId = playerIds[index % playerIds.length];
                 playerHands[targetPlayerId].push(carta);
             });
 
-            for (const [playerId, cards] of Object.entries(playerHands)) {
-                await database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(cards);
-            }
+            playerIds.forEach(playerId => {
+                roomData.players[playerId].cards = playerHands[playerId];
+            });
+
+            allRooms[gameState.roomCode] = roomData;
+            localStorage.setItem('clueRooms', JSON.stringify(allRooms));
 
             addMessage('success', '🃏 ¡Misterio guardado y cartas repartidas equitativamente!');
         }
@@ -1003,7 +1036,14 @@
             document.getElementById('boardInstruction').textContent = `✅ Moverás paso a paso (Te quedan ${dice} pasos). Puedes terminar cuando gustes.`;
             document.getElementById('endMoveBtn').style.display = 'block';
             
-            database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
+            // Guardar dados en localStorage
+            let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
+            if (allRooms[gameState.roomCode]) {
+                allRooms[gameState.roomCode].gameState = allRooms[gameState.roomCode].gameState || {};
+                allRooms[gameState.roomCode].gameState.dice = dice;
+                localStorage.setItem('clueRooms', JSON.stringify(allRooms));
+            }
+            
             addMessage('info', `🎲 Sacaste un ${dice}.`);
             updateGameBoard();
         }
@@ -1052,7 +1092,7 @@
             document.getElementById('myLocation').textContent = targetRepId;
             document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
 
-            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRepId);
+            
             addMessage('success', `🚶‍♂️ Paso dado hacia ${targetRepId}. Te quedan ${gameState.stepsAvailable} pasos.`);
 
             if (targetRepId.startsWith('Pasillo_') && (targetRepId.includes('_2_2') || targetRepId.includes('_7_7'))) {
@@ -1078,7 +1118,7 @@
             document.getElementById('boardInstruction').textContent = '⏳ Espera tu turno.';
 
             const nextIndex = (gameState.currentIndex + 1) % playerIds.length;
-            database.ref(`rooms/${gameState.roomCode}/gameState`).update({
+            
                 currentIndex: nextIndex,
                 dice: 0
             });
@@ -1089,7 +1129,7 @@
 
         function triggerRandomEvent() {
             const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+            
                 type: 'event',
                 text: `✨ [COMODÍN] ${gameState.playerName} cayó en casilla especial: "${randomEvent.title}"`
             });
@@ -1107,46 +1147,46 @@
         }
 
         function setupGameListeners() {
-            database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snapshot) => {
-                gameState.players = snapshot.val() || {};
-                gameState.playerIdsOrder = Object.keys(gameState.players);
-                if (gameState.players[gameState.userId] && gameState.players[gameState.userId].location) {
-                    gameState.myLocation = gameState.players[gameState.userId].location;
-                    document.getElementById('myLocation').textContent = gameState.myLocation;
-                }
-                updatePlayersList();
-                updateTurnControls();
-                updateGameBoard();
-            });
-
-            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
-                gameState.myCards = snapshot.val() || [];
-                updateMyCards();
+            // Cargar datos de la sala desde localStorage
+            let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
+            const roomData = allRooms[gameState.roomCode];
+            
+            if (!roomData) {
+                showStatus('❌ Sala no encontrada', 'error');
+                return;
+            }
+            
+            // Actualizar estado del juego desde localStorage
+            gameState.players = roomData.players || {};
+            gameState.playerIdsOrder = Object.keys(gameState.players);
+            
+            if (gameState.players[gameState.userId]) {
+                gameState.myLocation = gameState.players[gameState.userId].location || 'Centro';
+                document.getElementById('myLocation').textContent = gameState.myLocation;
+                gameState.myCards = gameState.players[gameState.userId].cards || [];
                 gameState.myCards.forEach(card => {
                     gameState.notebookMarks[card] = true;
                 });
-                buildNotebookUI();
-            });
-
-            database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snapshot) => {
-                const state = snapshot.val();
-                if (state) {
-                    gameState.currentIndex = state.currentIndex || 0;
-                    if (state.dice !== undefined) {
-                        document.getElementById('diceResult').textContent = state.dice > 0 ? `🎲 ${state.dice}` : '🎲 -';
-                    }
+            }
+            
+            // Actualizar UI inicial
+            updatePlayersList();
+            updateMyCards();
+            updateTurnControls();
+            updateGameBoard();
+            
+            // Configurar actualización periódica (cada 500ms)
+            setInterval(() => {
+                let allRoomsUpdated = JSON.parse(localStorage.getItem('clueRooms') || '{}');
+                const updatedRoom = allRoomsUpdated[gameState.roomCode];
+                if (updatedRoom) {
+                    gameState.players = updatedRoom.players || {};
+                    gameState.gameState = updatedRoom.gameState || {};
+                    updatePlayersList();
+                    updateGameBoard();
                     updateTurnControls();
-
-                    if (state.activeSuggestion && state.activeSuggestion.targetPlayerId === gameState.userId) {
-                        handleIncomingSuggestion(state.activeSuggestion);
-                    }
                 }
-            });
-
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).on('child_added', (snapshot) => {
-                const message = snapshot.val();
-                if (message) addMessage(message.type, message.text);
-            });
+            }, 500);
         }
 
         function updateTurnControls() {
@@ -1214,14 +1254,16 @@
                 if (tile.name && tile.name !== '✨') {
                     roomTitleHtml = `<div class="room-title-box">${tile.name}</div>`;
                 } else if (tile.name === '✨') {
-                    roomTitleHtml = `<div style="font-size:0.8rem; font-weight:bold;">✨</div>`;
+                    roomTitleHtml = `<div style="font-size:1rem; font-weight:bold; color: #fbd38d;">✨</div>`;
                 }
 
                 boardHtml += `
                     <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
-                        ${roomTitleHtml}
-                        <div class="players-in-tile">${playersInTileHtml}</div>
-                        ${stepIndicator}
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; gap: 2px;">
+                            ${roomTitleHtml}
+                            <div class="players-in-tile">${playersInTileHtml}</div>
+                            ${stepIndicator}
+                        </div>
                     </div>
                 `;
             });
@@ -1334,12 +1376,12 @@
                 originalAuthorId: gameState.userId
             };
 
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+            
                 type: 'suggestion',
                 text: `❓ ${gameState.playerName} pregunta en [${room}]: [ Sospechoso: ${suspect} | Arma: ${weapon} ]`
             });
 
-            await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestionData);
+            await 
         }
 
         function handleIncomingSuggestion(suggestion) {
@@ -1352,11 +1394,11 @@
                 document.getElementById('replySuggestionModal').classList.add('active');
             } else {
                 if (suggestion.originalAuthorId === gameState.userId) {
-                    database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+                    
                         type: 'info',
                         text: `🛡️ Ningún jugador posee las cartas de la pregunta.`
                     });
-                    database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
+                    
                 } else {
                     passSuggestionToNext(suggestion);
                 }
@@ -1369,26 +1411,26 @@
             const nextPlayerId = playerIds[(currentTargetIdx + 1) % playerIds.length];
 
             if (nextPlayerId === suggestion.originalAuthorId) {
-                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+                
                     type: 'info',
                     text: `🛡️ Nadie pudo responder a la pregunta.`
                 });
-                database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
+                
             } else {
                 suggestion.targetPlayerId = nextPlayerId;
-                database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestion);
+                
             }
         }
 
         async function confirmReplySuggestion() {
             document.getElementById('replySuggestionModal').classList.remove('active');
 
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+            
                 type: 'success',
                 text: `👁️ ${gameState.playerName} mostró una carta en privado.`
             });
 
-            database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
+            
         }
 
         function showAccusationModal() {
@@ -1421,13 +1463,13 @@
 
             if (!suspect || !weapon || !room) { addMessage('error', '❌ Completa los 3 campos.'); return; }
 
-            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
+            const mysterySnap = await 
             const mystery = mysterySnap.val();
 
             const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
             const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación. Era: ${mystery.suspect}, ${mystery.weapon}, ${mystery.room}`;
             
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
+            
             closeAccusationModal();
         }
 
@@ -1443,7 +1485,7 @@
 
         function leaveGame() {
             if (confirm('¿Estás seguro de que deseas abandonar la partida?')) {
-                database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}`).remove();
+                
                 location.reload();
             }
         }
