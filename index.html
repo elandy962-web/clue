@@ -1076,6 +1076,7 @@
             database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
                 gameState.myCards = snapshot.val() || [];
                 updateMyCards();
+                // Marcado automático de cartas iniciales en la libreta del detective
                 gameState.myCards.forEach(card => {
                     gameState.notebookMarks[card] = true;
                 });
