@@ -813,8 +813,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.7.3";
-        const VERSION_INFO = "v1.7.3 - Puertas en entrada, pasos restantes mostrados";
+        const GAME_VERSION = "1.7.4";
+        const VERSION_INFO = "v1.7.4 - Puertas visibles, Centro con 1 puerta";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -858,37 +858,34 @@
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        // Definición de PUERTAS: dentro del tile de la habitación
+        // Definición de PUERTAS: coordenadas correctas en el tablero 10x10
         const roomDoors = {
             'Estudio': [
-                [1, 0, 'top']       // puerta ARRIBA (entrada desde el pasillo)
+                [0, 0, 'bottom']    // puerta abajo (hacia pasillo)
             ],
             'Vestibulo': [
-                [4, 0, 'top']       // puerta ARRIBA
+                [3, 0, 'bottom']    // puerta abajo
             ],
             'Salon': [
-                [9, 0, 'top']       // puerta ARRIBA
+                [6, 0, 'bottom']    // puerta abajo
             ],
             'Biblioteca': [
-                [0, 4, 'top']       // puerta ARRIBA (entrada desde el pasillo)
+                [0, 4, 'top']       // puerta arriba
             ],
             'Centro': [
-                [4, 4, 'top'],      // 4 puertas principales
-                [4, 5, 'bottom'],
-                [4, 4, 'left'],
-                [5, 4, 'right']
+                [3, 3, 'top']       // UNA SOLA PUERTA - arriba
             ],
             'Comedor': [
-                [9, 4, 'top']       // puerta ARRIBA
+                [6, 4, 'top']       // puerta arriba
             ],
             'Billar': [
-                [0, 8, 'top']       // puerta ARRIBA
+                [0, 8, 'top']       // puerta arriba
             ],
             'Invernadero': [
-                [4, 8, 'top']       // puerta ARRIBA
+                [3, 8, 'top']       // puerta arriba
             ],
             'SalonBaile': [
-                [9, 8, 'top']       // puerta ARRIBA
+                [6, 8, 'top']       // puerta arriba
             ]
         };
 
