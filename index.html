@@ -289,10 +289,12 @@
 
         .room-name {
             font-weight: bold;
-            font-size: 0.5rem;
-            line-height: 1;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.9);
-            padding: 0 1px;
+            font-size: 0.7rem;
+            line-height: 1.1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+            padding: 0 2px;
+            color: #f6ad55;
+            z-index: 3;
         }
 
         .players-in-tile {
@@ -300,7 +302,7 @@
             flex-wrap: wrap;
             gap: 1px;
             justify-content: center;
-            z-index: 3;
+            z-index: 4;
             margin-top: 2px;
         }
 
@@ -312,6 +314,26 @@
             border-radius: 3px;
             font-weight: bold;
             border: 1px solid #fff;
+        }
+
+        .step-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #48bb78;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 3px;
+            z-index: 4;
+            box-shadow: 0 0 4px rgba(72, 187, 120, 0.8);
+            animation: pulse 0.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         .sidebar {
@@ -1076,7 +1098,6 @@
             database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
                 gameState.myCards = snapshot.val() || [];
                 updateMyCards();
-                // Marcado automático de cartas iniciales en la libreta del detective
                 gameState.myCards.forEach(card => {
                     gameState.notebookMarks[card] = true;
                 });
@@ -1140,13 +1161,21 @@
                     let pRep = getRepresentativeTileId(p.location);
                     let tileRep = getRepresentativeTileId(tile.id);
                     if (pRep === tileRep) {
-                        playersInTileHtml += `<span class="player-token">${p.name}</span>`;
+                        if (pRep === 'Centro') {
+                            if (tile.isPrimary) {
+                                playersInTileHtml += `<span class="player-token">${p.name}</span>`;
+                            }
+                        } else {
+                            if (tile.isPrimary || tileRep.startsWith('Pasillo_')) {
+                                playersInTileHtml += `<span class="player-token">${p.name}</span>`;
+                            }
+                        }
                     }
                 });
 
                 let tileRep = getRepresentativeTileId(tile.id);
                 let myRep = getRepresentativeTileId(gameState.myLocation);
-                const isMyLocation = (tileRep === myRep);
+                const isMyLocation = (tileRep === myRep && (tileRep === 'Centro' ? tile.isPrimary : tile.isPrimary || tileRep.startsWith('Pasillo_')));
                 const playerIds = Object.keys(gameState.players);
                 const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
                 const distance = calculateDistance(gameState.myLocation, tileRep);
@@ -1157,10 +1186,17 @@
                 if (isMyLocation) tileClass += ' my-current-location';
                 if (isReachable) tileClass += ' reachable';
 
+                let stepIndicator = '';
+                if (isReachable) {
+                    const stepNumber = (gameState.stepsAvailable);
+                    stepIndicator = `<div class="step-indicator">Paso ${stepNumber}</div>`;
+                }
+
                 boardHtml += `
                     <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
                         ${tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
                         <div class="players-in-tile">${playersInTileHtml}</div>
+                        ${stepIndicator}
                     </div>
                 `;
             });
