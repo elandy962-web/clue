@@ -229,15 +229,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 1px;
+            justify-content: flex-start;
+            padding: 2px;
             text-align: center;
             cursor: pointer;
             transition: all 0.15s ease;
             position: relative;
             font-size: 0.5rem;
-            overflow: hidden;
+            overflow: visible;
             aspect-ratio: 1 / 1;
+            gap: 2px;
         }
 
         .board-tile.room {
@@ -289,74 +290,93 @@
 
         .room-name {
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             line-height: 1;
             text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-            padding: 4px 2px;
+            padding: 2px 4px;
             color: #ffeb3b;
-            z-index: 3;
-            background: rgba(0,0,0,0.6);
+            z-index: 2;
+            background: rgba(0,0,0,0.5);
             border-radius: 3px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            max-width: 95%;
         }
 
         .door-indicator {
             position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #ff0000;
-            border: 3px solid #ffff00;
-            border-radius: 3px;
-            box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, inset 0 0 5px #ffff00;
-            z-index: 5;
-            font-size: 0.9rem;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #ff1493, #ff0000);
+            border: 2px solid #ffff00;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ff0000, 0 0 25px #ff0000, 0 0 35px #ff0000, inset 0 0 8px #ffff00;
+            z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
             font-weight: bold;
-            animation: door-pulse 1s ease-in-out infinite;
+            font-size: 0.8rem;
+            animation: door-pulse 0.8s ease-in-out infinite;
+            cursor: pointer;
+            pointer-events: auto;
         }
 
         @keyframes door-pulse {
             0%, 100% { 
-                box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, inset 0 0 5px #ffff00;
+                box-shadow: 0 0 15px #ff0000, 0 0 25px #ff0000, 0 0 35px #ff0000, inset 0 0 8px #ffff00;
                 transform: scale(1);
             }
             50% { 
-                box-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000, inset 0 0 8px #ffff00;
-                transform: scale(1.1);
+                box-shadow: 0 0 20px #ff0000, 0 0 32px #ff0000, 0 0 45px #ff0000, inset 0 0 12px #ffff00;
+                transform: scale(1.2);
             }
+        }
+
+        .door-indicator:hover {
+            box-shadow: 0 0 25px #ff0000, 0 0 40px #ff0000, 0 0 55px #ff0000, inset 0 0 12px #ffff00 !important;
+            transform: scale(1.25) !important;
         }
 
         .players-in-tile {
             display: flex;
+            flex-direction: column;
             flex-wrap: wrap;
-            gap: 3px;
+            gap: 4px;
             justify-content: center;
-            z-index: 4;
-            margin-top: 2px;
+            align-items: center;
+            z-index: 6;
+            margin-top: 4px;
             width: 100%;
+            min-height: 30px;
         }
 
         .player-token {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
             color: white;
-            font-size: 0.65rem;
-            padding: 3px 6px;
-            border-radius: 4px;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 6px;
             font-weight: bold;
-            border: 2px solid #ffeb3b;
-            box-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
+            border: 2px solid #ffff00;
+            box-shadow: 0 0 10px rgba(255, 20, 147, 0.9), 0 0 15px rgba(255, 105, 180, 0.8);
             white-space: nowrap;
             text-transform: capitalize;
+            z-index: 6;
+            position: relative;
+            display: inline-block;
+            transition: all 0.3s ease;
         }
         
         .player-token:hover {
-            background: linear-gradient(135deg, #ff7a7a, #ff4757);
-            box-shadow: 0 0 12px rgba(255, 107, 107, 1);
-            transform: scale(1.1);
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            box-shadow: 0 0 15px rgba(255, 20, 147, 1), 0 0 25px rgba(255, 105, 180, 1);
+            transform: scale(1.15);
+            border-color: #ffffff;
         }
 
         .step-indicator {
@@ -768,8 +788,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.2";
-        const VERSION_INFO = "v1.2 - Nombres de jugadores y cartas visibles";
+        const GAME_VERSION = "1.4";
+        const VERSION_INFO = "v1.4 - Jugadores visibles en habitaciones";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -813,18 +833,65 @@
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        // Definición de puertas - tiles específicos de cada habitación que tienen entrada [x, y] coordenadas globales
+        // Definición de puertas con su posición relativa: [x, y, lado]
+        // lado: 'top', 'bottom', 'left', 'right'
         const roomDoors = {
-            'Estudio': [[1, 0], [0, 1]],           // esquina inferior derecha
-            'Vestibulo': [[4, 0], [5, 0], [4, 1], [5, 1]],  // todas las esquinas (es central)
-            'Salon': [[8, 0], [9, 1]],            // esquina inferior izquierda
-            'Biblioteca': [[0, 4], [1, 4], [0, 5]],  // esquina superior derecha
-            'Centro': [[4, 4], [5, 4], [4, 5], [5, 5]],  // todas las esquinas (es central)
-            'Comedor': [[8, 4], [9, 4], [8, 5]],  // esquina izquierda
-            'Billar': [[0, 8], [1, 9], [0, 9]],   // esquina inferior derecha
-            'Invernadero': [[4, 9], [5, 9], [5, 8]],  // arriba y abajo
-            'SalonBaile': [[8, 9], [9, 8], [9, 9]]  // esquina inferior izquierda
+            'Estudio': [
+                [1, 0, 'top'], [0, 1, 'left'],  // esquinas
+                [0, 0, 'top'], [0, 0, 'left']   // esquina superior izquierda
+            ],
+            'Vestibulo': [
+                [4, 0, 'top'], [5, 0, 'top'],   // superior
+                [4, 1, 'bottom'], [5, 1, 'bottom'],  // inferior
+                [4, 0, 'left'], [5, 0, 'right']  // laterales
+            ],
+            'Salon': [
+                [8, 0, 'top'], [9, 0, 'top'],   // superior
+                [9, 1, 'right'], [9, 1, 'bottom'],  // derecho
+                [8, 1, 'bottom']  // inferior
+            ],
+            'Biblioteca': [
+                [0, 4, 'left'], [0, 5, 'left'],  // izquierdo
+                [1, 4, 'top'], [1, 5, 'bottom'],  // lateral
+                [0, 4, 'top']  // arriba
+            ],
+            'Centro': [
+                [4, 4, 'top'], [5, 4, 'top'],   // superior
+                [4, 5, 'bottom'], [5, 5, 'bottom'],  // inferior
+                [4, 4, 'left'], [5, 4, 'right'],  // laterales
+                [4, 5, 'left'], [5, 5, 'right']   // más laterales
+            ],
+            'Comedor': [
+                [8, 4, 'left'], [8, 5, 'left'],  // izquierdo
+                [9, 4, 'right'], [9, 5, 'right'],  // derecho
+                [9, 4, 'top'], [8, 5, 'bottom']  // arriba y abajo
+            ],
+            'Billar': [
+                [0, 8, 'left'], [0, 9, 'left'],  // izquierdo
+                [1, 9, 'bottom'], [0, 9, 'bottom'],  // inferior
+                [0, 8, 'top']  // superior
+            ],
+            'Invernadero': [
+                [4, 9, 'bottom'], [5, 9, 'bottom'],  // inferior
+                [5, 8, 'top'], [4, 8, 'top'],  // superior
+                [4, 9, 'left'], [5, 9, 'right']  // laterales
+            ],
+            'SalonBaile': [
+                [8, 9, 'bottom'], [9, 9, 'bottom'],  // inferior
+                [9, 8, 'right'], [9, 9, 'right'],  // derecho
+                [8, 8, 'top']  // superior
+            ]
         };
+
+        function getDoorPositionStyle(side) {
+            const styles = {
+                'top': 'top: -10px; left: 50%; transform: translateX(-50%);',
+                'bottom': 'bottom: -10px; left: 50%; transform: translateX(-50%);',
+                'left': 'left: -10px; top: 50%; transform: translateY(-50%);',
+                'right': 'right: -10px; top: 50%; transform: translateY(-50%);'
+            };
+            return styles[side] || '';
+        }
 
         for (let y = 0; y < 10; y++) {
             for (let x = 0; x < 10; x++) {
@@ -1277,18 +1344,24 @@
                 let doorIndicator = '';
                 if (tile.roomId && roomDoors[tile.roomId]) {
                     const doors = roomDoors[tile.roomId];
-                    // Verificar si las coordenadas globales del tile coinciden con una puerta
-                    if (doors.some(([doorX, doorY]) => doorX === tile.x && doorY === tile.y)) {
-                        doorIndicator = '<div class="door-indicator" title="🚪 Puerta">🚪</div>';
-                    }
+                    
+                    // Buscar puertas en este tile
+                    const tilesDoorsFound = doors.filter(([doorX, doorY, side]) => doorX === tile.x && doorY === tile.y);
+                    
+                    tilesDoorsFound.forEach(([doorX, doorY, side]) => {
+                        const posStyle = getDoorPositionStyle(side);
+                        doorIndicator += `<div class="door-indicator" style="${posStyle}" title="🚪 Entrada/Salida">🚪</div>`;
+                    });
                 }
 
                 boardHtml += `
                     <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
                         ${tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
                         <div class="players-in-tile">${playersInTileHtml}</div>
-                        ${doorIndicator}
-                        ${stepIndicator}
+                        <div style="z-index: 1; position: relative;">
+                            ${doorIndicator}
+                            ${stepIndicator}
+                        </div>
                     </div>
                 `;
             });
