@@ -394,17 +394,18 @@
             position: static;
             background: #48bb78;
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: bold;
-            padding: 5px 8px;
-            border-radius: 4px;
+            padding: 3px 6px;
+            border-radius: 3px;
             z-index: 2;
-            box-shadow: 0 0 8px rgba(72, 187, 120, 0.9);
+            box-shadow: 0 0 6px rgba(72, 187, 120, 0.9);
             animation: pulse 0.5s ease-in-out infinite;
             pointer-events: none;
-            margin: 8px auto 0 auto;
+            margin: 6px auto 0 auto;
             display: block;
             text-align: center;
+            white-space: nowrap;
         }
 
         @keyframes pulse {
@@ -811,8 +812,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.6.1";
-        const VERSION_INFO = "v1.6.1 - Pasos sin superposición, puertas en conexiones reales";
+        const GAME_VERSION = "1.6.2";
+        const VERSION_INFO = "v1.6.2 - Pasos correctos en cada casilla alcanzable";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -1361,17 +1362,18 @@
                 const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
                 const distance = calculateDistance(gameState.myLocation, tileRep);
                 
-                const isReachable = (isMyTurn && gameState.hasRolled && distance === 1 && gameState.stepsAvailable > 0 && !isMyLocation);
+                // Un paso disponible solo si está a 1 de distancia, es mi turno, he tirado dados, y no es mi ubicación actual
+                const canMoveHere = (isMyTurn && gameState.hasRolled && distance === 1 && gameState.stepsAvailable > 0 && !isMyLocation);
+                
+                // Mostrar número de paso si está dentro del rango de movimiento disponible
+                let stepIndicator = '';
+                if (isMyTurn && gameState.hasRolled && distance >= 1 && distance <= gameState.stepsAvailable && !isMyLocation) {
+                    stepIndicator = `<div class="step-indicator">Paso ${distance}</div>`;
+                }
 
                 let tileClass = `${tile.type} ${tile.cssClass}`;
                 if (isMyLocation) tileClass += ' my-current-location';
-                if (isReachable) tileClass += ' reachable';
-
-                let stepIndicator = '';
-                if (isReachable) {
-                    const stepNumber = (gameState.stepsAvailable);
-                    stepIndicator = `<div class="step-indicator">Paso ${stepNumber}</div>`;
-                }
+                if (canMoveHere) tileClass += ' reachable';
 
                 // Detectar si esta casilla tiene una puerta
                 let doorIndicator = '';
