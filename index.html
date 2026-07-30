@@ -764,7 +764,7 @@
             playerIdsOrder: [],
             myCards: [],
             currentIndex: 0,
-            myLocation: 'Estudio',
+            myLocation: 'Centro',
             stepsAvailable: 0,
             hasRolled: false,
             notebookMarks: {},
@@ -804,7 +804,7 @@
                 const roomData = {
                     host: gameState.userId,
                     players: {
-                        [gameState.userId]: { name: gameState.playerName, location: 'Estudio', cards: [] }
+                        [gameState.userId]: { name: gameState.playerName, location: 'Centro', cards: [] }
                     },
                     gameState: { currentIndex: 0, dice: 0, messages: [] }
                 };
@@ -833,7 +833,7 @@
                 gameState.isHost = (roomData.host === gameState.userId);
 
                 await database.ref(`rooms/${code}/players/${gameState.userId}`).set({
-                    name: gameState.playerName, location: 'Estudio', cards: []
+                    name: gameState.playerName, location: 'Centro', cards: []
                 });
                 startGame();
             } catch (error) {
@@ -1176,7 +1176,7 @@
                 return `
                     <div class="player-info ${isCurrent ? 'current' : ''}">
                         <div>${isCurrent ? '▶ ' : ''}<strong>${player.name}</strong></div>
-                        <div style="font-size: 0.7rem; color: #a0aec0;">📍 ${player.location || 'Estudio'}</div>
+                        <div style="font-size: 0.7rem; color: #a0aec0;">📍 ${player.location || 'Centro'}</div>
                     </div>
                 `;
             }).join('');
