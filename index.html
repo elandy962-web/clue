@@ -323,7 +323,7 @@
             border: 2px solid #22c55e;
             border-radius: 50%;
             box-shadow: 0 0 15px rgba(34, 197, 94, 0.8);
-            z-index: 3;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -817,8 +817,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.7.8";
-        const VERSION_INFO = "v1.7.8 - Flechas verdes GRANDES y visibles";
+        const GAME_VERSION = "1.7.9";
+        const VERSION_INFO = "v1.7.9 - Flechas con z-index MÁXIMO";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
