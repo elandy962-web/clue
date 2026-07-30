@@ -813,8 +813,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.7.4";
-        const VERSION_INFO = "v1.7.4 - Puertas visibles, Centro con 1 puerta";
+        const GAME_VERSION = "1.7.5";
+        const VERSION_INFO = "v1.7.5 - Puertas en posiciones exactas";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -858,34 +858,34 @@
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        // Definición de PUERTAS: coordenadas correctas en el tablero 10x10
+        // Definición de PUERTAS: posiciones exactas solicitadas
         const roomDoors = {
             'Estudio': [
-                [0, 0, 'bottom']    // puerta abajo (hacia pasillo)
+                [2, 0, 'top']       // posición 2.0
             ],
             'Vestibulo': [
-                [3, 0, 'bottom']    // puerta abajo
+                [5, 2, 'right']     // posición 5.2
             ],
             'Salon': [
-                [6, 0, 'bottom']    // puerta abajo
+                [9, 2, 'right']     // posición 9.2
             ],
             'Biblioteca': [
-                [0, 4, 'top']       // puerta arriba
+                [0, 3, 'left']      // posición 0.3
             ],
             'Centro': [
                 [3, 3, 'top']       // UNA SOLA PUERTA - arriba
             ],
             'Comedor': [
-                [6, 4, 'top']       // puerta arriba
+                [7, 4, 'right']     // posición 7.4
             ],
             'Billar': [
-                [0, 8, 'top']       // puerta arriba
+                [0, 7, 'left']      // posición 0.7
             ],
             'Invernadero': [
-                [3, 8, 'top']       // puerta arriba
+                [4, 7, 'bottom']    // posición 4.7
             ],
             'SalonBaile': [
-                [6, 8, 'top']       // puerta arriba
+                [7, 8, 'right']     // posición 7.8
             ]
         };
 
