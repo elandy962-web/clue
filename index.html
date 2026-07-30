@@ -294,20 +294,24 @@
 
         .room-name {
             font-weight: bold;
-            font-size: 0.9rem;
-            line-height: 1;
+            font-size: 0.75rem;
+            line-height: 1.1;
             text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-            padding: 2px 4px;
+            padding: 2px 3px;
             color: #ffeb3b;
             z-index: 1;
             background: rgba(0,0,0,0.5);
             border-radius: 3px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             position: absolute;
             top: 2px;
             left: 2px;
-            max-width: 95%;
+            max-width: calc(100% - 4px);
+            max-height: calc(100% - 4px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             pointer-events: none;
         }
 
@@ -788,6 +792,16 @@
         </div>
     </div>
 
+    <div id="victoryModal" class="modal">
+        <div class="modal-content" style="text-align: center; background: linear-gradient(135deg, #ff6b6b, #ffd43b, #51cf66); border: 3px solid gold; box-shadow: 0 0 50px rgba(255, 215, 59, 0.8);">
+            <h1 style="font-size: 2.5rem; color: #000; text-shadow: 2px 2px 4px rgba(255,255,255,0.5); animation: pulse 1s infinite;">🏆 ¡JUEGO TERMINADO! 🏆</h1>
+            <div style="background: rgba(0,0,0,0.7); padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid gold;">
+                <p style="font-size: 1.3rem; color: #ffd43b; font-weight: bold;" id="victoryMessage">El jugador ha ganado!</p>
+            </div>
+            <button class="btn btn-primary" onclick="closeVictoryModal()" style="font-size: 1.1rem; padding: 10px 20px;">Aceptar</button>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -796,8 +810,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.5.1";
-        const VERSION_INFO = "v1.5.1 - Organización mejorada, sin superposición";
+        const GAME_VERSION = "1.6";
+        const VERSION_INFO = "v1.6 - Nombres adaptados, puertas en entrada, modal de victoria";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -875,10 +889,10 @@
 
         function getDoorPositionStyle(side) {
             const styles = {
-                'top': 'top: -16px; left: 25%; transform: translateX(-50%);',
-                'bottom': 'bottom: -16px; left: 25%; transform: translateX(-50%);',
-                'left': 'left: -16px; top: 30%; transform: translateY(-50%);',
-                'right': 'right: -16px; top: 30%; transform: translateY(-50%);'
+                'top': 'top: -15px; left: 50%; transform: translateX(-50%);',
+                'bottom': 'bottom: -15px; left: 50%; transform: translateX(-50%);',
+                'left': 'left: -15px; top: 50%; transform: translateY(-50%);',
+                'right': 'right: -15px; top: 50%; transform: translateY(-50%);'
             };
             return styles[side] || '';
         }
@@ -1260,6 +1274,14 @@
                 if (message) addMessage(message.type, message.text);
             });
 
+            // Listener para el ganador
+            database.ref(`rooms/${gameState.roomCode}/gameState/winner`).on('value', (snapshot) => {
+                const winner = snapshot.val();
+                if (winner) {
+                    showVictoryModal(winner.name);
+                }
+            });
+
             setupCardRevealListener();
         }
 
@@ -1575,6 +1597,15 @@
 
         function closeAccusationModal() { document.getElementById('accusationModal').classList.remove('active'); }
 
+        function showVictoryModal(winner) { 
+            document.getElementById('victoryMessage').textContent = `🏆 ¡${winner} GANÓ EL JUEGO! 🏆`;
+            document.getElementById('victoryModal').classList.add('active'); 
+        }
+
+        function closeVictoryModal() { 
+            document.getElementById('victoryModal').classList.remove('active'); 
+        }
+
         async function submitAccusation() {
             const suspect = document.getElementById('suspectSelect').value;
             const weapon = document.getElementById('weaponSelect').value;
@@ -1589,6 +1620,12 @@
             const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación. Era: ${mystery.suspect}, ${mystery.weapon}, ${mystery.room}`;
             
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
+            
+            if (isCorrect) {
+                // Guardar en Firebase que hay un ganador
+                database.ref(`rooms/${gameState.roomCode}/gameState/winner`).set({ name: gameState.playerName, timestamp: Date.now() });
+            }
+            
             closeAccusationModal();
         }
 
