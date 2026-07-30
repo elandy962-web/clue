@@ -348,12 +348,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: #22c55e;
-            text-shadow: 0 0 8px rgba(34, 197, 94, 1);
-            animation: arrow-pulse 0.6s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 1);
+            animation: arrow-pulse 0.8s ease-in-out infinite;
             cursor: pointer;
             z-index: 100;
+            margin: 5px 0;
+            line-height: 1;
+            filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.8));
         }
 
         .players-in-tile {
@@ -818,8 +821,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.7.12";
-        const VERSION_INFO = "v1.7.12 - Flechas DENTRO de la habitación";
+        const GAME_VERSION = "1.8.0";
+        const VERSION_INFO = "v1.8.0 - Puertas SIMPLES y DIRECTAS";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -1359,30 +1362,28 @@
                     stepIndicator = `<div class="step-indicator">${gameState.stepsAvailable} paso${gameState.stepsAvailable > 1 ? 's' : ''}</div>`;
                 }
 
-                // Detectar si esta casilla tiene una puerta
+                // Detectar si esta casilla tiene una puerta - SIMPLIFICADO
                 let doorIndicator = '';
-                if (tile.roomId && roomDoors[tile.roomId]) {
-                    const doors = roomDoors[tile.roomId];
-                    
-                    // Buscar puertas en este tile
-                    const tilesDoorsFound = doors.filter(([doorX, doorY, side]) => doorX === tile.x && doorY === tile.y);
-                    
-                    tilesDoorsFound.forEach(([doorX, doorY, side]) => {
+                if (tile.type === 'room' || tile.type === 'center') {
+                    // Mostrar flecha SOLO en el tile principal de la habitación
+                    if (tile.isPrimary) {
                         let arrowSymbol = '';
                         
-                        if (side === 'top') {
-                            arrowSymbol = '⬇️';
-                        } else if (side === 'bottom') {
-                            arrowSymbol = '⬆️';
-                        } else if (side === 'left') {
-                            arrowSymbol = '➡️';
-                        } else if (side === 'right') {
-                            arrowSymbol = '⬅️';
-                        }
+                        // Símbolo por habitación
+                        if (tile.id === 'Estudio') arrowSymbol = '🚪';
+                        else if (tile.id === 'Vestibulo') arrowSymbol = '🚪';
+                        else if (tile.id === 'Salon') arrowSymbol = '🚪';
+                        else if (tile.id === 'Biblioteca') arrowSymbol = '🚪';
+                        else if (tile.id === 'Centro') arrowSymbol = '⭐';
+                        else if (tile.id === 'Comedor') arrowSymbol = '🚪';
+                        else if (tile.id === 'Billar') arrowSymbol = '🚪';
+                        else if (tile.id === 'Invernadero') arrowSymbol = '🚪';
+                        else if (tile.id === 'SalonBaile') arrowSymbol = '🚪';
                         
-                        // Flecha DENTRO del tile, en la posición donde está la entrada
-                        doorIndicator += `<div class="door-indicator-inside">${arrowSymbol}</div>`;
-                    });
+                        if (arrowSymbol) {
+                            doorIndicator = `<div class="door-indicator-inside">${arrowSymbol}</div>`;
+                        }
+                    }
                 }
 
                 boardHtml += `
