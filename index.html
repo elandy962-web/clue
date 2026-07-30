@@ -317,19 +317,19 @@
 
         .door-indicator {
             position: absolute;
-            width: 10px;
-            height: 18px;
+            width: 28px;
+            height: 24px;
             background: linear-gradient(90deg, #22c55e, #4ade80);
-            border: 1.5px solid #86efac;
-            border-radius: 2px;
-            box-shadow: 0 0 10px #22c55e, inset 0 0 4px #dcfce7;
+            border: 2px solid #86efac;
+            border-radius: 3px;
+            box-shadow: 0 0 12px #22c55e, inset 0 0 6px #dcfce7;
             z-index: 3;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
             font-weight: bold;
-            font-size: 0.6rem;
+            font-size: 0.7rem;
             animation: door-flicker 0.6s ease-in-out infinite;
             cursor: pointer;
             pointer-events: auto;
@@ -337,17 +337,17 @@
 
         @keyframes door-flicker {
             0%, 100% { 
-                box-shadow: 0 0 10px #22c55e, inset 0 0 4px #dcfce7;
+                box-shadow: 0 0 12px #22c55e, inset 0 0 6px #dcfce7;
                 opacity: 1;
             }
             50% { 
-                box-shadow: 0 0 15px #22c55e, inset 0 0 6px #86efac;
-                opacity: 0.9;
+                box-shadow: 0 0 18px #22c55e, inset 0 0 8px #86efac;
+                opacity: 0.95;
             }
         }
 
         .door-indicator:hover {
-            box-shadow: 0 0 18px #22c55e, inset 0 0 6px #86efac !important;
+            box-shadow: 0 0 20px #22c55e, inset 0 0 8px #86efac !important;
             opacity: 1 !important;
         }
 
@@ -812,8 +812,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.7";
-        const VERSION_INFO = "v1.7 - Puertas VERDES como indicador de entrada";
+        const GAME_VERSION = "1.7.1";
+        const VERSION_INFO = "v1.7.1 - Entradas grandes y claras, una por habitación";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -857,64 +857,46 @@
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        // Definición de puertas en conexiones REALES: [x, y, lado]
+        // Definición de PUERTAS PRINCIPALES: cada habitación tiene UNA entrada
         const roomDoors = {
             'Estudio': [
-                [1, 0, 'right'],    // puerta hacia Vestíbulo (derecha)
-                [0, 1, 'bottom']    // puerta hacia Biblioteca (abajo)
+                [1, 0, 'right']     // puerta derecha hacia Vestíbulo (ÚNICA ENTRADA)
             ],
             'Vestibulo': [
-                [4, 0, 'left'],     // puerta hacia Estudio (izquierda)
-                [5, 0, 'right'],    // puerta hacia Salón (derecha)
-                [4, 1, 'bottom'],   // puerta hacia Centro (abajo)
-                [5, 1, 'bottom']
+                [4, 0, 'top']       // puerta arriba (ÚNICA ENTRADA)
             ],
             'Salon': [
-                [8, 0, 'left'],     // puerta hacia Vestíbulo (izquierda)
-                [9, 1, 'bottom']    // puerta hacia Comedor (abajo)
+                [9, 0, 'right']     // puerta derecha (ÚNICA ENTRADA)
             ],
             'Biblioteca': [
-                [0, 4, 'top'],      // puerta hacia Estudio (arriba)
-                [1, 4, 'right'],    // puerta hacia Centro (derecha)
-                [1, 5, 'bottom']    // puerta hacia Billar (abajo)
+                [0, 4, 'left']      // puerta izquierda (ÚNICA ENTRADA)
             ],
             'Centro': [
-                [4, 4, 'top'],      // puerta hacia Vestíbulo (arriba)
-                [5, 4, 'top'],
-                [4, 5, 'bottom'],   // puerta hacia Invernadero (abajo)
-                [5, 5, 'bottom'],
-                [4, 4, 'left'],     // puerta hacia Biblioteca (izquierda)
-                [4, 5, 'left'],
-                [5, 4, 'right'],    // puerta hacia Comedor (derecha)
-                [5, 5, 'right']
+                [4, 4, 'top'],      // 4 puertas principales (es el centro)
+                [4, 5, 'bottom'],
+                [4, 4, 'left'],
+                [5, 4, 'right']
             ],
             'Comedor': [
-                [8, 4, 'left'],     // puerta hacia Centro (izquierda)
-                [9, 4, 'top'],      // puerta hacia Salón (arriba)
-                [9, 5, 'bottom']    // puerta hacia Salón Baile (abajo)
+                [9, 5, 'right']     // puerta derecha (ÚNICA ENTRADA)
             ],
             'Billar': [
-                [0, 8, 'top'],      // puerta hacia Biblioteca (arriba)
-                [1, 9, 'right']     // puerta hacia Invernadero (derecha)
+                [0, 9, 'left']      // puerta izquierda (ÚNICA ENTRADA)
             ],
             'Invernadero': [
-                [4, 9, 'left'],     // puerta hacia Billar (izquierda)
-                [4, 8, 'top'],      // puerta hacia Centro (arriba)
-                [5, 8, 'top'],
-                [5, 9, 'right']     // puerta hacia Salón Baile (derecha)
+                [4, 9, 'bottom']    // puerta abajo (ÚNICA ENTRADA)
             ],
             'SalonBaile': [
-                [8, 9, 'left'],     // puerta hacia Invernadero (izquierda)
-                [9, 8, 'top']       // puerta hacia Comedor (arriba)
+                [9, 9, 'right']     // puerta derecha (ÚNICA ENTRADA)
             ]
         };
 
         function getDoorPositionStyle(side) {
             const styles = {
-                'top': 'top: -15px; left: 50%; transform: translateX(-50%);',
-                'bottom': 'bottom: -15px; left: 50%; transform: translateX(-50%);',
-                'left': 'left: -15px; top: 50%; transform: translateY(-50%);',
-                'right': 'right: -15px; top: 50%; transform: translateY(-50%);'
+                'top': 'top: -24px; left: 50%; transform: translateX(-50%);',
+                'bottom': 'bottom: -24px; left: 50%; transform: translateX(-50%);',
+                'left': 'left: -24px; top: 50%; transform: translateY(-50%);',
+                'right': 'right: -24px; top: 50%; transform: translateY(-50%);'
             };
             return styles[side] || '';
         }
