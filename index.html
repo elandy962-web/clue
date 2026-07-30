@@ -812,8 +812,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.7.1";
-        const VERSION_INFO = "v1.7.1 - Entradas grandes y claras, una por habitación";
+        const GAME_VERSION = "1.7.2";
+        const VERSION_INFO = "v1.7.2 - Entradas en posiciones correctas del borde";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -857,37 +857,37 @@
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        // Definición de PUERTAS PRINCIPALES: cada habitación tiene UNA entrada
+        // Definición de PUERTAS PRINCIPALES: cada habitación tiene UNA entrada en el borde correcto
         const roomDoors = {
             'Estudio': [
-                [1, 0, 'right']     // puerta derecha hacia Vestíbulo (ÚNICA ENTRADA)
+                [0, 0, 'bottom']    // puerta ABAJO (hacia Biblioteca)
             ],
             'Vestibulo': [
-                [4, 0, 'top']       // puerta arriba (ÚNICA ENTRADA)
+                [4, 0, 'bottom']    // puerta ABAJO (hacia Centro)
             ],
             'Salon': [
-                [9, 0, 'right']     // puerta derecha (ÚNICA ENTRADA)
+                [9, 0, 'bottom']    // puerta ABAJO (hacia Comedor)
             ],
             'Biblioteca': [
-                [0, 4, 'left']      // puerta izquierda (ÚNICA ENTRADA)
+                [0, 4, 'top']       // puerta ARRIBA (hacia Estudio)
             ],
             'Centro': [
-                [4, 4, 'top'],      // 4 puertas principales (es el centro)
+                [4, 4, 'top'],      // 4 puertas principales (conecta con las 4 direcciones)
                 [4, 5, 'bottom'],
                 [4, 4, 'left'],
                 [5, 4, 'right']
             ],
             'Comedor': [
-                [9, 5, 'right']     // puerta derecha (ÚNICA ENTRADA)
+                [9, 4, 'top']       // puerta ARRIBA (hacia Salón)
             ],
             'Billar': [
-                [0, 9, 'left']      // puerta izquierda (ÚNICA ENTRADA)
+                [0, 8, 'top']       // puerta ARRIBA (hacia Biblioteca)
             ],
             'Invernadero': [
-                [4, 9, 'bottom']    // puerta abajo (ÚNICA ENTRADA)
+                [4, 8, 'top']       // puerta ARRIBA (hacia Centro)
             ],
             'SalonBaile': [
-                [9, 9, 'right']     // puerta derecha (ÚNICA ENTRADA)
+                [9, 8, 'top']       // puerta ARRIBA (hacia Comedor)
             ]
         };
 
