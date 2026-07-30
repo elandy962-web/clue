@@ -317,12 +317,12 @@
 
         .door-indicator {
             position: absolute;
-            width: 5px;
-            height: 14px;
+            width: 8px;
+            height: 16px;
             background: linear-gradient(90deg, #ff9500, #ffb700);
-            border: 0.5px solid #ffcc00;
-            border-radius: 1px;
-            box-shadow: 0 0 6px #ff9500, inset 0 0 2px #ffff99;
+            border: 1px solid #ffcc00;
+            border-radius: 2px;
+            box-shadow: 0 0 8px #ff9500, inset 0 0 3px #ffff99;
             z-index: 3;
             display: flex;
             align-items: center;
@@ -391,19 +391,20 @@
         }
 
         .step-indicator {
-            position: absolute;
-            bottom: 1px;
-            right: 1px;
+            position: static;
             background: #48bb78;
             color: white;
-            font-size: 0.5rem;
+            font-size: 0.75rem;
             font-weight: bold;
-            padding: 1px 2px;
-            border-radius: 2px;
+            padding: 5px 8px;
+            border-radius: 4px;
             z-index: 2;
-            box-shadow: 0 0 3px rgba(72, 187, 120, 0.8);
+            box-shadow: 0 0 8px rgba(72, 187, 120, 0.9);
             animation: pulse 0.5s ease-in-out infinite;
             pointer-events: none;
+            margin: 8px auto 0 auto;
+            display: block;
+            text-align: center;
         }
 
         @keyframes pulse {
@@ -810,8 +811,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.6";
-        const VERSION_INFO = "v1.6 - Nombres adaptados, puertas en entrada, modal de victoria";
+        const GAME_VERSION = "1.6.1";
+        const VERSION_INFO = "v1.6.1 - Pasos sin superposición, puertas en conexiones reales";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -855,35 +856,55 @@
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        // Definición de puertas con su posición relativa: [x, y, lado]
-        // lado: 'top', 'bottom', 'left', 'right'
+        // Definición de puertas en conexiones REALES: [x, y, lado]
         const roomDoors = {
-            'Estudio': [],  // SIN PUERTAS
+            'Estudio': [
+                [1, 0, 'right'],    // puerta hacia Vestíbulo (derecha)
+                [0, 1, 'bottom']    // puerta hacia Biblioteca (abajo)
+            ],
             'Vestibulo': [
-                [4, 0, 'top'], [5, 0, 'top'],   // superior
-                [4, 1, 'bottom'], [5, 1, 'bottom']  // inferior
+                [4, 0, 'left'],     // puerta hacia Estudio (izquierda)
+                [5, 0, 'right'],    // puerta hacia Salón (derecha)
+                [4, 1, 'bottom'],   // puerta hacia Centro (abajo)
+                [5, 1, 'bottom']
             ],
             'Salon': [
-                [9, 0, 'right'], [9, 1, 'right']  // derecho
+                [8, 0, 'left'],     // puerta hacia Vestíbulo (izquierda)
+                [9, 1, 'bottom']    // puerta hacia Comedor (abajo)
             ],
             'Biblioteca': [
-                [0, 4, 'left'], [0, 5, 'left']  // izquierdo
+                [0, 4, 'top'],      // puerta hacia Estudio (arriba)
+                [1, 4, 'right'],    // puerta hacia Centro (derecha)
+                [1, 5, 'bottom']    // puerta hacia Billar (abajo)
             ],
             'Centro': [
-                [4, 4, 'top'], [5, 4, 'top'],   // superior
-                [4, 5, 'bottom'], [5, 5, 'bottom']  // inferior
+                [4, 4, 'top'],      // puerta hacia Vestíbulo (arriba)
+                [5, 4, 'top'],
+                [4, 5, 'bottom'],   // puerta hacia Invernadero (abajo)
+                [5, 5, 'bottom'],
+                [4, 4, 'left'],     // puerta hacia Biblioteca (izquierda)
+                [4, 5, 'left'],
+                [5, 4, 'right'],    // puerta hacia Comedor (derecha)
+                [5, 5, 'right']
             ],
             'Comedor': [
-                [9, 4, 'right'], [9, 5, 'right']  // derecho
+                [8, 4, 'left'],     // puerta hacia Centro (izquierda)
+                [9, 4, 'top'],      // puerta hacia Salón (arriba)
+                [9, 5, 'bottom']    // puerta hacia Salón Baile (abajo)
             ],
             'Billar': [
-                [0, 8, 'left'], [0, 9, 'left']  // izquierdo
+                [0, 8, 'top'],      // puerta hacia Biblioteca (arriba)
+                [1, 9, 'right']     // puerta hacia Invernadero (derecha)
             ],
             'Invernadero': [
-                [4, 9, 'bottom'], [5, 9, 'bottom']  // inferior
+                [4, 9, 'left'],     // puerta hacia Billar (izquierda)
+                [4, 8, 'top'],      // puerta hacia Centro (arriba)
+                [5, 8, 'top'],
+                [5, 9, 'right']     // puerta hacia Salón Baile (derecha)
             ],
             'SalonBaile': [
-                [9, 8, 'right'], [9, 9, 'right']  // derecho
+                [8, 9, 'left'],     // puerta hacia Invernadero (izquierda)
+                [9, 8, 'top']       // puerta hacia Comedor (arriba)
             ]
         };
 
@@ -1360,21 +1381,18 @@
                     // Buscar puertas en este tile
                     const tilesDoorsFound = doors.filter(([doorX, doorY, side]) => doorX === tile.x && doorY === tile.y);
                     
-                    tilesDoorsFound.forEach(([doorX, doorY, side], index) => {
-                        if (side === 'top' || side === 'bottom') {
-                            const baseLeft = side === 'top' || side === 'bottom' ? 'top' : 'left';
-                            const baseValue = side === 'top' ? 'top: -18px;' : 'bottom: -18px;';
-                            // Primera línea
-                            doorIndicator += `<div class="door-indicator" style="${baseValue} left: 30%; transform: translateX(-50%);"></div>`;
-                            // Segunda línea
-                            doorIndicator += `<div class="door-indicator" style="${baseValue} left: 60%; transform: translateX(-50%);"></div>`;
-                        } else {
-                            const baseValue = side === 'left' ? 'left: -18px;' : 'right: -18px;';
-                            // Primera línea
-                            doorIndicator += `<div class="door-indicator" style="${baseValue} top: 30%; transform: translateY(-50%);"></div>`;
-                            // Segunda línea
-                            doorIndicator += `<div class="door-indicator" style="${baseValue} top: 60%; transform: translateY(-50%);"></div>`;
+                    tilesDoorsFound.forEach(([doorX, doorY, side]) => {
+                        let posStyle = '';
+                        if (side === 'top') {
+                            posStyle = 'top: -15px; left: 50%; transform: translateX(-50%);';
+                        } else if (side === 'bottom') {
+                            posStyle = 'bottom: -15px; left: 50%; transform: translateX(-50%);';
+                        } else if (side === 'left') {
+                            posStyle = 'left: -15px; top: 50%; transform: translateY(-50%);';
+                        } else if (side === 'right') {
+                            posStyle = 'right: -15px; top: 50%; transform: translateY(-50%);';
                         }
+                        doorIndicator += `<div class="door-indicator" style="${posStyle}"></div>`;
                     });
                 }
 
@@ -1382,10 +1400,10 @@
                     <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
                         ${tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
                         <div class="players-in-tile">${playersInTileHtml}</div>
-                        <div style="z-index: 1; position: relative;">
+                        <div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;">
                             ${doorIndicator}
-                            ${stepIndicator}
                         </div>
+                        ${stepIndicator}
                     </div>
                 `;
             });
