@@ -230,12 +230,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 1px;
+            padding: 2px;
             text-align: center;
             cursor: pointer;
             transition: all 0.15s ease;
             position: relative;
-            font-size: 0.5rem;
             overflow: hidden;
             aspect-ratio: 1 / 1;
         }
@@ -287,33 +286,42 @@
             border: 1px solid #b794f4;
         }
 
-        .room-name {
-            font-weight: bold;
-            font-size: 0.7rem;
-            line-height: 1.1;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
-            padding: 0 2px;
+        /* CONTENEDOR VISIBLE PARA EL NOMBRE DE CADA HABITACIÓN 2x2 */
+        .room-title-box {
+            font-weight: 900;
+            font-size: 0.65rem;
+            line-height: 1.15;
             color: #f6ad55;
-            z-index: 3;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 3px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(246, 173, 85, 0.3);
+            margin-bottom: 2px;
+            text-align: center;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            max-width: 95%;
+            word-break: break-word;
         }
 
         .players-in-tile {
             display: flex;
             flex-wrap: wrap;
-            gap: 1px;
+            gap: 2px;
             justify-content: center;
-            z-index: 4;
+            z-index: 6;
             margin-top: 2px;
         }
 
         .player-token {
             background: #dd6b20;
             color: white;
-            font-size: 0.45rem;
-            padding: 1px 3px;
-            border-radius: 3px;
+            font-size: 0.55rem;
+            padding: 2px 4px;
+            border-radius: 4px;
             font-weight: bold;
             border: 1px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         .step-indicator {
@@ -326,7 +334,7 @@
             font-weight: bold;
             padding: 2px 4px;
             border-radius: 3px;
-            z-index: 4;
+            z-index: 7;
             box-shadow: 0 0 4px rgba(72, 187, 120, 0.8);
             animation: pulse 0.5s ease-in-out infinite;
         }
@@ -549,7 +557,7 @@
     <div class="container">
         <div class="header">
             <h1>🔍 Clue - Edición Clásica en Español</h1>
-            <p>Habitaciones 2x2, Movimiento Libre por Pasos y Libreta Automática</p>
+            <p>Habitaciones 2x2, Nombres Visibles y Fichas de Participantes</p>
         </div>
 
         <div id="loginScreen" class="login-screen">
@@ -579,7 +587,7 @@
                     <div>
                         <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #f6ad55;">-</span><br>
                         <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Estudio</span> | 
-                        <strong>Pasos Restantes:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
+                        <strong>Pasos:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
                     </div>
                     <div>
                         <div class="dice-display" id="diceResult">🎲 -</div>
@@ -1161,21 +1169,15 @@
                     let pRep = getRepresentativeTileId(p.location);
                     let tileRep = getRepresentativeTileId(tile.id);
                     if (pRep === tileRep) {
-                        if (pRep === 'Centro') {
-                            if (tile.isPrimary) {
-                                playersInTileHtml += `<span class="player-token">${p.name}</span>`;
-                            }
-                        } else {
-                            if (tile.isPrimary || tileRep.startsWith('Pasillo_')) {
-                                playersInTileHtml += `<span class="player-token">${p.name}</span>`;
-                            }
+                        if (tile.isPrimary) {
+                            playersInTileHtml += `<span class="player-token">${p.name}</span>`;
                         }
                     }
                 });
 
                 let tileRep = getRepresentativeTileId(tile.id);
                 let myRep = getRepresentativeTileId(gameState.myLocation);
-                const isMyLocation = (tileRep === myRep && (tileRep === 'Centro' ? tile.isPrimary : tile.isPrimary || tileRep.startsWith('Pasillo_')));
+                const isMyLocation = (tileRep === myRep && tile.isPrimary);
                 const playerIds = Object.keys(gameState.players);
                 const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
                 const distance = calculateDistance(gameState.myLocation, tileRep);
@@ -1192,9 +1194,17 @@
                     stepIndicator = `<div class="step-indicator">Paso ${stepNumber}</div>`;
                 }
 
+                // Renderizamos la cabecera con el nombre de la habitación si es la casilla principal (esquina superior izquierda de la sala 2x2)
+                let roomTitleHtml = '';
+                if (tile.name && tile.name !== '✨') {
+                    roomTitleHtml = `<div class="room-title-box">${tile.name}</div>`;
+                } else if (tile.name === '✨') {
+                    roomTitleHtml = `<div style="font-size:0.8rem; font-weight:bold;">✨</div>`;
+                }
+
                 boardHtml += `
                     <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
-                        ${tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
+                        ${roomTitleHtml}
                         <div class="players-in-tile">${playersInTileHtml}</div>
                         ${stepIndicator}
                     </div>
