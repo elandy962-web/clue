@@ -122,62 +122,20 @@
         .rooms-list {
             margin-top: 10px;
             text-align: left;
-            max-height: 200px;
+            max-height: 120px;
             overflow-y: auto;
         }
 
         .room-item {
             background: #111827;
-            padding: 12px;
-            margin: 6px 0;
+            padding: 8px;
+            margin: 4px 0;
             border-radius: 6px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            border-left: 4px solid #dd6b20;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .room-item:hover {
-            background: #1a2332;
-        }
-
-        .room-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex: 1;
-        }
-
-        .room-name {
-            font-weight: bold;
-            color: #f6ad55;
-            font-size: 1rem;
-        }
-
-        .room-details {
-            font-size: 0.8rem;
-            color: #cbd5e0;
-        }
-
-        .room-participants {
-            font-size: 0.75rem;
-            color: #a0aec0;
-            max-height: 60px;
-            overflow-y: auto;
-            margin-top: 4px;
-        }
-
-        .participant-badge {
-            display: inline-block;
-            background: #2b6cb0;
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-right: 4px;
-            margin-bottom: 2px;
-            font-size: 0.75rem;
+            align-items: center;
+            border-left: 3px solid #dd6b20;
+            font-size: 0.85rem;
         }
 
         /* JUEGO PRINCIPAL ADAPTABLE */
@@ -249,627 +207,1043 @@
         }
 
         /* TABLERO CLUE 10x10 */
-        .board {
+        .clue-board-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .clue-board {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
             gap: 2px;
-            aspect-ratio: 1;
-            margin-bottom: 6px;
+            background: #0d1b1e;
+            width: 100%;
+            height: 100%;
         }
 
-        .cell {
-            background: #0a0e16;
-            border: 1px solid #2d3748;
-            border-radius: 3px;
+        .board-tile {
+            border-radius: 4px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            padding: 1px;
+            text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s ease;
             position: relative;
-            min-height: 20px;
+            font-size: 0.5rem;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
         }
 
-        .cell:hover { background: #1a2332; }
-        .cell.room { background: #1e3a5f; border-color: #3182ce; }
-        .cell.hallway { background: #111827; }
+        .board-tile.room {
+            background: #1f2937;
+            color: #f3f4f6;
+            border: 1.5px solid #9b2c2c;
+        }
+        .board-tile.room:hover { background: #374151; }
+        .board-tile.room.my-current-location {
+            border-color: #48bb78;
+            background: #22543d;
+            box-shadow: 0 0 6px #48bb78;
+        }
+        .board-tile.room.reachable {
+            border-color: #ecc94b;
+            background: #744210;
+        }
 
-        .pawn {
-            width: 70%;
-            height: 70%;
-            border-radius: 50%;
+        .room-estudio { grid-area: 1 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-vestibulo { grid-area: 1 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-salon { grid-area: 1 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-biblioteca { grid-area: 5 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-centro { grid-area: 5 / 5 / span 2 / span 2; z-index: 2; background: #2a1b15 !important; border: 2px solid #dd6b20 !important; color: #fbd38d !important; aspect-ratio: auto; }
+        .room-comedor { grid-area: 5 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-billar { grid-area: 9 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-invernadero { grid-area: 9 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+        .room-salonbaile { grid-area: 9 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
+
+        .board-tile.hallway {
+            background: #2b3b4e;
+            color: #cbd5e0;
+            border: 1px solid #4a5568;
+        }
+        .board-tile.hallway:hover { background: #3b4f68; }
+        .board-tile.hallway.my-current-location {
+            border-color: #48bb78;
+            background: #22543d;
+        }
+        .board-tile.hallway.reachable {
+            border-color: #ecc94b;
+            background: #4a3510;
+        }
+
+        .board-tile.event-tile {
+            background: #44337a;
+            color: #e9d8fd;
+            border: 1px solid #b794f4;
+        }
+
+        .room-name {
+            font-weight: bold;
+            font-size: 0.7rem;
+            line-height: 1.1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+            padding: 0 2px;
+            color: #f6ad55;
+            z-index: 3;
+        }
+
+        .players-in-tile {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 1px;
             justify-content: center;
+            z-index: 4;
+            margin-top: 2px;
+        }
+
+        .player-token {
+            background: #dd6b20;
+            color: white;
+            font-size: 0.45rem;
+            padding: 1px 3px;
+            border-radius: 3px;
+            font-weight: bold;
+            border: 1px solid #fff;
+        }
+
+        .step-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #48bb78;
+            color: white;
             font-size: 0.6rem;
             font-weight: bold;
-            color: white;
+            padding: 2px 4px;
+            border-radius: 3px;
+            z-index: 4;
+            box-shadow: 0 0 4px rgba(72, 187, 120, 0.8);
+            animation: pulse 0.5s ease-in-out infinite;
         }
 
-        /* PANEL DERECHO */
-        .right-panel {
-            background: #1a202c;
-            border-radius: 12px;
-            padding: 10px;
-            border: 2px solid #2d3748;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .sidebar {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            overflow-y: auto;
-            max-height: 600px;
+            width: 100%;
         }
 
-        .panel-section {
-            background: #111827;
-            border-radius: 8px;
-            padding: 8px;
-            border: 1px solid #4a5568;
-        }
-
-        .panel-section h3 {
-            color: #f6ad55;
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-        }
-
-        .players-list {
+        .panel {
+            background: #1a202c;
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #2d3748;
             display: flex;
             flex-direction: column;
-            gap: 6px;
         }
 
-        .player-item {
-            background: #0d1b1e;
-            padding: 8px;
+        .panel h3 {
+            color: #f6ad55;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #2d3748;
+            padding-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .players-list-box {
+            max-height: 90px;
+            overflow-y: auto;
+        }
+
+        .player-info {
+            padding: 4px 6px;
+            background: #111827;
             border-radius: 6px;
-            border-left: 3px solid #dd6b20;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 4px;
+            border-left: 3px solid #4a5568;
+            font-size: 0.8rem;
         }
 
-        .player-name {
+        .player-info.current {
+            background: #2d261b;
+            border-left-color: #dd6b20;
             font-weight: bold;
-            color: #e2e8f0;
         }
 
-        .player-status {
-            font-size: 0.75rem;
-            color: #a0aec0;
+        .cards-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+            gap: 6px;
+            max-height: 110px;
+            overflow-y: auto;
         }
 
         .card {
-            background: linear-gradient(135deg, #dd6b20, #ed8936);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            margin: 2px;
-            display: inline-block;
-            border: 1px solid #f6ad55;
+            background: #f7fafc;
+            color: #1a202c;
+            border-radius: 6px;
+            padding: 6px 4px;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        .card.suspect { background: #2b6cb0; border-color: #3182ce; }
-        .card.weapon { background: #742a2a; border-color: #fc8181; }
-        .card.room { background: #22543d; border-color: #9ae6b4; }
+        .card.suspect { border-top: 3px solid #e53e3e; }
+        .card.weapon { border-top: 3px solid #3182ce; }
+        .card.room { border-top: 3px solid #38a169; }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .action-buttons button { width: 100%; }
+
+        .btn-leave-safe {
+            grid-column: span 2;
+            background: #4a1515 !important;
+            color: #fc8181 !important;
+            font-size: 0.75rem !important;
+            padding: 6px !important;
+            opacity: 0.85;
+            border: 1px dashed #e53e3e !important;
+        }
+        .btn-leave-safe:hover {
+            opacity: 1;
+            background: #742a2a !important;
+        }
+
+        .message-log {
+            background: #111827;
+            border-radius: 6px;
+            padding: 8px;
+            height: 120px;
+            overflow-y: auto;
+            font-size: 0.78rem;
+            border: 1px solid #2d3748;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .message {
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
+        .message.system { background: #1a365d; color: #bee3f8; font-weight: bold; }
+        .message.success { background: #22543d; color: #c6f6d5; }
+        .message.error { background: #742a2a; color: #fed7d7; }
+        .message.info { background: #44337a; color: #e9d8fd; }
+        .message.suggestion { background: #234e52; color: #e6fffa; font-weight: bold; }
 
         .detective-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.8rem;
+            margin-top: 4px;
         }
 
         .detective-table th, .detective-table td {
             border: 1px solid #4a5568;
             padding: 4px;
-            text-align: left;
+            text-align: center;
         }
 
-        .detective-table th { background: #2d3748; color: #f6ad55; }
-        .detective-table input { width: 16px; height: 16px; cursor: pointer; }
+        .detective-table th { background: #111827; color: #f6ad55; }
+        .detective-table td:first-child { text-align: left; font-weight: bold; }
 
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            padding: 15px;
         }
 
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
 
         .modal-content {
             background: #1a202c;
-            padding: 20px;
             border-radius: 12px;
-            max-width: 400px;
-            width: 90%;
-            max-height: 80vh;
+            padding: 18px;
+            max-width: 450px;
+            width: 100%;
+            border: 2px solid #4a5568;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            max-height: 85vh;
             overflow-y: auto;
-            border: 2px solid #2d3748;
         }
 
         .modal-content h2 {
             color: #f6ad55;
-            margin-bottom: 15px;
-        }
-
-        .modal-content select, .modal-content input {
-            width: 100%;
-            padding: 8px;
             margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .selection-group {
+            margin-bottom: 10px;
+        }
+
+        .selection-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+        }
+
+        .selection-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #4a5568;
             background: #111827;
-            border: 1px solid #4a5568;
             color: white;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-size: 0.9rem;
         }
 
-        .message-log {
+        .room-code {
             background: #111827;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #f6ad55;
             border: 1px solid #4a5568;
-            border-radius: 6px;
-            padding: 6px;
-            height: 100px;
-            overflow-y: auto;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
         }
 
-        .message {
-            margin: 2px 0;
-            padding: 2px 4px;
-            border-radius: 3px;
+        .event-popup-box {
+            background: linear-gradient(135deg, #44337a, #553c9a);
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+            border: 2px solid #ecc94b;
         }
-
-        .message.error { background: #742a2a; color: #fed7d7; }
-        .message.success { background: #22543d; color: #c6f6d5; }
-        .message.info { background: #2b6cb0; color: #bee3f8; }
-
-        .mobile-controls {
-            display: flex;
-            gap: 4px;
-            margin-top: 8px;
-            flex-wrap: wrap;
+        .event-popup-box h3 {
+            color: #ecc94b;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
         }
-
-        .btn-action {
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            background: #dd6b20;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            flex: 1;
-            min-width: 80px;
-        }
-
-        .btn-action:hover { background: #ed8936; }
-        .btn-action:disabled { background: #2d3748; color: #718096; cursor: not-allowed; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🔍 CLUE - Juego de Misterio</h1>
-        <p>Edición Clásica Multijugador en Línea</p>
-    </div>
-
     <div class="container">
-        <!-- PANTALLA DE LOGIN -->
-        <div id="loginScreen" class="login-screen">
-            <h2>Ingresa al Juego</h2>
-            
-            <div class="input-group">
-                <input type="text" id="playerNameInput" placeholder="Tu nombre" maxlength="20">
-            </div>
-
-            <div class="room-selection">
-                <button class="btn btn-primary" onclick="createNewRoom()">➕ Crear Sala</button>
-                <button class="btn btn-secondary" onclick="toggleRoomsList()">📋 Ver Salas</button>
-            </div>
-
-            <div id="roomNameInput" style="display: none; margin-bottom: 10px;">
-                <input type="text" id="newRoomName" placeholder="Nombre de la sala" maxlength="30">
-                <div style="display: flex; gap: 6px; margin-top: 6px;">
-                    <button class="btn btn-primary" onclick="confirmCreateRoom()" style="flex: 1;">Crear</button>
-                    <button class="btn btn-secondary" onclick="toggleRoomsList()" style="flex: 1;">Cancelar</button>
-                </div>
-            </div>
-
-            <div id="roomsList" class="rooms-list"></div>
-            <div id="statusMessage" class="status-message" style="display: none;"></div>
+        <div class="header">
+            <h1>🔍 Clue - Edición Clásica en Español</h1>
+            <p>Habitaciones 2x2, Movimiento Libre por Pasos y Libreta Automática</p>
         </div>
 
-        <!-- JUEGO PRINCIPAL -->
-        <div id="gameContainer" class="game-container">
-            <!-- SECCIÓN DEL TABLERO -->
+        <div id="loginScreen" class="login-screen">
+            <h2>Bienvenido Detective</h2>
+            <div class="input-group">
+                <input type="text" id="playerName" placeholder="Tu nombre" maxlength="15">
+            </div>
+            <div class="input-group">
+                <input type="text" id="roomCode" placeholder="Código de sala (opcional)" maxlength="6">
+            </div>
+            <div class="room-selection">
+                <button class="btn btn-primary" onclick="createNewRoom()">➕ Crear Sala</button>
+                <button class="btn btn-secondary" onclick="joinExistingRoom()">🚪 Entrar</button>
+            </div>
+            <div id="statusMessage"></div>
+            <div id="roomsList" class="rooms-list"></div>
+        </div>
+
+        <div id="gameScreen" class="game-container">
             <div class="board-section">
                 <div class="board-header">
-                    <h2>🏠 Tablero de Juego</h2>
-                    <div class="dice-display" id="diceDisplay">🎲 Dados</div>
+                    <h2>📍 Mansión Tudor</h2>
+                    <div class="room-code" id="roomCodeDisplay"></div>
                 </div>
 
                 <div class="game-info">
-                    <span>Sala: <strong id="roomNameDisplay"></strong></span>
-                    <span id="turnInfo">Turno: <strong id="currentPlayer"></strong></span>
+                    <div>
+                        <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #f6ad55;">-</span><br>
+                        <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Estudio</span> | 
+                        <strong>Pasos Restantes:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
+                    </div>
+                    <div>
+                        <div class="dice-display" id="diceResult">🎲 -</div>
+                    </div>
                 </div>
-
-                <div class="board" id="gameBoard"></div>
-
-                <div class="mobile-controls">
-                    <button class="btn-action" onclick="rollDice()" id="diceBtn">🎲 Dados</button>
-                    <button class="btn-action" onclick="showSuggestionModal()" id="suggestionBtn">❓ Pregunta</button>
-                    <button class="btn-action" onclick="showAccusationModal()" id="accusationBtn">🎯 Acusación</button>
-                    <button class="btn-action" onclick="showNotebookModal()" id="notebookBtn">📓 Libreta</button>
-                    <button class="btn-action" onclick="leaveGame()">❌ Salir</button>
+                
+                <div class="clue-board-wrapper">
+                    <div class="clue-board" id="gameBoard"></div>
                 </div>
+                <p id="boardInstruction" style="text-align: center; font-size: 0.75rem; color: #ecc94b; margin-top: 6px;">⏳ Espera tu turno para tirar los dados.</p>
             </div>
 
-            <!-- PANEL DERECHO -->
-            <div class="right-panel">
-                <!-- JUGADORES -->
-                <div class="panel-section">
-                    <h3>👥 Participantes en la Sala</h3>
-                    <div class="players-list" id="playersList"></div>
+            <div class="sidebar">
+                <div class="panel">
+                    <h3>👥 Jugadores</h3>
+                    <div class="players-list-box" id="playersList"></div>
                 </div>
 
-                <!-- MIS CARTAS -->
-                <div class="panel-section">
-                    <h3>🎴 Mis Cartas</h3>
-                    <div id="myCards"></div>
+                <div class="panel">
+                    <h3>🎴 Tus Cartas</h3>
+                    <div class="cards-section" id="myCards"></div>
                 </div>
 
-                <!-- LOG DE MENSAJES -->
-                <div class="panel-section">
-                    <h3>💬 Evento</h3>
+                <div class="panel">
+                    <h3>💬 Registro de Sucesos</h3>
                     <div class="message-log" id="messageLog"></div>
                 </div>
+
+                <div class="panel">
+                    <h3>⚙️ Acciones</h3>
+                    <div class="action-buttons" id="actionButtonsContainer">
+                        <button id="rollDiceBtn" class="btn btn-primary btn-small" onclick="rollDice()" style="background: #38a169;" disabled>🎲 Tirar</button>
+                        <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #3182ce;">📓 Libreta</button>
+                        <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">❓ Preguntar</button>
+                        <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
+                        <button id="endMoveBtn" class="btn btn-secondary btn-small" onclick="finishMovement()" style="background: #d69e2e; grid-column: span 2; display:none;">✅ Terminar Movimiento</button>
+                        <button class="btn btn-secondary btn-small btn-leave-safe" onclick="leaveGame()">🚪 Salir de la partida</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- MODALES -->
-    <div id="suggestionModal" class="modal">
-        <div class="modal-content">
-            <h2>❓ Hacer una Pregunta</h2>
-            <label>Sospechoso:</label>
-            <select id="sugSuspectSelect"></select>
-            <label>Arma:</label>
-            <select id="sugWeaponSelect"></select>
-            <label>Habitación:</label>
-            <input type="text" id="sugRoomInput" readonly>
-            <button class="btn btn-primary" onclick="submitSuggestion()">Enviar Pregunta</button>
-            <button class="btn btn-secondary" onclick="closeSuggestionModal()">Cancelar</button>
-        </div>
-    </div>
-
-    <div id="replySuggestionModal" class="modal">
-        <div class="modal-content">
-            <h2>👁️ Mostrar Carta en Privado</h2>
-            <label>Selecciona una carta:</label>
-            <select id="matchingCardsSelect"></select>
-            <button class="btn btn-primary" onclick="confirmReplySuggestion()">Confirmar</button>
-        </div>
-    </div>
-
-    <div id="accusationModal" class="modal">
-        <div class="modal-content">
-            <h2>🎯 Hacer Acusación Final</h2>
-            <label>Sospechoso:</label>
-            <select id="suspectSelect"></select>
-            <label>Arma:</label>
-            <select id="weaponSelect"></select>
-            <label>Habitación:</label>
-            <select id="roomSelect"></select>
-            <button class="btn btn-primary" onclick="submitAccusation()">Acusar</button>
-            <button class="btn btn-secondary" onclick="closeAccusationModal()">Cancelar</button>
         </div>
     </div>
 
     <div id="notebookModal" class="modal">
         <div class="modal-content">
             <h2>📓 Libreta de Detective</h2>
+            <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 10px;">Tus cartas iniciales se marcan automáticamente.</p>
             <div id="notebookContainer"></div>
-            <button class="btn btn-secondary" onclick="closeNotebookModal()" style="width: 100%; margin-top: 10px;">Cerrar</button>
+            <div style="margin-top: 12px; text-align: right;">
+                <button class="btn btn-secondary btn-small" onclick="closeNotebookModal()">Cerrar</button>
+            </div>
         </div>
     </div>
 
-    <!-- FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+    <div id="suggestionModal" class="modal">
+        <div class="modal-content">
+            <h2>❓ Hacer Pregunta</h2>
+            <p style="font-size: 0.75rem; color: #a0aec0; margin-bottom: 8px;">La pregunta se realiza automáticamente en tu habitación actual.</p>
+            <div class="selection-group">
+                <label>Sospechoso:</label>
+                <select id="sugSuspectSelect"><option value="">-- Selecciona --</option></select>
+            </div>
+            <div class="selection-group">
+                <label>Arma:</label>
+                <select id="sugWeaponSelect"><option value="">-- Selecciona --</option></select>
+            </div>
+            <div class="selection-group">
+                <label>Habitación (Tu posición actual):</label>
+                <input type="text" id="sugRoomInput" readonly style="width: 100%; padding: 10px; border: 2px solid #4a5568; background: #111827; color: #f6ad55; border-radius: 8px; font-size: 0.9rem; font-weight: bold;">
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="submitSuggestion()">✅ Preguntar</button>
+                <button class="btn btn-secondary" onclick="closeSuggestionModal()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="replySuggestionModal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <h2>👁️ Responder Pregunta</h2>
+            <p style="color: #a0aec0; margin-bottom: 10px; font-size: 0.85rem;" id="replySuggestionPrompt">Posees cartas coincidentes. Elige cuál mostrarle:</p>
+            <div class="selection-group">
+                <label>Carta a mostrar en privado:</label>
+                <select id="matchingCardsSelect"></select>
+            </div>
+            <button class="btn btn-primary" onclick="confirmReplySuggestion()">✅ Mostrar Carta</button>
+        </div>
+    </div>
+
+    <div id="accusationModal" class="modal">
+        <div class="modal-content">
+            <h2>🔍 Plantear Teoría / Acusación Final</h2>
+            <div class="selection-group">
+                <label>Sospechoso:</label>
+                <select id="suspectSelect"><option value="">-- Selecciona --</option></select>
+            </div>
+            <div class="selection-group">
+                <label>Arma:</label>
+                <select id="weaponSelect"><option value="">-- Selecciona --</option></select>
+            </div>
+            <div class="selection-group">
+                <label>Habitación:</label>
+                <select id="roomSelect"><option value="">-- Selecciona --</option></select>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="submitAccusation()">✅ Enviar</button>
+                <button class="btn btn-secondary" onclick="closeAccusationModal()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <h2>✨ ¡Casilla de Evento Especial! ✨</h2>
+            <div class="event-popup-box" id="eventPopupContent">
+                <h3 id="eventTitleTitle">Título del Evento</h3>
+                <p id="eventDescriptionText" style="font-size: 0.9rem;">Descripción detallada.</p>
+            </div>
+            <button class="btn btn-primary" onclick="closeEventModal()">¡Entendido!</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // Configuración Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyBUoyiPMPm2jZ5yFpPb5_DXQMK3u_S6Fc0",
-            authDomain: "clue-game-c7b1f.firebaseapp.com",
-            databaseURL: "https://clue-game-c7b1f-default-rtdb.firebaseio.com",
-            projectId: "clue-game-c7b1f",
-            storageBucket: "clue-game-c7b1f.appspot.com",
-            messagingSenderId: "654944197903",
-            appId: "1:654944197903:web:0b8b3f94d5b20302ac4f6a"
+            apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
+            authDomain: "clue-game-47c7e.firebaseapp.com",
+            databaseURL: "https://clue-game-47c7e-default-rtdb.firebaseio.com",
+            projectId: "clue-game-47c7e",
+            storageBucket: "clue-game-47c7e.firebasestorage.app",
+            messagingSenderId: "133188091784",
+            appId: "1:133188091784:web:1d6c070ddc535951b0043d"
         };
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
 
-        const SUSPECTS = ['Miss Scarlet', 'Professor Plum', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock', 'Colonel Mustard'];
-        const WEAPONS = ['Candlestick', 'Knife', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench'];
-        const ROOMS = ['Hallway', 'Study', 'Hall', 'Lounge', 'Kitchen', 'Ballroom', 'Conservatory', 'Billiard', 'Library'];
-        const uniqueRoomsList = [...new Set(ROOMS)];
+        const SUSPECTS = ['Señorita Amapola', 'Coronel Mostaza', 'Señora White', 'Prado', 'Señora Fucsia', 'Profesor Cerillo'];
+        const WEAPONS = ['Candelabro', 'Cuchillo', 'Tubo de Plomo', 'Revólver', 'Cuerda', 'Llave Inglesa'];
+        
+        const EVENT_CARDS = [
+            { title: "🌟 Comodín de Avance Rápido", desc: "Duplicas tus pasos en tu siguiente turno." },
+            { title: "📜 Pasadizo Secreto", desc: "Puedes formular una pregunta libre sin importar la habitación." },
+            { title: "🛡️ Escudo del Detective", desc: "Protección contra teorías erróneas en el centro." },
+            { title: "💰 Recompensa de Inteligencia", desc: "Un jugador aleatorio debe mostrarte una carta." },
+            { title: "⚡ Paso Relámpago", desc: "Se te conceden 3 pasos extra de movimiento inmediato." }
+        ];
+
+        const BOARD_LAYOUT = [];
+        
+        const roomsDef = [
+            { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, startY: 0, cssClass: 'room-estudio' },
+            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, startY: 0, cssClass: 'room-vestibulo' },
+            { id: 'Salon', name: 'Salón', type: 'room', startX: 8, startY: 0, cssClass: 'room-salon' },
+            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', startX: 0, startY: 4, cssClass: 'room-biblioteca' },
+            { id: 'Centro', name: 'Centro', type: 'center', startX: 4, startY: 4, cssClass: 'room-centro' },
+            { id: 'Comedor', name: 'Comedor', type: 'room', startX: 8, startY: 4, cssClass: 'room-comedor' },
+            { id: 'Billar', name: 'Billar', type: 'room', startX: 0, startY: 8, cssClass: 'room-billar' },
+            { id: 'Invernadero', name: 'Invernadero', type: 'room', startX: 4, startY: 8, cssClass: 'room-invernadero' },
+            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', startX: 8, startY: 8, cssClass: 'room-salonbaile' }
+        ];
+
+        const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
+
+        for (let y = 0; y < 10; y++) {
+            for (let x = 0; x < 10; x++) {
+                let foundRoom = roomsDef.find(r => x >= r.startX && x < r.startX + 2 && y >= r.startY && y < r.startY + 2);
+                if (foundRoom) {
+                    let isTopLeft = (x === foundRoom.startX && y === foundRoom.startY);
+                    BOARD_LAYOUT.push({
+                        id: foundRoom.id,
+                        name: isTopLeft ? foundRoom.name : '',
+                        type: foundRoom.type,
+                        x: x,
+                        y: y,
+                        isPrimary: isTopLeft,
+                        cssClass: foundRoom.cssClass
+                    });
+                } else {
+                    let isEvent = (x === 2 && y === 2) || (x === 7 && y === 7);
+                    BOARD_LAYOUT.push({
+                        id: `Pasillo_${x}_${y}`,
+                        name: isEvent ? '✨' : '',
+                        type: isEvent ? 'event-tile' : 'hallway',
+                        x: x,
+                        y: y,
+                        isPrimary: true,
+                        cssClass: ''
+                    });
+                }
+            }
+        }
 
         let gameState = {
             userId: null,
             playerName: '',
-            roomCode: null,
-            roomName: '',
+            roomCode: '',
+            isHost: false,
+            players: {},
+            playerIdsOrder: [],
+            myCards: [],
             currentIndex: 0,
             myLocation: 'Centro',
-            myCards: [],
+            stepsAvailable: 0,
+            hasRolled: false,
             notebookMarks: {},
-            players: {},
-            activeSuggestion: null,
-            diceResult: 0,
-            mystery: null
+            activeSuggestion: null
         };
-
-        let currentRooms = {};
 
         async function authenticateUser() {
             try {
-                const user = await auth.signInAnonymously();
-                gameState.userId = user.user.uid;
-                console.log('Usuario autenticado:', gameState.userId);
+                const result = await auth.signInAnonymously();
+                gameState.userId = result.user.uid;
+                showStatus('✅ Conectado', 'success');
+                setTimeout(() => {
+                    document.getElementById('statusMessage').innerHTML = '';
+                    loadPublicRooms();
+                }, 800);
             } catch (error) {
-                console.error('Error en autenticación:', error);
+                showStatus('❌ Error: ' + error.message, 'error');
             }
         }
 
-        function toggleRoomsList() {
-            const input = document.getElementById('roomNameInput');
-            const list = document.getElementById('roomsList');
-            
-            if (input.style.display === 'none') {
-                input.style.display = 'block';
-                list.style.display = 'none';
-                document.getElementById('newRoomName').focus();
-            } else {
-                input.style.display = 'none';
-                loadAvailableRooms();
-                list.style.display = 'block';
-            }
+        function showStatus(message, type = 'loading') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = 'status-message ' + type;
+            statusDiv.textContent = message;
         }
 
-        function createNewRoom() {
-            toggleRoomsList();
-        }
+        async function createNewRoom() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) { showStatus('❌ Ingresa tu nombre', 'error'); return; }
 
-        async function confirmCreateRoom() {
-            const playerName = document.getElementById('playerNameInput').value.trim();
-            const roomName = document.getElementById('newRoomName').value.trim();
-
-            if (!playerName || playerName.length === 0) {
-                showStatus('error', '❌ Ingresa tu nombre');
-                return;
-            }
-            if (!roomName || roomName.length === 0) {
-                showStatus('error', '❌ Ingresa nombre de la sala');
-                return;
-            }
-
-            gameState.playerName = playerName;
-            const roomCode = Math.random().toString(36).substr(2, 9).toUpperCase();
-            gameState.roomCode = roomCode;
-            gameState.roomName = roomName;
+            gameState.playerName = name;
+            gameState.roomCode = Math.random().toString(36).substr(2, 6).toUpperCase();
+            gameState.isHost = true;
+            showStatus('⏳ Creando sala...', 'loading');
 
             try {
-                showStatus('loading', '⏳ Creando sala...');
-                
-                // Crear estructura de la sala
-                await database.ref(`rooms/${roomCode}`).set({
-                    roomCode: roomCode,
-                    roomName: roomName,
-                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                const roomData = {
+                    host: gameState.userId,
                     players: {
-                        [gameState.userId]: {
-                            name: playerName,
-                            color: SUSPECTS[0],
-                            joinedAt: firebase.database.ServerValue.TIMESTAMP
+                        [gameState.userId]: { name: gameState.playerName, location: 'Centro', cards: [] }
+                    },
+                    gameState: { currentIndex: 0, dice: 0, messages: [] }
+                };
+                await database.ref(`rooms/${gameState.roomCode}`).set(roomData);
+                initializeMysteryQuietly();
+                startGame();
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        async function joinExistingRoom() {
+            const name = document.getElementById('playerName').value.trim();
+            const code = document.getElementById('roomCode').value.trim().toUpperCase();
+            if (!name || !code) { showStatus('❌ Ingresa nombre y código', 'error'); return; }
+
+            gameState.playerName = name;
+            gameState.roomCode = code;
+            showStatus('⏳ Conectando...', 'loading');
+
+            try {
+                const roomSnapshot = await database.ref(`rooms/${code}`).get();
+                if (!roomSnapshot.exists()) { showStatus('❌ Sala no encontrada', 'error'); return; }
+
+                const roomData = roomSnapshot.val();
+                gameState.isHost = (roomData.host === gameState.userId);
+
+                await database.ref(`rooms/${code}/players/${gameState.userId}`).set({
+                    name: gameState.playerName, location: 'Centro', cards: []
+                });
+                startGame();
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        function loadPublicRooms() {
+            database.ref('rooms').on('value', (snapshot) => {
+                const roomsList = document.getElementById('roomsList');
+                const data = snapshot.val();
+                if (!data) { roomsList.innerHTML = '<p style="color: #888; font-size: 0.8rem;">No hay salas activas</p>'; return; }
+
+                let html = '<strong>Salas Disponibles:</strong>';
+                Object.entries(data).slice(-4).forEach(([code, room]) => {
+                    const playerCount = Object.keys(room.players || {}).length;
+                    html += `
+                        <div class="room-item">
+                            <div><strong>${code}</strong> (${playerCount} jug.)</div>
+                            <button class="btn btn-secondary btn-small" onclick="setRoomCode('${code}')">Entrar</button>
+                        </div>
+                    `;
+                });
+                roomsList.innerHTML = html;
+            });
+        }
+
+        function setRoomCode(code) { document.getElementById('roomCode').value = code; }
+
+        function startGame() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('gameScreen').classList.add('active');
+            document.getElementById('roomCodeDisplay').textContent = gameState.roomCode;
+            
+            if (gameState.isHost) {
+                const actionsContainer = document.getElementById('actionButtonsContainer');
+                if (!document.getElementById('distributeBtn')) {
+                    const distributeBtn = document.createElement('button');
+                    distributeBtn.id = 'distributeBtn';
+                    distributeBtn.className = 'btn btn-secondary btn-small';
+                    distributeBtn.style.background = '#805ad5';
+                    distributeBtn.textContent = '🃏 Repartir';
+                    distributeBtn.onclick = manualDistributeCards;
+                    actionsContainer.insertBefore(distributeBtn, actionsContainer.firstChild);
+                }
+            }
+
+            setupGameListeners();
+            buildNotebookUI();
+            addMessage('system', `¡Partida iniciada! Sala: ${gameState.roomCode}`);
+        }
+
+        function initializeMysteryQuietly() {
+            const mystery = {
+                suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
+                weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
+                room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
+            };
+            database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+        }
+
+        async function manualDistributeCards() {
+            if (!gameState.isHost) return;
+
+            const availableSuspects = [...SUSPECTS];
+            const availableWeapons = [...WEAPONS];
+            const availableRooms = [...uniqueRoomsList];
+
+            const secretSuspect = availableSuspects.splice(Math.floor(Math.random() * availableSuspects.length), 1)[0];
+            const secretWeapon = availableWeapons.splice(Math.floor(Math.random() * availableWeapons.length), 1)[0];
+            const secretRoom = availableRooms.splice(Math.floor(Math.random() * availableRooms.length), 1)[0];
+
+            const mystery = {
+                suspect: secretSuspect,
+                weapon: secretWeapon,
+                room: secretRoom
+            };
+            await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+
+            const mazoRestante = [...availableSuspects, ...availableWeapons, ...availableRooms].sort(() => Math.random() - 0.5);
+            const playerIds = Object.keys(gameState.players);
+
+            playerIds.forEach(id => {
+                database.ref(`rooms/${gameState.roomCode}/players/${id}/cards`).set([]);
+            });
+
+            let playerHands = {};
+            playerIds.forEach(id => playerHands[id] = []);
+
+            mazoRestante.forEach((carta, index) => {
+                const targetPlayerId = playerIds[index % playerIds.length];
+                playerHands[targetPlayerId].push(carta);
+            });
+
+            for (const [playerId, cards] of Object.entries(playerHands)) {
+                await database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(cards);
+            }
+
+            addMessage('success', '🃏 ¡Misterio guardado y cartas repartidas equitativamente!');
+        }
+
+        function rollDice() {
+            const playerIds = Object.keys(gameState.players);
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+
+            if (currentTurnUserId !== gameState.userId) {
+                addMessage('error', '❌ No es tu turno.');
+                return;
+            }
+
+            if (gameState.hasRolled) {
+                addMessage('error', '⚠️ Ya tiraste los dados.');
+                return;
+            }
+
+            const dice = Math.floor(Math.random() * 6) + 1;
+            gameState.stepsAvailable = dice;
+            gameState.hasRolled = true;
+            document.getElementById('stepsAvailable').textContent = dice;
+            document.getElementById('diceResult').textContent = `🎲 ${dice}`;
+            document.getElementById('boardInstruction').textContent = `✅ Moverás paso a paso (Te quedan ${dice} pasos). Puedes terminar cuando gustes.`;
+            document.getElementById('endMoveBtn').style.display = 'block';
+            
+            database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
+            addMessage('info', `🎲 Sacaste un ${dice}.`);
+            updateGameBoard();
+        }
+
+        function getRepresentativeTileId(locationString) {
+            let found = BOARD_LAYOUT.find(b => b.id === locationString);
+            if (found) return found.id;
+            let roomObj = roomsDef.find(r => r.id === locationString);
+            if (roomObj) return roomObj.id;
+            return locationString;
+        }
+
+        function calculateDistance(tileAId, tileBId) {
+            let repA = getRepresentativeTileId(tileAId);
+            let repB = getRepresentativeTileId(tileBId);
+            const tileA = BOARD_LAYOUT.find(b => b.id === repA);
+            const tileB = BOARD_LAYOUT.find(b => b.id === repB);
+            if (!tileA || !tileB) return 99;
+            return Math.abs(tileA.x - tileB.x) + Math.abs(tileA.y - tileB.y);
+        }
+
+        function moveToTile(tileId) {
+            const playerIds = Object.keys(gameState.players);
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+
+            if (currentTurnUserId !== gameState.userId) {
+                addMessage('error', '❌ No es tu turno.');
+                return;
+            }
+
+            if (!gameState.hasRolled || gameState.stepsAvailable <= 0) {
+                addMessage('error', '❌ ¡Debes tirar los dados primero o ya no te quedan pasos!');
+                return;
+            }
+
+            let targetRepId = getRepresentativeTileId(tileId);
+            const distance = calculateDistance(gameState.myLocation, targetRepId);
+            
+            if (distance !== 1) {
+                addMessage('error', `❌ Solo puedes moverte a casillas adyacentes directas (a distancia 1).`);
+                return;
+            }
+
+            gameState.stepsAvailable -= 1;
+            gameState.myLocation = targetRepId;
+            document.getElementById('myLocation').textContent = targetRepId;
+            document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
+
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRepId);
+            addMessage('success', `🚶‍♂️ Paso dado hacia ${targetRepId}. Te quedan ${gameState.stepsAvailable} pasos.`);
+
+            if (targetRepId.startsWith('Pasillo_') && (targetRepId.includes('_2_2') || targetRepId.includes('_7_7'))) {
+                triggerRandomEvent();
+            }
+
+            if (gameState.stepsAvailable === 0) {
+                finishMovement();
+            } else {
+                updateGameBoard();
+            }
+        }
+
+        function finishMovement() {
+            const playerIds = Object.keys(gameState.players);
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+            if (currentTurnUserId !== gameState.userId) return;
+
+            gameState.stepsAvailable = 0;
+            gameState.hasRolled = false;
+            document.getElementById('stepsAvailable').textContent = 0;
+            document.getElementById('endMoveBtn').style.display = 'none';
+            document.getElementById('boardInstruction').textContent = '⏳ Espera tu turno.';
+
+            const nextIndex = (gameState.currentIndex + 1) % playerIds.length;
+            database.ref(`rooms/${gameState.roomCode}/gameState`).update({
+                currentIndex: nextIndex,
+                dice: 0
+            });
+
+            addMessage('info', `🏁 Turno finalizado. Pasa al siguiente jugador.`);
+            updateGameBoard();
+        }
+
+        function triggerRandomEvent() {
+            const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+                type: 'event',
+                text: `✨ [COMODÍN] ${gameState.playerName} cayó en casilla especial: "${randomEvent.title}"`
+            });
+            showEventModal(randomEvent.title, randomEvent.desc);
+        }
+
+        function showEventModal(title, desc) {
+            document.getElementById('eventTitleTitle').textContent = title;
+            document.getElementById('eventDescriptionText').textContent = desc;
+            document.getElementById('eventModal').classList.add('active');
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.remove('active');
+        }
+
+        function setupGameListeners() {
+            database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snapshot) => {
+                gameState.players = snapshot.val() || {};
+                gameState.playerIdsOrder = Object.keys(gameState.players);
+                if (gameState.players[gameState.userId] && gameState.players[gameState.userId].location) {
+                    gameState.myLocation = gameState.players[gameState.userId].location;
+                    document.getElementById('myLocation').textContent = gameState.myLocation;
+                }
+                updatePlayersList();
+                updateTurnControls();
+                updateGameBoard();
+            });
+
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
+                gameState.myCards = snapshot.val() || [];
+                updateMyCards();
+                gameState.myCards.forEach(card => {
+                    gameState.notebookMarks[card] = true;
+                });
+                buildNotebookUI();
+            });
+
+            database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snapshot) => {
+                const state = snapshot.val();
+                if (state) {
+                    gameState.currentIndex = state.currentIndex || 0;
+                    if (state.dice !== undefined) {
+                        document.getElementById('diceResult').textContent = state.dice > 0 ? `🎲 ${state.dice}` : '🎲 -';
+                    }
+                    updateTurnControls();
+
+                    if (state.activeSuggestion && state.activeSuggestion.targetPlayerId === gameState.userId) {
+                        handleIncomingSuggestion(state.activeSuggestion);
+                    }
+                }
+            });
+
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).on('child_added', (snapshot) => {
+                const message = snapshot.val();
+                if (message) addMessage(message.type, message.text);
+            });
+        }
+
+        function updateTurnControls() {
+            const playerIds = Object.keys(gameState.players);
+            if (playerIds.length === 0) return;
+
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+            const isMyTurn = (currentTurnUserId === gameState.userId);
+            
+            const rollBtn = document.getElementById('rollDiceBtn');
+            rollBtn.disabled = !isMyTurn || gameState.hasRolled;
+
+            if (isMyTurn) {
+                document.getElementById('currentTurnInfo').textContent = '¡Tu Turno!';
+                document.getElementById('currentTurnInfo').style.color = '#48bb78';
+                if (!gameState.hasRolled) {
+                    document.getElementById('boardInstruction').textContent = '🎲 Tira los dados.';
+                }
+            } else {
+                const activePlayerName = gameState.players[currentTurnUserId]?.name || 'Alguien';
+                document.getElementById('currentTurnInfo').textContent = activePlayerName;
+                document.getElementById('currentTurnInfo').style.color = '#f6ad55';
+                document.getElementById('boardInstruction').textContent = `⏳ Esperando a ${activePlayerName}...`;
+                document.getElementById('endMoveBtn').style.display = 'none';
+            }
+            updatePlayersList();
+        }
+
+        function updateGameBoard() {
+            const board = document.getElementById('gameBoard');
+            let boardHtml = '';
+
+            BOARD_LAYOUT.forEach((tile) => {
+                let playersInTileHtml = '';
+                Object.entries(gameState.players).forEach(([id, p]) => {
+                    let pRep = getRepresentativeTileId(p.location);
+                    let tileRep = getRepresentativeTileId(tile.id);
+                    if (pRep === tileRep) {
+                        if (pRep === 'Centro') {
+                            if (tile.isPrimary) {
+                                playersInTileHtml += `<span class="player-token">${p.name}</span>`;
+                            }
+                        } else {
+                            if (tile.isPrimary || tileRep.startsWith('Pasillo_')) {
+                                playersInTileHtml += `<span class="player-token">${p.name}</span>`;
+                            }
                         }
-                    },
-                    gameState: {
-                        currentTurn: gameState.userId,
-                        turnIndex: 0,
-                        messages: {}
-                    },
-                    mystery: generateMystery()
+                    }
                 });
 
-                gameState.players[gameState.userId] = {
-                    name: playerName,
-                    color: SUSPECTS[0]
-                };
+                let tileRep = getRepresentativeTileId(tile.id);
+                let myRep = getRepresentativeTileId(gameState.myLocation);
+                const isMyLocation = (tileRep === myRep && (tileRep === 'Centro' ? tile.isPrimary : tile.isPrimary || tileRep.startsWith('Pasillo_')));
+                const playerIds = Object.keys(gameState.players);
+                const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
+                const distance = calculateDistance(gameState.myLocation, tileRep);
+                
+                const isReachable = (isMyTurn && gameState.hasRolled && distance === 1 && gameState.stepsAvailable > 0 && !isMyLocation);
 
-                startGameListeners();
-            } catch (error) {
-                showStatus('error', '❌ Error al crear sala: ' + error.message);
-            }
+                let tileClass = `${tile.type} ${tile.cssClass}`;
+                if (isMyLocation) tileClass += ' my-current-location';
+                if (isReachable) tileClass += ' reachable';
+
+                let stepIndicator = '';
+                if (isReachable) {
+                    const stepNumber = (gameState.stepsAvailable);
+                    stepIndicator = `<div class="step-indicator">Paso ${stepNumber}</div>`;
+                }
+
+                boardHtml += `
+                    <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
+                        ${tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
+                        <div class="players-in-tile">${playersInTileHtml}</div>
+                        ${stepIndicator}
+                    </div>
+                `;
+            });
+            board.innerHTML = boardHtml;
         }
 
-        async function loadAvailableRooms() {
-            try {
-                const snapshot = await database.ref('rooms').get();
-                currentRooms = snapshot.val() || {};
-                displayAvailableRooms();
-            } catch (error) {
-                showStatus('error', '❌ Error al cargar salas');
-            }
-        }
-
-        function displayAvailableRooms() {
-            const list = document.getElementById('roomsList');
-            const rooms = Object.values(currentRooms);
-
-            if (rooms.length === 0) {
-                list.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No hay salas disponibles</p>';
-                return;
-            }
-
-            list.innerHTML = rooms.map(room => {
-                const playerCount = room.players ? Object.keys(room.players).length : 0;
-                const players = room.players || {};
-                const playerNames = Object.values(players)
-                    .map(p => p.name)
-                    .join(', ');
-
+        function updatePlayersList() {
+            const list = document.getElementById('playersList');
+            const playerIds = Object.keys(gameState.players);
+            list.innerHTML = playerIds.map((id, idx) => {
+                const player = gameState.players[id] || {};
+                const isCurrent = (idx === gameState.currentIndex);
                 return `
-                    <div class="room-item" onclick="joinRoom('${room.roomCode}', '${room.roomName}')">
-                        <div class="room-info">
-                            <div class="room-name">🏠 ${room.roomName}</div>
-                            <div class="room-details">
-                                Código: ${room.roomCode} | Jugadores: ${playerCount}/6
-                            </div>
-                            <div class="room-participants">
-                                <strong>Participantes:</strong><br>
-                                ${playerNames || 'Esperando jugadores...'}
-                            </div>
-                        </div>
+                    <div class="player-info ${isCurrent ? 'current' : ''}">
+                        <div>${isCurrent ? '▶ ' : ''}<strong>${player.name}</strong></div>
+                        <div style="font-size: 0.7rem; color: #a0aec0;">📍 ${player.location || 'Centro'}</div>
                     </div>
                 `;
             }).join('');
         }
 
-        async function joinRoom(roomCode, roomName) {
-            const playerName = document.getElementById('playerNameInput').value.trim();
-
-            if (!playerName) {
-                showStatus('error', '❌ Ingresa tu nombre');
+        function updateMyCards() {
+            const cardsDiv = document.getElementById('myCards');
+            if (gameState.myCards.length === 0) {
+                cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.8rem;">Sin cartas.</p>';
                 return;
             }
-
-            gameState.playerName = playerName;
-            gameState.roomCode = roomCode;
-            gameState.roomName = roomName;
-
-            try {
-                showStatus('loading', '⏳ Uniéndose a la sala...');
-                
-                // Agregar jugador a la sala
-                await database.ref(`rooms/${roomCode}/players/${gameState.userId}`).set({
-                    name: playerName,
-                    color: SUSPECTS[Object.keys(currentRooms[roomCode].players || {}).length % SUSPECTS.length],
-                    joinedAt: firebase.database.ServerValue.TIMESTAMP
-                });
-
-                startGameListeners();
-            } catch (error) {
-                showStatus('error', '❌ Error al unirse: ' + error.message);
-            }
-        }
-
-        function startGameListeners() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('gameContainer').classList.add('active');
-
-            // Mostrar datos de la sala
-            document.getElementById('roomNameDisplay').textContent = gameState.roomName;
-
-            // Escuchar cambios en jugadores
-            database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snapshot) => {
-                gameState.players = snapshot.val() || {};
-                updatePlayersList();
-            });
-
-            // Escuchar turno actual
-            database.ref(`rooms/${gameState.roomCode}/gameState/currentTurn`).on('value', (snapshot) => {
-                const currentUserId = snapshot.val();
-                if (currentUserId) {
-                    const currentPlayer = gameState.players[currentUserId]?.name || 'Desconocido';
-                    document.getElementById('currentPlayer').textContent = currentPlayer;
-                }
-            });
-
-            // Escuchar mensajes
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).on('child_added', (snapshot) => {
-                const msg = snapshot.val();
-                if (msg) {
-                    addMessage(msg.type, msg.text);
-                }
-            });
-
-            // Dibujar tablero
-            drawBoard();
-            updateMyCards();
-            buildNotebookUI();
-        }
-
-        function updatePlayersList() {
-            const list = document.getElementById('playersList');
-            list.innerHTML = Object.entries(gameState.players)
-                .map(([id, player]) => {
-                    const isCurrent = id === Object.keys(gameState.players)[gameState.currentIndex];
-                    return `
-                        <div class="player-item">
-                            <div>
-                                <div class="player-name">👤 ${player.name}</div>
-                                <div class="player-status">${player.color}</div>
-                            </div>
-                            ${isCurrent ? '⭐' : ''}
-                        </div>
-                    `;
-                })
-                .join('');
-        }
-
-        function generateMystery() {
-            return {
-                suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
-                weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
-                room: ROOMS[Math.floor(Math.random() * ROOMS.length)]
-            };
-        }
-
-        function drawBoard() {
-            const board = document.getElementById('gameBoard');
-            board.innerHTML = '';
-            for (let i = 0; i < 100; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell room';
-                cell.textContent = i;
-                board.appendChild(cell);
-            }
-        }
-
-        function updateMyCards() {
-            // Implementar lógica para mostrar mis cartas
-            const cardsDiv = document.getElementById('myCards');
-            cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.8rem;">Esperando distribuición...</p>';
+            cardsDiv.innerHTML = gameState.myCards.map(card => {
+                let type = SUSPECTS.includes(card) ? 'suspect' : WEAPONS.includes(card) ? 'weapon' : 'room';
+                return `<div class="card ${type}"><strong>${card}</strong></div>`;
+            }).join('');
         }
 
         function buildNotebookUI() {
             const container = document.getElementById('notebookContainer');
             let html = `
                 <table class="detective-table">
-                    <tr><th>Sospechosos</th><th>✓</th></tr>
-                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
+                    <tr><th>Sospechosos</th><th>Tachado</th></tr>
+                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" ${gameState.notebookMarks[s] ? 'checked' : ''} onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
                 </table>
                 <table class="detective-table" style="margin-top: 8px;">
-                    <tr><th>Armas</th><th>✓</th></tr>
-                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
+                    <tr><th>Armas</th><th>Tachado</th></tr>
+                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" ${gameState.notebookMarks[w] ? 'checked' : ''} onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
                 </table>
                 <table class="detective-table" style="margin-top: 8px;">
-                    <tr><th>Habitaciones</th><th>✓</th></tr>
-                    ${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
+                    <tr><th>Habitaciones</th><th>Tachado</th></tr>
+                    ${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" ${gameState.notebookMarks[r] ? 'checked' : ''} onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
                 </table>
             `;
             container.innerHTML = html;
@@ -879,16 +1253,31 @@
             gameState.notebookMarks[item] = isChecked;
         }
 
-        function rollDice() {
-            gameState.diceResult = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
-            document.getElementById('diceDisplay').textContent = `🎲 ${gameState.diceResult}`;
-            addMessage('info', `🎲 Se lanzaron los dados: ${gameState.diceResult}`);
-        }
-
         function showNotebookModal() { document.getElementById('notebookModal').classList.add('active'); }
         function closeNotebookModal() { document.getElementById('notebookModal').classList.remove('active'); }
 
         function showSuggestionModal() {
+            const playerIds = Object.keys(gameState.players);
+            const currentTurnUserId = playerIds[gameState.currentIndex];
+
+            if (currentTurnUserId !== gameState.userId) {
+                addMessage('error', '❌ Solo puedes hacer preguntas en tu turno.');
+                return;
+            }
+
+            if (gameState.myLocation.startsWith('Pasillo_')) {
+                addMessage('error', '❌ Debes estar dentro de una habitación para hacer una pregunta.');
+                return;
+            }
+
+            const suspectSel = document.getElementById('sugSuspectSelect');
+            const weaponSel = document.getElementById('sugWeaponSelect');
+            const roomInput = document.getElementById('sugRoomInput');
+
+            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
+            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
+            roomInput.value = gameState.myLocation;
+
             document.getElementById('suggestionModal').classList.add('active');
         }
 
@@ -899,16 +1288,102 @@
             const weapon = document.getElementById('sugWeaponSelect').value;
             const room = document.getElementById('sugRoomInput').value;
 
-            if (!suspect || !weapon) {
-                addMessage('error', '❌ Completa los campos');
+            if (!suspect || !weapon || !room) {
+                addMessage('error', '❌ Selecciona el sospechoso y el arma.');
                 return;
             }
 
             closeSuggestionModal();
-            addMessage('success', `❓ ${gameState.playerName} pregunta: [${suspect} | ${weapon}]`);
+
+            const playerIds = Object.keys(gameState.players);
+            const myIdx = playerIds.indexOf(gameState.userId);
+            const nextPlayerId = playerIds[(myIdx + 1) % playerIds.length];
+
+            const suggestionData = {
+                authorId: gameState.userId,
+                authorName: gameState.playerName,
+                targetPlayerId: nextPlayerId,
+                suspect: suspect,
+                weapon: weapon,
+                room: room,
+                originalAuthorId: gameState.userId
+            };
+
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+                type: 'suggestion',
+                text: `❓ ${gameState.playerName} pregunta en [${room}]: [ Sospechoso: ${suspect} | Arma: ${weapon} ]`
+            });
+
+            await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestionData);
+        }
+
+        function handleIncomingSuggestion(suggestion) {
+            gameState.activeSuggestion = suggestion;
+            const matching = gameState.myCards.filter(c => c === suggestion.suspect || c === suggestion.weapon || c === suggestion.room);
+
+            if (matching.length > 0) {
+                const select = document.getElementById('matchingCardsSelect');
+                select.innerHTML = matching.map(c => `<option value="${c}">${c}</option>`).join('');
+                document.getElementById('replySuggestionModal').classList.add('active');
+            } else {
+                if (suggestion.originalAuthorId === gameState.userId) {
+                    database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+                        type: 'info',
+                        text: `🛡️ Ningún jugador posee las cartas de la pregunta.`
+                    });
+                    database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
+                } else {
+                    passSuggestionToNext(suggestion);
+                }
+            }
+        }
+
+        async function passSuggestionToNext(suggestion) {
+            const playerIds = Object.keys(gameState.players);
+            const currentTargetIdx = playerIds.indexOf(suggestion.targetPlayerId);
+            const nextPlayerId = playerIds[(currentTargetIdx + 1) % playerIds.length];
+
+            if (nextPlayerId === suggestion.originalAuthorId) {
+                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+                    type: 'info',
+                    text: `🛡️ Nadie pudo responder a la pregunta.`
+                });
+                database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
+            } else {
+                suggestion.targetPlayerId = nextPlayerId;
+                database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestion);
+            }
+        }
+
+        async function confirmReplySuggestion() {
+            document.getElementById('replySuggestionModal').classList.remove('active');
+
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
+                type: 'success',
+                text: `👁️ ${gameState.playerName} mostró una carta en privado.`
+            });
+
+            database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
         }
 
         function showAccusationModal() {
+            if (gameState.myLocation !== 'Centro') {
+                addMessage('error', '❌ Debes estar en el Centro para acusar.');
+                return;
+            }
+
+            const suspectSel = document.getElementById('suspectSelect');
+            const weaponSel = document.getElementById('weaponSelect');
+            const roomSel = document.getElementById('roomSelect');
+
+            const unmarketSuspects = SUSPECTS.filter(s => !gameState.notebookMarks[s]);
+            const unmarketWeapons = WEAPONS.filter(w => !gameState.notebookMarks[w]);
+            const unmarketRooms = uniqueRoomsList.filter(r => !gameState.notebookMarks[r]);
+
+            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketSuspects.map(s => `<option value="${s}">${s}</option>`).join('');
+            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketWeapons.map(w => `<option value="${w}">${w}</option>`).join('');
+            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketRooms.map(r => `<option value="${r}">${r}</option>`).join('');
+
             document.getElementById('accusationModal').classList.add('active');
         }
 
@@ -919,18 +1394,21 @@
             const weapon = document.getElementById('weaponSelect').value;
             const room = document.getElementById('roomSelect').value;
 
-            if (!suspect || !weapon || !room) {
-                addMessage('error', '❌ Completa todos los campos');
-                return;
-            }
+            if (!suspect || !weapon || !room) { addMessage('error', '❌ Completa los 3 campos.'); return; }
 
+            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
+            const mystery = mysterySnap.val();
+
+            const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
+            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación. Era: ${mystery.suspect}, ${mystery.weapon}, ${mystery.room}`;
+            
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
             closeAccusationModal();
-            addMessage('success', `🎯 ${gameState.playerName} acusa: [${suspect} | ${weapon} | ${room}]`);
         }
 
         function addMessage(type, text) {
             const log = document.getElementById('messageLog');
-            if (!log) return;
+            if(!log) return;
             const div = document.createElement('div');
             div.className = `message ${type}`;
             div.textContent = text;
@@ -938,21 +1416,9 @@
             log.scrollTop = log.scrollHeight;
         }
 
-        function showStatus(type, message) {
-            const status = document.getElementById('statusMessage');
-            status.className = `status-message ${type}`;
-            status.textContent = message;
-            status.style.display = 'block';
-            if (type !== 'loading') {
-                setTimeout(() => status.style.display = 'none', 3000);
-            }
-        }
-
         function leaveGame() {
-            if (confirm('¿Deseas abandonar la partida?')) {
-                if (gameState.roomCode) {
-                    database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}`).remove();
-                }
+            if (confirm('¿Estás seguro de que deseas abandonar la partida?')) {
+                database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}`).remove();
                 location.reload();
             }
         }
