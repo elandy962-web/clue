@@ -586,7 +586,7 @@
                 <div class="game-info">
                     <div>
                         <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #f6ad55;">-</span><br>
-                        <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Estudio</span> | 
+                        <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Centro</span> | 
                         <strong>Pasos:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
                     </div>
                     <div>
@@ -1194,7 +1194,6 @@
                     stepIndicator = `<div class="step-indicator">Paso ${stepNumber}</div>`;
                 }
 
-                // Renderizamos la cabecera con el nombre de la habitación si es la casilla principal (esquina superior izquierda de la sala 2x2)
                 let roomTitleHtml = '';
                 if (tile.name && tile.name !== '✨') {
                     roomTitleHtml = `<div class="room-title-box">${tile.name}</div>`;
