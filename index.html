@@ -289,25 +289,33 @@
 
         .room-name {
             font-weight: bold;
-            font-size: 0.75rem;
-            line-height: 1.1;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
-            padding: 2px 2px;
-            color: #fbd38d;
+            font-size: 1.2rem;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            padding: 4px 2px;
+            color: #ffeb3b;
             z-index: 3;
-            background: rgba(0,0,0,0.4);
-            border-radius: 2px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .door-indicator {
             position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #38a169;
-            border: 1.5px solid #68d391;
+            width: 14px;
+            height: 14px;
+            background: #00ff00;
+            border: 2px solid #00dd00;
             border-radius: 2px;
-            box-shadow: 0 0 3px #38a169;
+            box-shadow: 0 0 6px #00ff00, 0 0 12px #00ff00;
             z-index: 5;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
         }
 
         .players-in-tile {
@@ -567,6 +575,9 @@
 
         <div id="loginScreen" class="login-screen">
             <h2>Bienvenido Detective</h2>
+            <div style="text-align: center; color: #48bb78; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem;">
+                🎮 <span id="versionDisplay">Versión 1.1</span>
+            </div>
             <div class="input-group">
                 <input type="text" id="playerName" placeholder="Tu nombre" maxlength="15">
             </div>
@@ -720,6 +731,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
+        // ============================================
+        // VERSIÓN DEL JUEGO
+        // ============================================
+        const GAME_VERSION = "1.1";
+        const VERSION_INFO = "v1.1 - Nombres y puertas visibles";
+        console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
+        
         const firebaseConfig = {
             apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
             authDomain: "clue-game-47c7e.firebaseapp.com",
@@ -781,12 +799,13 @@
                     let isTopLeft = (x === foundRoom.startX && y === foundRoom.startY);
                     BOARD_LAYOUT.push({
                         id: foundRoom.id,
-                        name: isTopLeft ? foundRoom.name : '',
+                        name: foundRoom.name,  // Mostrar nombre en TODOS los tiles de la habitación
                         type: foundRoom.type,
                         x: x,
                         y: y,
                         isPrimary: isTopLeft,
-                        cssClass: foundRoom.cssClass
+                        cssClass: foundRoom.cssClass,
+                        roomId: foundRoom.id  // Agregar roomId para referencia
                     });
                 } else {
                     let isEvent = (x === 2 && y === 2) || (x === 7 && y === 7);
@@ -1220,16 +1239,16 @@
 
                 // Detectar si esta casilla tiene una puerta
                 let doorIndicator = '';
-                if (tile.type === 'room') {
-                    const room = roomsDef.find(r => r.id === tile.id);
-                    if (room && roomDoors[room.name]) {
-                        const doors = roomDoors[room.name];
-                        const relX = tile.x - room.startX;
-                        const relY = tile.y - room.startY;
+                if (tile.roomId && roomDoors[tile.roomId]) {
+                    const roomDef = roomsDef.find(r => r.id === tile.roomId);
+                    if (roomDef) {
+                        const doors = roomDoors[tile.roomId];
+                        const relX = tile.x - roomDef.startX;
+                        const relY = tile.y - roomDef.startY;
                         
                         doors.forEach(([doorX, doorY]) => {
                             if (doorX === relX && doorY === relY) {
-                                doorIndicator = '<div class="door-indicator" title="🚪 Puerta"></div>';
+                                doorIndicator = '<div class="door-indicator" title="🚪 Puerta">🚪</div>';
                             }
                         });
                     }
@@ -1467,6 +1486,9 @@
             }
         }
 
+        // Mostrar versión
+        document.getElementById('versionDisplay').textContent = `Versión ${GAME_VERSION} - ${VERSION_INFO}`;
+        
         authenticateUser();
     </script>
 </body>
