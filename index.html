@@ -813,8 +813,8 @@
         // ============================================
         // VERSIÓN DEL JUEGO
         // ============================================
-        const GAME_VERSION = "1.7.5";
-        const VERSION_INFO = "v1.7.5 - Puertas en posiciones exactas";
+        const GAME_VERSION = "1.7.6";
+        const VERSION_INFO = "v1.7.6 - Puertas visibles con offset aumentado";
         console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
         
         const firebaseConfig = {
@@ -1365,13 +1365,13 @@
                     tilesDoorsFound.forEach(([doorX, doorY, side]) => {
                         let posStyle = '';
                         if (side === 'top') {
-                            posStyle = 'top: -15px; left: 50%; transform: translateX(-50%);';
+                            posStyle = 'top: -30px; left: 50%; transform: translateX(-50%);';
                         } else if (side === 'bottom') {
-                            posStyle = 'bottom: -15px; left: 50%; transform: translateX(-50%);';
+                            posStyle = 'bottom: -30px; left: 50%; transform: translateX(-50%);';
                         } else if (side === 'left') {
-                            posStyle = 'left: -15px; top: 50%; transform: translateY(-50%);';
+                            posStyle = 'left: -30px; top: 50%; transform: translateY(-50%);';
                         } else if (side === 'right') {
-                            posStyle = 'right: -15px; top: 50%; transform: translateY(-50%);';
+                            posStyle = 'right: -30px; top: 50%; transform: translateY(-50%);';
                         }
                         doorIndicator += `<div class="door-indicator" style="${posStyle}"></div>`;
                     });
