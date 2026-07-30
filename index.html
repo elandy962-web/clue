@@ -206,7 +206,7 @@
             border: 1px solid #4a5568;
         }
 
-        /* TABLERO CLUE 10x10 */
+        /* TABLERO CLUE 10x10 ADAPTABLE */
         .clue-board-wrapper {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -230,16 +230,16 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2px;
+            padding: 1px;
             text-align: center;
             cursor: pointer;
             transition: all 0.15s ease;
             position: relative;
-            overflow: visible;
-            aspect-ratio: 1 / 1;
-            min-height: 35px;
+            font-size: 0.5rem;
+            overflow: hidden;
         }
 
+        /* Habitaciones (2x2) */
         .board-tile.room {
             background: #1f2937;
             color: #f3f4f6;
@@ -256,16 +256,7 @@
             background: #744210;
         }
 
-        .room-estudio { grid-area: 1 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-vestibulo { grid-area: 1 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-salon { grid-area: 1 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-biblioteca { grid-area: 5 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-centro { grid-area: 5 / 5 / span 2 / span 2; z-index: 2; background: #2a1b15 !important; border: 2px solid #dd6b20 !important; color: #fbd38d !important; aspect-ratio: auto; }
-        .room-comedor { grid-area: 5 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-billar { grid-area: 9 / 1 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-invernadero { grid-area: 9 / 5 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-        .room-salonbaile { grid-area: 9 / 9 / span 2 / span 2; z-index: 2; aspect-ratio: auto; }
-
+        /* Pasillos */
         .board-tile.hallway {
             background: #2b3b4e;
             color: #cbd5e0;
@@ -287,66 +278,39 @@
             border: 1px solid #b794f4;
         }
 
-        /* CONTENEDOR VISIBLE PARA EL NOMBRE DE CADA HABITACIÓN 2x2 */
-        .room-title-box {
-            font-weight: bold;
-            font-size: 0.9rem;
-            line-height: 1.3;
+        .board-tile.center-tile {
+            background: #2a1b15;
             color: #fbd38d;
-            background: rgba(15, 23, 42, 0.98);
-            padding: 6px 10px;
-            border-radius: 4px;
             border: 2px solid #dd6b20;
-            margin: 0 auto;
-            text-align: center;
-            z-index: 5;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.8);
-            max-width: 90%;
-            word-break: break-word;
-            letter-spacing: 0.5px;
-            display: inline-block;
+        }
+
+        .room-name {
+            font-weight: bold;
+            font-size: 0.52rem;
+            line-height: 1;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.9);
+            padding: 0 1px;
         }
 
         .players-in-tile {
             display: flex;
             flex-wrap: wrap;
-            gap: 2px;
+            gap: 1px;
             justify-content: center;
-            z-index: 6;
-            margin-top: 2px;
+            z-index: 2;
         }
 
         .player-token {
             background: #dd6b20;
             color: white;
-            font-size: 0.55rem;
-            padding: 2px 4px;
-            border-radius: 4px;
+            font-size: 0.45rem;
+            padding: 1px 2px;
+            border-radius: 3px;
             font-weight: bold;
             border: 1px solid #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
-        .step-indicator {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            background: #48bb78;
-            color: white;
-            font-size: 0.6rem;
-            font-weight: bold;
-            padding: 2px 4px;
-            border-radius: 3px;
-            z-index: 7;
-            box-shadow: 0 0 4px rgba(72, 187, 120, 0.8);
-            animation: pulse 0.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
+        /* SIDEBAR Y CONTROLES */
         .sidebar {
             display: flex;
             flex-direction: column;
@@ -377,33 +341,18 @@
         }
 
         .player-info {
-            padding: 8px 10px;
+            padding: 4px 6px;
             background: #111827;
             border-radius: 6px;
-            margin-bottom: 6px;
-            border-left: 4px solid #2b6cb0;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 4px;
+            border-left: 3px solid #4a5568;
+            font-size: 0.8rem;
         }
 
         .player-info.current {
             background: #2d261b;
             border-left-color: #dd6b20;
             font-weight: bold;
-            box-shadow: 0 0 8px rgba(221, 107, 32, 0.4);
-        }
-        
-        .player-name {
-            color: #fbd38d;
-            font-weight: bold;
-        }
-        
-        .player-location {
-            font-size: 0.75rem;
-            color: #a0aec0;
-            margin-top: 2px;
         }
 
         .cards-section {
@@ -436,20 +385,6 @@
             margin-top: 4px;
         }
         .action-buttons button { width: 100%; }
-
-        .btn-leave-safe {
-            grid-column: span 2;
-            background: #4a1515 !important;
-            color: #fc8181 !important;
-            font-size: 0.75rem !important;
-            padding: 6px !important;
-            opacity: 0.85;
-            border: 1px dashed #e53e3e !important;
-        }
-        .btn-leave-safe:hover {
-            opacity: 1;
-            background: #742a2a !important;
-        }
 
         .message-log {
             background: #111827;
@@ -575,9 +510,10 @@
     <div class="container">
         <div class="header">
             <h1>🔍 Clue - Edición Clásica en Español</h1>
-            <p>Habitaciones 2x2, Nombres Visibles y Fichas de Participantes</p>
+            <p>Tablero Adaptable para Móviles</p>
         </div>
 
+        <!-- PANTALLA DE INICIO -->
         <div id="loginScreen" class="login-screen">
             <h2>Bienvenido Detective</h2>
             <div class="input-group">
@@ -594,6 +530,7 @@
             <div id="roomsList" class="rooms-list"></div>
         </div>
 
+        <!-- PANTALLA DE JUEGO -->
         <div id="gameScreen" class="game-container">
             <div class="board-section">
                 <div class="board-header">
@@ -604,7 +541,7 @@
                 <div class="game-info">
                     <div>
                         <strong>Turno:</strong> <span id="currentTurnInfo" style="color: #f6ad55;">-</span><br>
-                        <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Centro</span> | 
+                        <strong>Posición:</strong> <span id="myLocation" style="color: #48bb78; font-weight: bold;">Cocina</span> | 
                         <strong>Pasos:</strong> <span id="stepsAvailable" style="color: #ecc94b; font-weight: bold;">0</span>
                     </div>
                     <div>
@@ -639,20 +576,20 @@
                     <div class="action-buttons" id="actionButtonsContainer">
                         <button id="rollDiceBtn" class="btn btn-primary btn-small" onclick="rollDice()" style="background: #38a169;" disabled>🎲 Tirar</button>
                         <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #3182ce;">📓 Libreta</button>
-                        <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">❓ Preguntar</button>
+                        <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">💡 Sugerencia</button>
                         <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
-                        <button id="endMoveBtn" class="btn btn-secondary btn-small" onclick="finishMovement()" style="background: #d69e2e; grid-column: span 2; display:none;">✅ Terminar Movimiento</button>
-                        <button class="btn btn-secondary btn-small btn-leave-safe" onclick="leaveGame()">🚪 Salir de la partida</button>
+                        <button class="btn btn-secondary btn-small" onclick="leaveGame()" style="background: #e53e3e; grid-column: span 2;">🚪 Salir</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL DE LIBRETA DE NOTAS -->
     <div id="notebookModal" class="modal">
         <div class="modal-content">
             <h2>📓 Libreta de Detective</h2>
-            <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 10px;">Tus cartas iniciales se marcan automáticamente.</p>
+            <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 10px;">Marca lo que vas descartando para tus teorías.</p>
             <div id="notebookContainer"></div>
             <div style="margin-top: 12px; text-align: right;">
                 <button class="btn btn-secondary btn-small" onclick="closeNotebookModal()">Cerrar</button>
@@ -660,10 +597,10 @@
         </div>
     </div>
 
+    <!-- MODAL DE SUGERENCIA -->
     <div id="suggestionModal" class="modal">
         <div class="modal-content">
-            <h2>❓ Hacer Pregunta</h2>
-            <p style="font-size: 0.75rem; color: #a0aec0; margin-bottom: 8px;">La pregunta se realiza automáticamente en tu habitación actual.</p>
+            <h2>💡 Hacer Sugerencia</h2>
             <div class="selection-group">
                 <label>Sospechoso:</label>
                 <select id="sugSuspectSelect"><option value="">-- Selecciona --</option></select>
@@ -673,8 +610,8 @@
                 <select id="sugWeaponSelect"><option value="">-- Selecciona --</option></select>
             </div>
             <div class="selection-group">
-                <label>Habitación (Tu posición actual):</label>
-                <input type="text" id="sugRoomInput" readonly style="width: 100%; padding: 10px; border: 2px solid #4a5568; background: #111827; color: #f6ad55; border-radius: 8px; font-size: 0.9rem; font-weight: bold;">
+                <label>Habitación:</label>
+                <select id="sugRoomSelect"><option value="">-- Selecciona --</option></select>
             </div>
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="submitSuggestion()">✅ Preguntar</button>
@@ -683,9 +620,10 @@
         </div>
     </div>
 
+    <!-- MODAL DE RESPUESTA DE SUGERENCIA -->
     <div id="replySuggestionModal" class="modal">
         <div class="modal-content" style="text-align: center;">
-            <h2>👁️ Responder Pregunta</h2>
+            <h2>👁️ Responder Sugerencia</h2>
             <p style="color: #a0aec0; margin-bottom: 10px; font-size: 0.85rem;" id="replySuggestionPrompt">Posees cartas coincidentes. Elige cuál mostrarle:</p>
             <div class="selection-group">
                 <label>Carta a mostrar en privado:</label>
@@ -695,6 +633,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE ACUSACIÓN -->
     <div id="accusationModal" class="modal">
         <div class="modal-content">
             <h2>🔍 Plantear Teoría / Acusación Final</h2>
@@ -717,6 +656,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE EVENTO -->
     <div id="eventModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <h2>✨ ¡Casilla de Evento Especial! ✨</h2>
@@ -728,55 +668,67 @@
         </div>
     </div>
 
-    <!-- Sin Firebase - Juego local -->
+    <!-- SCRIPTS DE FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // Juego sin Firebase - Versión Local
-        // Usando generador de ID único local
-        function generateUserId() {
-            return 'user_' + Math.random().toString(36).substr(2, 9);
-        }
+        const firebaseConfig = {
+            apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
+            authDomain: "clue-game-47c7e.firebaseapp.com",
+            databaseURL: "https://clue-game-47c7e-default-rtdb.firebaseio.com",
+            projectId: "clue-game-47c7e",
+            storageBucket: "clue-game-47c7e.firebasestorage.app",
+            messagingSenderId: "133188091784",
+            appId: "1:133188091784:web:1d6c070ddc535951b0043d"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
         const SUSPECTS = ['Señorita Amapola', 'Coronel Mostaza', 'Señora White', 'Prado', 'Señora Fucsia', 'Profesor Cerillo'];
         const WEAPONS = ['Candelabro', 'Cuchillo', 'Tubo de Plomo', 'Revólver', 'Cuerda', 'Llave Inglesa'];
         
         const EVENT_CARDS = [
             { title: "🌟 Comodín de Avance Rápido", desc: "Duplicas tus pasos en tu siguiente turno." },
-            { title: "📜 Pasadizo Secreto", desc: "Puedes formular una pregunta libre sin importar la habitación." },
+            { title: "📜 Pasadizo Secreto", desc: "Puedes declarar una sospecha libre sin importar la habitación." },
             { title: "🛡️ Escudo del Detective", desc: "Protección contra teorías erróneas en el centro." },
             { title: "💰 Recompensa de Inteligencia", desc: "Un jugador aleatorio debe mostrarte una carta." },
             { title: "⚡ Paso Relámpago", desc: "Se te conceden 3 pasos extra de movimiento inmediato." }
         ];
 
         const BOARD_LAYOUT = [];
-        
+        // Habitaciones exactas de 2x2 casillas distribuidas simétricamente en el tablero 10x10
         const roomsDef = [
-            { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, startY: 0, cssClass: 'room-estudio' },
-            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, startY: 0, cssClass: 'room-vestibulo' },
-            { id: 'Salon', name: 'Salón', type: 'room', startX: 8, startY: 0, cssClass: 'room-salon' },
-            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', startX: 0, startY: 4, cssClass: 'room-biblioteca' },
-            { id: 'Centro', name: 'Centro', type: 'center', startX: 4, startY: 4, cssClass: 'room-centro' },
-            { id: 'Comedor', name: 'Comedor', type: 'room', startX: 8, startY: 4, cssClass: 'room-comedor' },
-            { id: 'Billar', name: 'Billar', type: 'room', startX: 0, startY: 8, cssClass: 'room-billar' },
-            { id: 'Invernadero', name: 'Invernadero', type: 'room', startX: 4, startY: 8, cssClass: 'room-invernadero' },
-            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', startX: 8, startY: 8, cssClass: 'room-salonbaile' }
+            { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, endX: 1, startY: 0, endY: 1 },
+            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, endX: 5, startY: 0, endY: 1 },
+            { id: 'Salon', name: 'Salón', type: 'room', startX: 8, endX: 9, startY: 0, endY: 1 },
+            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', startX: 0, endX: 1, startY: 4, endY: 5 },
+            { id: 'Centro', name: 'Centro', type: 'center', startX: 4, endX: 5, startY: 4, endY: 5 },
+            { id: 'Comedor', name: 'Comedor', type: 'room', startX: 8, endX: 9, startY: 4, endY: 5 },
+            { id: 'Billar', name: 'Billar', type: 'room', startX: 0, endX: 1, startY: 8, endY: 9 },
+            { id: 'Invernadero', name: 'Invernadero', type: 'room', startX: 4, endX: 5, startY: 8, endY: 9 },
+            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', startX: 8, endX: 9, startY: 8, endY: 9 }
         ];
 
+        // Se usa Cocina como la 9va habitación o equivalente si se requiere mantener la lista de 10 únicas
+        // (Ajustamos para completar el set clásico de 9 habitaciones principales de 2x2)
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
         for (let y = 0; y < 10; y++) {
             for (let x = 0; x < 10; x++) {
-                let foundRoom = roomsDef.find(r => x >= r.startX && x < r.startX + 2 && y >= r.startY && y < r.startY + 2);
+                let foundRoom = roomsDef.find(r => x >= r.startX && x <= r.endX && y >= r.startY && y <= r.endY);
                 if (foundRoom) {
-                    let isTopLeft = (x === foundRoom.startX && y === foundRoom.startY);
+                    let isPrimary = (x === foundRoom.startX && y === foundRoom.startY);
                     BOARD_LAYOUT.push({
                         id: foundRoom.id,
-                        name: isTopLeft ? foundRoom.name : '',
+                        name: isPrimary ? foundRoom.name : '',
                         type: foundRoom.type,
                         x: x,
                         y: y,
-                        isPrimary: isTopLeft,
-                        cssClass: foundRoom.cssClass
+                        isPrimary: isPrimary
                     });
                 } else {
                     let isEvent = (x === 2 && y === 2) || (x === 7 && y === 7);
@@ -786,8 +738,7 @@
                         type: isEvent ? 'event-tile' : 'hallway',
                         x: x,
                         y: y,
-                        isPrimary: true,
-                        cssClass: ''
+                        isPrimary: true
                     });
                 }
             }
@@ -802,21 +753,25 @@
             playerIdsOrder: [],
             myCards: [],
             currentIndex: 0,
-            myLocation: 'Centro',
+            myLocation: 'Estudio',
             stepsAvailable: 0,
             hasRolled: false,
             notebookMarks: {},
             activeSuggestion: null
         };
 
-        function authenticateUser() {
-            // Autenticación local - generar ID único
-            gameState.userId = generateUserId();
-            showStatus('✅ Conectado', 'success');
-            setTimeout(() => {
-                document.getElementById('statusMessage').innerHTML = '';
-                loadPublicRooms();
-            }, 800);
+        async function authenticateUser() {
+            try {
+                const result = await auth.signInAnonymously();
+                gameState.userId = result.user.uid;
+                showStatus('✅ Conectado', 'success');
+                setTimeout(() => {
+                    document.getElementById('statusMessage').innerHTML = '';
+                    loadPublicRooms();
+                }, 800);
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
         }
 
         function showStatus(message, type = 'loading') {
@@ -825,7 +780,7 @@
             statusDiv.textContent = message;
         }
 
-        function createNewRoom() {
+        async function createNewRoom() {
             const name = document.getElementById('playerName').value.trim();
             if (!name) { showStatus('❌ Ingresa tu nombre', 'error'); return; }
 
@@ -835,46 +790,22 @@
             showStatus('⏳ Creando sala...', 'loading');
 
             try {
-                // Guardar sala en localStorage
-                let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
-                
                 const roomData = {
                     host: gameState.userId,
                     players: {
-                        [gameState.userId]: { name: gameState.playerName, location: 'Centro', cards: [] }
+                        [gameState.userId]: { name: gameState.playerName, location: 'Estudio', cards: [] }
                     },
-                    gameState: { currentIndex: 0, dice: 0, messages: [] },
-                    mystery: generateMystery()
+                    gameState: { currentIndex: 0, dice: 0, messages: [] }
                 };
-                
-                allRooms[gameState.roomCode] = roomData;
-                localStorage.setItem('clueRooms', JSON.stringify(allRooms));
-                
-                setTimeout(() => startGame(), 500);
+                await database.ref(`rooms/${gameState.roomCode}`).set(roomData);
+                initializeMysteryQuietly();
+                startGame();
             } catch (error) {
                 showStatus('❌ Error: ' + error.message, 'error');
             }
         }
-        
-        function generateMystery() {
-            return {
-                suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
-                weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
-                room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
-            };
-        }
-        
-        // Función helper para guardar el estado del juego en localStorage
-        function saveGameState() {
-            let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
-            if (allRooms[gameState.roomCode]) {
-                allRooms[gameState.roomCode].players = gameState.players;
-                allRooms[gameState.roomCode].gameState = allRooms[gameState.roomCode].gameState || {};
-                localStorage.setItem('clueRooms', JSON.stringify(allRooms));
-            }
-        }
 
-        function joinExistingRoom() {
+        async function joinExistingRoom() {
             const name = document.getElementById('playerName').value.trim();
             const code = document.getElementById('roomCode').value.trim().toUpperCase();
             if (!name || !code) { showStatus('❌ Ingresa nombre y código', 'error'); return; }
@@ -884,54 +815,39 @@
             showStatus('⏳ Conectando...', 'loading');
 
             try {
-                // Buscar sala en localStorage
-                let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
-                
-                if (!allRooms[code]) { 
-                    showStatus('❌ Sala no encontrada', 'error'); 
-                    return; 
-                }
+                const roomSnapshot = await database.ref(`rooms/${code}`).get();
+                if (!roomSnapshot.exists()) { showStatus('❌ Sala no encontrada', 'error'); return; }
 
-                const roomData = allRooms[code];
+                const roomData = roomSnapshot.val();
                 gameState.isHost = (roomData.host === gameState.userId);
 
-                // Agregar jugador a la sala
-                roomData.players[gameState.userId] = {
-                    name: gameState.playerName, 
-                    location: 'Centro', 
-                    cards: []
-                };
-                
-                allRooms[code] = roomData;
-                localStorage.setItem('clueRooms', JSON.stringify(allRooms));
-                
-                setTimeout(() => startGame(), 500);
+                await database.ref(`rooms/${code}/players/${gameState.userId}`).set({
+                    name: gameState.playerName, location: 'Estudio', cards: []
+                });
+                startGame();
             } catch (error) {
                 showStatus('❌ Error: ' + error.message, 'error');
             }
         }
 
         function loadPublicRooms() {
-            // Cargar salas desde localStorage
-            const roomsList = document.getElementById('roomsList');
-            const allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
-            
-            if (Object.keys(allRooms).length === 0) { 
-                roomsList.innerHTML = '<p style="color: #888; font-size: 0.8rem;">No hay salas activas</p>'; 
-                return; 
-            }
+            database.ref('rooms').on('value', (snapshot) => {
+                const roomsList = document.getElementById('roomsList');
+                const data = snapshot.val();
+                if (!data) { roomsList.innerHTML = '<p style="color: #888; font-size: 0.8rem;">No hay salas activas</p>'; return; }
 
-            let html = '<strong style="color: #f6ad55;">Salas Disponibles:</strong>';
-            Object.entries(allRooms).forEach(([code, room]) => {
-                const playerCount = Object.keys(room.players || {}).length;
-                html += `
-                    <div class="room-item">
-                        <div><strong>${code}</strong> (${playerCount}/6 jug.)</div>
-                        <button class="btn btn-secondary btn-small" onclick="setRoomCode('${code}')">Entrar</button>
-                    </div>
-                `;
+                let html = '<strong>Salas Disponibles:</strong>';
+                Object.entries(data).slice(-4).forEach(([code, room]) => {
+                    const playerCount = Object.keys(room.players || {}).length;
+                    html += `
+                        <div class="room-item">
+                            <div><strong>${code}</strong> (${playerCount} jug.)</div>
+                            <button class="btn btn-secondary btn-small" onclick="setRoomCode('${code}')">Entrar</button>
+                        </div>
+                    `;
+                });
+                roomsList.innerHTML = html;
             });
-            roomsList.innerHTML = html;
         }
 
         function setRoomCode(code) { document.getElementById('roomCode').value = code; }
@@ -960,58 +876,43 @@
         }
 
         function initializeMysteryQuietly() {
-            // Ya se genera en createNewRoom, no necesita hacer nada aquí
+            const mystery = {
+                suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
+                weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
+                room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
+            };
+            database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
         }
 
-        function manualDistributeCards() {
+        async function manualDistributeCards() {
             if (!gameState.isHost) return;
 
-            let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
-            const roomData = allRooms[gameState.roomCode];
-            
-            if (!roomData) return;
+            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
+            let mystery = mysterySnap.val();
 
-            const availableSuspects = [...SUSPECTS];
-            const availableWeapons = [...WEAPONS];
-            const availableRooms = [...uniqueRoomsList];
+            if (!mystery) {
+                mystery = {
+                    suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
+                    weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
+                    room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
+                };
+                await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+            }
 
-            const secretSuspect = availableSuspects.splice(Math.floor(Math.random() * availableSuspects.length), 1)[0];
-            const secretWeapon = availableWeapons.splice(Math.floor(Math.random() * availableWeapons.length), 1)[0];
-            const secretRoom = availableRooms.splice(Math.floor(Math.random() * availableRooms.length), 1)[0];
+            const allCards = [...SUSPECTS, ...WEAPONS, ...uniqueRoomsList];
+            const shuffled = allCards.sort(() => Math.random() - 0.5);
+            const playerIds = Object.keys(gameState.players);
+            const cardsPerPlayer = Math.floor((allCards.length - 3) / playerIds.length);
 
-            const mystery = {
-                suspect: secretSuspect,
-                weapon: secretWeapon,
-                room: secretRoom
-            };
-            
-            roomData.mystery = mystery;
-
-            const mazoRestante = [...availableSuspects, ...availableWeapons, ...availableRooms].sort(() => Math.random() - 0.5);
-            const playerIds = Object.keys(roomData.players);
-
-            // Limpiar cartas de todos
-            playerIds.forEach(id => {
-                roomData.players[id].cards = [];
+            playerIds.forEach((playerId, index) => {
+                const playerCards = shuffled.slice(index * cardsPerPlayer, (index + 1) * cardsPerPlayer);
+                const filteredCards = playerCards.filter(card => 
+                    card !== mystery.suspect && card !== mystery.weapon && card !== mystery.room
+                );
+                database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(filteredCards);
             });
 
-            let playerHands = {};
-            playerIds.forEach(id => playerHands[id] = []);
-
-            // Distribuir cartas
-            mazoRestante.forEach((carta, index) => {
-                const targetPlayerId = playerIds[index % playerIds.length];
-                playerHands[targetPlayerId].push(carta);
-            });
-
-            playerIds.forEach(playerId => {
-                roomData.players[playerId].cards = playerHands[playerId];
-            });
-
-            allRooms[gameState.roomCode] = roomData;
-            localStorage.setItem('clueRooms', JSON.stringify(allRooms));
-
-            addMessage('success', '🃏 ¡Misterio guardado y cartas repartidas equitativamente!');
+            addMessage('success', '🃏 ¡Cartas repartidas!');
         }
 
         function rollDice() {
@@ -1033,34 +934,16 @@
             gameState.hasRolled = true;
             document.getElementById('stepsAvailable').textContent = dice;
             document.getElementById('diceResult').textContent = `🎲 ${dice}`;
-            document.getElementById('boardInstruction').textContent = `✅ Moverás paso a paso (Te quedan ${dice} pasos). Puedes terminar cuando gustes.`;
-            document.getElementById('endMoveBtn').style.display = 'block';
+            document.getElementById('boardInstruction').textContent = `✅ Tienes ${dice} pasos. Elige tu destino.`;
             
-            // Guardar dados en localStorage
-            let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
-            if (allRooms[gameState.roomCode]) {
-                allRooms[gameState.roomCode].gameState = allRooms[gameState.roomCode].gameState || {};
-                allRooms[gameState.roomCode].gameState.dice = dice;
-                localStorage.setItem('clueRooms', JSON.stringify(allRooms));
-            }
-            
+            database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
             addMessage('info', `🎲 Sacaste un ${dice}.`);
             updateGameBoard();
         }
 
-        function getRepresentativeTileId(locationString) {
-            let found = BOARD_LAYOUT.find(b => b.id === locationString);
-            if (found) return found.id;
-            let roomObj = roomsDef.find(r => r.id === locationString);
-            if (roomObj) return roomObj.id;
-            return locationString;
-        }
-
         function calculateDistance(tileAId, tileBId) {
-            let repA = getRepresentativeTileId(tileAId);
-            let repB = getRepresentativeTileId(tileBId);
-            const tileA = BOARD_LAYOUT.find(b => b.id === repA);
-            const tileB = BOARD_LAYOUT.find(b => b.id === repB);
+            const tileA = BOARD_LAYOUT.find(b => b.id === tileAId);
+            const tileB = BOARD_LAYOUT.find(b => b.id === tileBId);
             if (!tileA || !tileB) return 99;
             return Math.abs(tileA.x - tileB.x) + Math.abs(tileA.y - tileB.y);
         }
@@ -1075,61 +958,43 @@
             }
 
             if (!gameState.hasRolled || gameState.stepsAvailable <= 0) {
-                addMessage('error', '❌ ¡Debes tirar los dados primero o ya no te quedan pasos!');
+                addMessage('error', '❌ ¡Debes tirar los dados primero!');
                 return;
             }
 
-            let targetRepId = getRepresentativeTileId(tileId);
-            const distance = calculateDistance(gameState.myLocation, targetRepId);
-            
-            if (distance !== 1) {
-                addMessage('error', `❌ Solo puedes moverte a casillas adyacentes directas (a distancia 1).`);
+            const distance = calculateDistance(gameState.myLocation, tileId);
+            if (distance > gameState.stepsAvailable) {
+                addMessage('error', `❌ Demasiado lejos (${distance} pasos, tienes ${gameState.stepsAvailable}).`);
                 return;
             }
 
-            gameState.stepsAvailable -= 1;
-            gameState.myLocation = targetRepId;
-            document.getElementById('myLocation').textContent = targetRepId;
-            document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
-
-            
-            addMessage('success', `🚶‍♂️ Paso dado hacia ${targetRepId}. Te quedan ${gameState.stepsAvailable} pasos.`);
-
-            if (targetRepId.startsWith('Pasillo_') && (targetRepId.includes('_2_2') || targetRepId.includes('_7_7'))) {
-                triggerRandomEvent();
-            }
-
-            if (gameState.stepsAvailable === 0) {
-                finishMovement();
-            } else {
-                updateGameBoard();
-            }
-        }
-
-        function finishMovement() {
-            const playerIds = Object.keys(gameState.players);
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-            if (currentTurnUserId !== gameState.userId) return;
-
+            gameState.myLocation = tileId;
             gameState.stepsAvailable = 0;
             gameState.hasRolled = false;
+            document.getElementById('myLocation').textContent = tileId;
             document.getElementById('stepsAvailable').textContent = 0;
-            document.getElementById('endMoveBtn').style.display = 'none';
             document.getElementById('boardInstruction').textContent = '⏳ Espera tu turno.';
 
             const nextIndex = (gameState.currentIndex + 1) % playerIds.length;
-            
+
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(tileId);
+            database.ref(`rooms/${gameState.roomCode}/gameState`).update({
                 currentIndex: nextIndex,
                 dice: 0
             });
 
-            addMessage('info', `🏁 Turno finalizado. Pasa al siguiente jugador.`);
+            addMessage('success', `🚶‍♂️ Movimiento a ${tileId}.`);
+
+            if (tileId.startsWith('Pasillo_') && (tileId.includes('_2_2') || tileId.includes('_7_7'))) {
+                triggerRandomEvent();
+            }
+
             updateGameBoard();
         }
 
         function triggerRandomEvent() {
             const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
-            
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                 type: 'event',
                 text: `✨ [COMODÍN] ${gameState.playerName} cayó en casilla especial: "${randomEvent.title}"`
             });
@@ -1147,46 +1012,42 @@
         }
 
         function setupGameListeners() {
-            // Cargar datos de la sala desde localStorage
-            let allRooms = JSON.parse(localStorage.getItem('clueRooms') || '{}');
-            const roomData = allRooms[gameState.roomCode];
-            
-            if (!roomData) {
-                showStatus('❌ Sala no encontrada', 'error');
-                return;
-            }
-            
-            // Actualizar estado del juego desde localStorage
-            gameState.players = roomData.players || {};
-            gameState.playerIdsOrder = Object.keys(gameState.players);
-            
-            if (gameState.players[gameState.userId]) {
-                gameState.myLocation = gameState.players[gameState.userId].location || 'Centro';
-                document.getElementById('myLocation').textContent = gameState.myLocation;
-                gameState.myCards = gameState.players[gameState.userId].cards || [];
-                gameState.myCards.forEach(card => {
-                    gameState.notebookMarks[card] = true;
-                });
-            }
-            
-            // Actualizar UI inicial
-            updatePlayersList();
-            updateMyCards();
-            updateTurnControls();
-            updateGameBoard();
-            
-            // Configurar actualización periódica (cada 500ms)
-            setInterval(() => {
-                let allRoomsUpdated = JSON.parse(localStorage.getItem('clueRooms') || '{}');
-                const updatedRoom = allRoomsUpdated[gameState.roomCode];
-                if (updatedRoom) {
-                    gameState.players = updatedRoom.players || {};
-                    gameState.gameState = updatedRoom.gameState || {};
-                    updatePlayersList();
-                    updateGameBoard();
-                    updateTurnControls();
+            database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snapshot) => {
+                gameState.players = snapshot.val() || {};
+                gameState.playerIdsOrder = Object.keys(gameState.players);
+                if (gameState.players[gameState.userId] && gameState.players[gameState.userId].location) {
+                    gameState.myLocation = gameState.players[gameState.userId].location;
+                    document.getElementById('myLocation').textContent = gameState.myLocation;
                 }
-            }, 500);
+                updatePlayersList();
+                updateTurnControls();
+                updateGameBoard();
+            });
+
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
+                gameState.myCards = snapshot.val() || [];
+                updateMyCards();
+            });
+
+            database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snapshot) => {
+                const state = snapshot.val();
+                if (state) {
+                    gameState.currentIndex = state.currentIndex || 0;
+                    if (state.dice !== undefined) {
+                        document.getElementById('diceResult').textContent = state.dice > 0 ? `🎲 ${state.dice}` : '🎲 -';
+                    }
+                    updateTurnControls();
+
+                    if (state.activeSuggestion && state.activeSuggestion.targetPlayerId === gameState.userId) {
+                        handleIncomingSuggestion(state.activeSuggestion);
+                    }
+                }
+            });
+
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).on('child_added', (snapshot) => {
+                const message = snapshot.val();
+                if (message) addMessage(message.type, message.text);
+            });
         }
 
         function updateTurnControls() {
@@ -1210,7 +1071,6 @@
                 document.getElementById('currentTurnInfo').textContent = activePlayerName;
                 document.getElementById('currentTurnInfo').style.color = '#f6ad55';
                 document.getElementById('boardInstruction').textContent = `⏳ Esperando a ${activePlayerName}...`;
-                document.getElementById('endMoveBtn').style.display = 'none';
             }
             updatePlayersList();
         }
@@ -1222,48 +1082,25 @@
             BOARD_LAYOUT.forEach((tile) => {
                 let playersInTileHtml = '';
                 Object.entries(gameState.players).forEach(([id, p]) => {
-                    let pRep = getRepresentativeTileId(p.location);
-                    let tileRep = getRepresentativeTileId(tile.id);
-                    if (pRep === tileRep) {
-                        if (tile.isPrimary) {
-                            playersInTileHtml += `<span class="player-token">${p.name}</span>`;
-                        }
+                    if (p.location === tile.id) {
+                        playersInTileHtml += `<span class="player-token">${p.name}</span>`;
                     }
                 });
 
-                let tileRep = getRepresentativeTileId(tile.id);
-                let myRep = getRepresentativeTileId(gameState.myLocation);
-                const isMyLocation = (tileRep === myRep && tile.isPrimary);
+                const isMyLocation = (tile.id === gameState.myLocation);
                 const playerIds = Object.keys(gameState.players);
                 const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
-                const distance = calculateDistance(gameState.myLocation, tileRep);
-                
-                const isReachable = (isMyTurn && gameState.hasRolled && distance === 1 && gameState.stepsAvailable > 0 && !isMyLocation);
+                const distance = calculateDistance(gameState.myLocation, tile.id);
+                const isReachable = (isMyTurn && gameState.hasRolled && distance <= gameState.stepsAvailable && !isMyLocation);
 
-                let tileClass = `${tile.type} ${tile.cssClass}`;
+                let tileClass = tile.type;
                 if (isMyLocation) tileClass += ' my-current-location';
                 if (isReachable) tileClass += ' reachable';
 
-                let stepIndicator = '';
-                if (isReachable) {
-                    const stepNumber = (gameState.stepsAvailable);
-                    stepIndicator = `<div class="step-indicator">Paso ${stepNumber}</div>`;
-                }
-
-                let roomTitleHtml = '';
-                if (tile.name && tile.name !== '✨') {
-                    roomTitleHtml = `<div class="room-title-box">${tile.name}</div>`;
-                } else if (tile.name === '✨') {
-                    roomTitleHtml = `<div style="font-size:1rem; font-weight:bold; color: #fbd38d;">✨</div>`;
-                }
-
                 boardHtml += `
                     <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; gap: 2px;">
-                            ${roomTitleHtml}
-                            <div class="players-in-tile">${playersInTileHtml}</div>
-                            ${stepIndicator}
-                        </div>
+                        ${tile.isPrimary && tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
+                        <div class="players-in-tile">${playersInTileHtml}</div>
                     </div>
                 `;
             });
@@ -1279,7 +1116,7 @@
                 return `
                     <div class="player-info ${isCurrent ? 'current' : ''}">
                         <div>${isCurrent ? '▶ ' : ''}<strong>${player.name}</strong></div>
-                        <div style="font-size: 0.7rem; color: #a0aec0;">📍 ${player.location || 'Centro'}</div>
+                        <div style="font-size: 0.7rem; color: #a0aec0;">📍 ${player.location || 'Estudio'}</div>
                     </div>
                 `;
             }).join('');
@@ -1302,15 +1139,15 @@
             let html = `
                 <table class="detective-table">
                     <tr><th>Sospechosos</th><th>Tachado</th></tr>
-                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" ${gameState.notebookMarks[s] ? 'checked' : ''} onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
+                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
                 </table>
                 <table class="detective-table" style="margin-top: 8px;">
                     <tr><th>Armas</th><th>Tachado</th></tr>
-                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" ${gameState.notebookMarks[w] ? 'checked' : ''} onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
+                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
                 </table>
                 <table class="detective-table" style="margin-top: 8px;">
                     <tr><th>Habitaciones</th><th>Tachado</th></tr>
-                    ${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" ${gameState.notebookMarks[r] ? 'checked' : ''} onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
+                    ${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
                 </table>
             `;
             container.innerHTML = html;
@@ -1328,22 +1165,17 @@
             const currentTurnUserId = playerIds[gameState.currentIndex];
 
             if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ Solo puedes hacer preguntas en tu turno.');
-                return;
-            }
-
-            if (gameState.myLocation.startsWith('Pasillo_')) {
-                addMessage('error', '❌ Debes estar dentro de una habitación para hacer una pregunta.');
+                addMessage('error', '❌ Solo puedes hacer sugerencias en tu turno.');
                 return;
             }
 
             const suspectSel = document.getElementById('sugSuspectSelect');
             const weaponSel = document.getElementById('sugWeaponSelect');
-            const roomInput = document.getElementById('sugRoomInput');
+            const roomSel = document.getElementById('sugRoomSelect');
 
             suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
             weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomInput.value = gameState.myLocation;
+            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRoomsList.map(r => `<option value="${r}">${r}</option>`).join('');
 
             document.getElementById('suggestionModal').classList.add('active');
         }
@@ -1353,10 +1185,10 @@
         async function submitSuggestion() {
             const suspect = document.getElementById('sugSuspectSelect').value;
             const weapon = document.getElementById('sugWeaponSelect').value;
-            const room = document.getElementById('sugRoomInput').value;
+            const room = document.getElementById('sugRoomSelect').value;
 
             if (!suspect || !weapon || !room) {
-                addMessage('error', '❌ Selecciona el sospechoso y el arma.');
+                addMessage('error', '❌ Selecciona los tres elementos.');
                 return;
             }
 
@@ -1376,12 +1208,12 @@
                 originalAuthorId: gameState.userId
             };
 
-            
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                 type: 'suggestion',
-                text: `❓ ${gameState.playerName} pregunta en [${room}]: [ Sospechoso: ${suspect} | Arma: ${weapon} ]`
+                text: `💡 ${gameState.playerName} sugiere: [ Sospechoso: ${suspect} | Arma: ${weapon} | Habitación: ${room} ]`
             });
 
-            await 
+            await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestionData);
         }
 
         function handleIncomingSuggestion(suggestion) {
@@ -1394,11 +1226,11 @@
                 document.getElementById('replySuggestionModal').classList.add('active');
             } else {
                 if (suggestion.originalAuthorId === gameState.userId) {
-                    
+                    database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                         type: 'info',
-                        text: `🛡️ Ningún jugador posee las cartas de la pregunta.`
+                        text: `🛡️ Ningún jugador posee las cartas sugeridas.`
                     });
-                    
+                    database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
                 } else {
                     passSuggestionToNext(suggestion);
                 }
@@ -1411,26 +1243,26 @@
             const nextPlayerId = playerIds[(currentTargetIdx + 1) % playerIds.length];
 
             if (nextPlayerId === suggestion.originalAuthorId) {
-                
+                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                     type: 'info',
-                    text: `🛡️ Nadie pudo responder a la pregunta.`
+                    text: `🛡️ Nadie pudo responder a la sugerencia.`
                 });
-                
+                database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
             } else {
                 suggestion.targetPlayerId = nextPlayerId;
-                
+                database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestion);
             }
         }
 
         async function confirmReplySuggestion() {
             document.getElementById('replySuggestionModal').classList.remove('active');
 
-            
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
                 type: 'success',
                 text: `👁️ ${gameState.playerName} mostró una carta en privado.`
             });
 
-            
+            database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
         }
 
         function showAccusationModal() {
@@ -1443,13 +1275,9 @@
             const weaponSel = document.getElementById('weaponSelect');
             const roomSel = document.getElementById('roomSelect');
 
-            const unmarketSuspects = SUSPECTS.filter(s => !gameState.notebookMarks[s]);
-            const unmarketWeapons = WEAPONS.filter(w => !gameState.notebookMarks[w]);
-            const unmarketRooms = uniqueRoomsList.filter(r => !gameState.notebookMarks[r]);
-
-            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketSuspects.map(s => `<option value="${s}">${s}</option>`).join('');
-            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketWeapons.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketRooms.map(r => `<option value="${r}">${r}</option>`).join('');
+            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
+            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
+            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRoomsList.map(r => `<option value="${r}">${r}</option>`).join('');
 
             document.getElementById('accusationModal').classList.add('active');
         }
@@ -1463,13 +1291,13 @@
 
             if (!suspect || !weapon || !room) { addMessage('error', '❌ Completa los 3 campos.'); return; }
 
-            const mysterySnap = await 
+            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
             const mystery = mysterySnap.val();
 
             const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
-            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación. Era: ${mystery.suspect}, ${mystery.weapon}, ${mystery.room}`;
+            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación.`;
             
-            
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
             closeAccusationModal();
         }
 
@@ -1484,8 +1312,8 @@
         }
 
         function leaveGame() {
-            if (confirm('¿Estás seguro de que deseas abandonar la partida?')) {
-                
+            if (confirm('¿Abandonar partida?')) {
+                database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}`).remove();
                 location.reload();
             }
         }
