@@ -231,7 +231,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             padding: 2px;
             text-align: center;
             cursor: pointer;
@@ -315,111 +315,71 @@
             pointer-events: none;
         }
 
-        .door-indicator {
-            position: absolute !important;
-            width: 60px !important;
-            height: 60px !important;
-            background: rgba(34, 197, 94, 0.3) !important;
-            border: 3px solid #22c55e !important;
-            border-radius: 50% !important;
-            box-shadow: 0 0 25px rgba(34, 197, 94, 1) !important;
-            z-index: 9999 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            color: #22c55e !important;
-            font-weight: bold !important;
-            font-size: 3.5rem !important;
-            animation: arrow-pulse 0.6s ease-in-out infinite !important;
-            cursor: pointer !important;
-            pointer-events: auto !important;
-            text-shadow: 0 0 8px rgba(34, 197, 94, 1) !important;
-            line-height: 1 !important;
-            top: -50px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-
-        /* FLECHA DENTRO DEL TILE - EN LA ENTRADA */
-        .door-indicator-inside {
-            position: relative;
+        /* FLECHAS / INDICADORES EN LAS CASILLAS DE PASILLO ESPECIFICADAS */
+        .door-badge {
+            background: #ef4444;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #b91c1c;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
-            color: #22c55e;
-            text-shadow: 0 0 10px rgba(34, 197, 94, 1);
-            animation: arrow-pulse 0.8s ease-in-out infinite;
-            cursor: pointer;
-            z-index: 100;
-            margin: 5px 0;
-            line-height: 1;
-            filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.8));
+            font-size: 0.75rem;
+            z-index: 15;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.9);
+            animation: pulse 1.2s infinite;
+            margin: auto;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
         .players-in-tile {
             display: flex;
             flex-direction: column;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 2px;
             justify-content: center;
             align-items: center;
             z-index: 4;
-            margin-top: 4px;
             width: 100%;
-            min-height: 30px;
             pointer-events: none;
         }
 
         .player-token {
             background: linear-gradient(135deg, #ff1493, #ff69b4);
             color: white;
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 6px;
+            font-size: 0.65rem;
+            padding: 2px 5px;
+            border-radius: 4px;
             font-weight: bold;
-            border: 2px solid #ffff00;
-            box-shadow: 0 0 10px rgba(255, 20, 147, 0.9), 0 0 15px rgba(255, 105, 180, 0.8);
+            border: 1.5px solid #ffff00;
+            box-shadow: 0 0 6px rgba(255, 20, 147, 0.9);
             white-space: nowrap;
             text-transform: capitalize;
             z-index: 4;
             position: relative;
-            display: inline-block;
-            transition: all 0.3s ease;
             pointer-events: auto;
-        }
-        
-        .player-token:hover {
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
-            box-shadow: 0 0 15px rgba(255, 20, 147, 1), 0 0 25px rgba(255, 105, 180, 1);
-            transform: scale(1.15);
-            border-color: #ffffff;
         }
 
         .step-indicator {
-            position: static;
             background: #48bb78;
             color: white;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: bold;
-            padding: 3px 6px;
+            padding: 2px 4px;
             border-radius: 3px;
             z-index: 2;
-            box-shadow: 0 0 6px rgba(72, 187, 120, 0.9);
-            animation: pulse 0.5s ease-in-out infinite;
+            box-shadow: 0 0 4px rgba(72, 187, 120, 0.9);
             pointer-events: none;
-            margin: 3px auto 0 auto;
+            margin: 2px auto 0 auto;
             display: inline-block;
             text-align: center;
-            min-width: 20px;
-            white-space: nowrap;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
         }
 
         .sidebar {
@@ -488,6 +448,7 @@
         .card.suspect { border-top: 3px solid #e53e3e; }
         .card.weapon { border-top: 3px solid #3182ce; }
         .card.room { border-top: 3px solid #38a169; }
+        .card.wildcard { border-top: 3px solid #ecc94b; background: linear-gradient(135deg, rgba(236, 201, 75, 0.1), rgba(236, 201, 75, 0.05)) !important; }
 
         .action-buttons {
             display: grid;
@@ -639,15 +600,23 @@
         </div>
 
         <div id="loginScreen" class="login-screen">
-            <h2>Bienvenido Detective</h2>
+            <h2>👮 Elige tu Detective</h2>
             <div style="text-align: center; color: #48bb78; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem;">
-                🎮 <span id="versionDisplay">Versión 1.1</span>
+                🎮 <span id="versionDisplay">Versión 4.3.0</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="selectDetective('Señorita Amapola')">👩 Señorita Amapola</button>
+                <button class="btn btn-primary" onclick="selectDetective('Coronel Mostaza')">👨‍✈️ Coronel Mostaza</button>
+                <button class="btn btn-primary" onclick="selectDetective('Señora White')">👵 Señora White</button>
+                <button class="btn btn-primary" onclick="selectDetective('Prado')">🕵️ Prado</button>
+                <button class="btn btn-primary" onclick="selectDetective('Señora Fucsia')">💃 Señora Fucsia</button>
+                <button class="btn btn-primary" onclick="selectDetective('Profesor Cerillo')">🧑‍🏫 Profesor Cerillo</button>
             </div>
             <div class="input-group">
-                <input type="text" id="playerName" placeholder="Tu nombre" maxlength="15">
+                <input type="text" id="playerName" placeholder="Tu nombre" maxlength="15" style="display: none;">
             </div>
             <div class="input-group">
-                <input type="text" id="roomCode" placeholder="Código de sala (opcional)" maxlength="6">
+                <input type="text" id="roomCode" placeholder="Código de sala (ej: AMIGOS) - opcional, se genera automático" maxlength="10">
             </div>
             <div class="room-selection">
                 <button class="btn btn-primary" onclick="createNewRoom()">➕ Crear Sala</button>
@@ -705,6 +674,7 @@
                         <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">❓ Preguntar</button>
                         <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
                         <button id="endMoveBtn" class="btn btn-secondary btn-small" onclick="finishMovement()" style="background: #d69e2e; grid-column: span 2; display:none;">✅ Terminar Movimiento</button>
+                        <button id="newGameBtn" class="btn btn-success btn-small" onclick="startNewGame()" style="background: #22c55e; grid-column: span 2; display:none;">🎮 Nueva Partida</button>
                         <button class="btn btn-secondary btn-small btn-leave-safe" onclick="leaveGame()">🚪 Salir de la partida</button>
                     </div>
                 </div>
@@ -715,7 +685,6 @@
     <div id="notebookModal" class="modal">
         <div class="modal-content">
             <h2>📓 Libreta de Detective</h2>
-            <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 10px;">Tus cartas iniciales se marcan automáticamente.</p>
             <div id="notebookContainer"></div>
             <div style="margin-top: 12px; text-align: right;">
                 <button class="btn btn-secondary btn-small" onclick="closeNotebookModal()">Cerrar</button>
@@ -726,7 +695,6 @@
     <div id="suggestionModal" class="modal">
         <div class="modal-content">
             <h2>❓ Hacer Pregunta</h2>
-            <p style="font-size: 0.75rem; color: #a0aec0; margin-bottom: 8px;">La pregunta se realiza automáticamente en tu habitación actual.</p>
             <div class="selection-group">
                 <label>Sospechoso:</label>
                 <select id="sugSuspectSelect"><option value="">-- Selecciona --</option></select>
@@ -736,8 +704,8 @@
                 <select id="sugWeaponSelect"><option value="">-- Selecciona --</option></select>
             </div>
             <div class="selection-group">
-                <label>Habitación (Tu posición actual):</label>
-                <input type="text" id="sugRoomInput" readonly style="width: 100%; padding: 10px; border: 2px solid #4a5568; background: #111827; color: #f6ad55; border-radius: 8px; font-size: 0.9rem; font-weight: bold;">
+                <label>Habitación:</label>
+                <input type="text" id="sugRoomInput" readonly style="width: 100%; padding: 10px; background: #111827; color: #f6ad55; border-radius: 8px;">
             </div>
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="submitSuggestion()">✅ Preguntar</button>
@@ -749,9 +717,8 @@
     <div id="replySuggestionModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <h2>👁️ Responder Pregunta</h2>
-            <p style="color: #a0aec0; margin-bottom: 10px; font-size: 0.85rem;" id="replySuggestionPrompt">Posees cartas coincidentes. Elige cuál mostrarle:</p>
             <div class="selection-group">
-                <label>Carta a mostrar en privado:</label>
+                <label>Carta a mostrar:</label>
                 <select id="matchingCardsSelect"></select>
             </div>
             <button class="btn btn-primary" onclick="confirmReplySuggestion()">✅ Mostrar Carta</button>
@@ -761,30 +728,18 @@
     <div id="cardDisplayModal" class="modal">
         <div class="modal-content" style="text-align: center; max-width: 350px;">
             <h2>🎴 Carta Mostrada</h2>
-            <p style="color: #a0aec0; margin-bottom: 20px; font-size: 0.9rem;" id="cardDisplayMessage">Un jugador te mostró una carta:</p>
-            <div style="background: linear-gradient(135deg, #1a202c, #2d3748); border: 3px solid #f6ad55; border-radius: 12px; padding: 30px; margin: 20px 0;">
-                <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 10px;">CARTA</p>
-                <p id="displayedCardName" style="font-size: 1.8rem; color: #ffeb3b; font-weight: bold; text-shadow: 0 0 10px rgba(255, 235, 59, 0.5); margin: 0;">-</p>
-            </div>
-            <button class="btn btn-primary" onclick="closeCardDisplayModal()">✅ Entendido</button>
+            <p id="cardDisplayMessage" style="color: #a0aec0; margin-bottom: 20px;"></p>
+            <p id="displayedCardName" style="font-size: 1.8rem; color: #ffeb3b; font-weight: bold;"></p>
+            <button class="btn btn-primary" onclick="closeCardDisplayModal()" style="margin-top: 15px;">✅ Entendido</button>
         </div>
     </div>
 
     <div id="accusationModal" class="modal">
         <div class="modal-content">
-            <h2>🔍 Plantear Teoría / Acusación Final</h2>
-            <div class="selection-group">
-                <label>Sospechoso:</label>
-                <select id="suspectSelect"><option value="">-- Selecciona --</option></select>
-            </div>
-            <div class="selection-group">
-                <label>Arma:</label>
-                <select id="weaponSelect"><option value="">-- Selecciona --</option></select>
-            </div>
-            <div class="selection-group">
-                <label>Habitación:</label>
-                <select id="roomSelect"><option value="">-- Selecciona --</option></select>
-            </div>
+            <h2>🎯 Acusación Final</h2>
+            <div class="selection-group"><label>Sospechoso:</label><select id="suspectSelect"></select></div>
+            <div class="selection-group"><label>Arma:</label><select id="weaponSelect"></select></div>
+            <div class="selection-group"><label>Habitación:</label><select id="roomSelect"></select></div>
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="submitAccusation()">✅ Enviar</button>
                 <button class="btn btn-secondary" onclick="closeAccusationModal()">❌ Cancelar</button>
@@ -794,22 +749,20 @@
 
     <div id="eventModal" class="modal">
         <div class="modal-content" style="text-align: center;">
-            <h2>✨ ¡Casilla de Evento Especial! ✨</h2>
-            <div class="event-popup-box" id="eventPopupContent">
-                <h3 id="eventTitleTitle">Título del Evento</h3>
-                <p id="eventDescriptionText" style="font-size: 0.9rem;">Descripción detallada.</p>
+            <h2>✨ Casilla de Evento ✨</h2>
+            <div class="event-popup-box">
+                <h3 id="eventTitleTitle"></h3>
+                <p id="eventDescriptionText"></p>
             </div>
             <button class="btn btn-primary" onclick="closeEventModal()">¡Entendido!</button>
         </div>
     </div>
 
     <div id="victoryModal" class="modal">
-        <div class="modal-content" style="text-align: center; background: linear-gradient(135deg, #ff6b6b, #ffd43b, #51cf66); border: 3px solid gold; box-shadow: 0 0 50px rgba(255, 215, 59, 0.8);">
-            <h1 style="font-size: 2.5rem; color: #000; text-shadow: 2px 2px 4px rgba(255,255,255,0.5); animation: pulse 1s infinite;">🏆 ¡JUEGO TERMINADO! 🏆</h1>
-            <div style="background: rgba(0,0,0,0.7); padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid gold;">
-                <p style="font-size: 1.3rem; color: #ffd43b; font-weight: bold;" id="victoryMessage">El jugador ha ganado!</p>
-            </div>
-            <button class="btn btn-primary" onclick="closeVictoryModal()" style="font-size: 1.1rem; padding: 10px 20px;">Aceptar</button>
+        <div class="modal-content" style="text-align: center;">
+            <h1 style="color: gold;">🏆 ¡JUEGO TERMINADO! 🏆</h1>
+            <p id="victoryMessage" style="font-size: 1.2rem; margin: 20px 0;"></p>
+            <button class="btn btn-primary" onclick="closeVictoryModal()">Aceptar</button>
         </div>
     </div>
 
@@ -818,19 +771,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // ============================================
-        // VERSIÓN DEL JUEGO
-        // ============================================
-        const GAME_VERSION = "1.8.0";
-        const VERSION_INFO = "v1.8.0 - Puertas SIMPLES y DIRECTAS";
-        console.log(`🎮 Clue Game ${GAME_VERSION} cargado`);
-        
+        const GAME_VERSION = "4.3.0";
+        const VERSION_INFO = "v4.3.0 - Turno Auto-finaliza + Botón Repartir se Deshabilita + Nueva Partida Limpia";
+
         const firebaseConfig = {
             apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
             authDomain: "clue-game-47c7e.firebaseapp.com",
             databaseURL: "https://clue-game-47c7e-default-rtdb.firebaseio.com",
             projectId: "clue-game-47c7e",
-            storageBucket: "clue-game-47c7e.firebasestorage.app",
+            storageBucket: "clue-game-47c7e.appspot.com",
             messagingSenderId: "133188091784",
             appId: "1:133188091784:web:1d6c070ddc535951b0043d"
         };
@@ -842,70 +791,73 @@
         const SUSPECTS = ['Señorita Amapola', 'Coronel Mostaza', 'Señora White', 'Prado', 'Señora Fucsia', 'Profesor Cerillo'];
         const WEAPONS = ['Candelabro', 'Cuchillo', 'Tubo de Plomo', 'Revólver', 'Cuerda', 'Llave Inglesa'];
         
+        const DETECTIVE_ICONS = {
+            'Señorita Amapola': '👩',
+            'Coronel Mostaza': '👨‍✈️',
+            'Señora White': '👵',
+            'Prado': '🕵️',
+            'Señora Fucsia': '💃',
+            'Profesor Cerillo': '🧑‍🏫'
+        };
+        
         const EVENT_CARDS = [
             { title: "🌟 Comodín de Avance Rápido", desc: "Duplicas tus pasos en tu siguiente turno." },
             { title: "📜 Pasadizo Secreto", desc: "Puedes formular una pregunta libre sin importar la habitación." },
             { title: "🛡️ Escudo del Detective", desc: "Protección contra teorías erróneas en el centro." },
             { title: "💰 Recompensa de Inteligencia", desc: "Un jugador aleatorio debe mostrarte una carta." },
-            { title: "⚡ Paso Relámpago", desc: "Se te conceden 3 pasos extra de movimiento inmediato." }
+            { title: "⚡ Paso Relámpago", desc: "Se te conceden 3 pasos extra de movimiento inmediato." },
+            { title: "🔍 Lente Magnética", desc: "Puedes ver una carta de otro jugador sin revelar nada." },
+            { title: "📸 Fotografía Forense", desc: "Obtén información de todos los jugadores en tu habitación actual." },
+            { title: "🚪 Pasaje Teleportado", desc: "Teletransportate a cualquier habitación del tablero." },
+            { title: "🕐 Turno Bonificación", desc: "Ganas un turno extra inmediatamente después de este." },
+            { title: "📋 Archivo Secreto", desc: "Revisa la libreta de anotaciones de otro jugador por 30 segundos." }
+        ];
+        const WILDCARD_CARDS = [
+            '🌟 Comodín de Avance Rápido',
+            '⚡ Paso Relámpago',
+            '🌟 Comodín de Avance Rápido',
+            '⚡ Paso Relámpago'
         ];
 
         const BOARD_LAYOUT = [];
-        
         const roomsDef = [
-            { id: 'Estudio', name: 'Estudio', type: 'room', startX: 0, startY: 0, cssClass: 'room-estudio' },
-            { id: 'Vestibulo', name: 'Vestíbulo', type: 'room', startX: 4, startY: 0, cssClass: 'room-vestibulo' },
-            { id: 'Salon', name: 'Salón', type: 'room', startX: 8, startY: 0, cssClass: 'room-salon' },
-            { id: 'Biblioteca', name: 'Biblioteca', type: 'room', startX: 0, startY: 4, cssClass: 'room-biblioteca' },
-            { id: 'Centro', name: 'Centro', type: 'center', startX: 4, startY: 4, cssClass: 'room-centro' },
-            { id: 'Comedor', name: 'Comedor', type: 'room', startX: 8, startY: 4, cssClass: 'room-comedor' },
-            { id: 'Billar', name: 'Billar', type: 'room', startX: 0, startY: 8, cssClass: 'room-billar' },
-            { id: 'Invernadero', name: 'Invernadero', type: 'room', startX: 4, startY: 8, cssClass: 'room-invernadero' },
-            { id: 'SalonBaile', name: 'Salón Baile', type: 'room', startX: 8, startY: 8, cssClass: 'room-salonbaile' }
+            { id: 'Estudio', name: 'Estudio', startX: 0, startY: 0, cssClass: 'room-estudio' },
+            { id: 'Vestibulo', name: 'Vestíbulo', startX: 4, startY: 0, cssClass: 'room-vestibulo' },
+            { id: 'Salon', name: 'Salón', startX: 8, startY: 0, cssClass: 'room-salon' },
+            { id: 'Biblioteca', name: 'Biblioteca', startX: 0, startY: 4, cssClass: 'room-biblioteca' },
+            { id: 'Centro', name: 'Centro', startX: 4, startY: 4, cssClass: 'room-centro' },
+            { id: 'Comedor', name: 'Comedor', startX: 8, startY: 4, cssClass: 'room-comedor' },
+            { id: 'Billar', name: 'Billar', startX: 0, startY: 8, cssClass: 'room-billar' },
+            { id: 'Invernadero', name: 'Invernadero', startX: 4, startY: 8, cssClass: 'room-invernadero' },
+            { id: 'SalonBaile', name: 'Salón Baile', startX: 8, startY: 8, cssClass: 'room-salonbaile' }
         ];
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        // Definición de PUERTAS: posiciones exactas solicitadas
-        const roomDoors = {
-            'Estudio': [
-                [2, 0, 'top']       // posición 2.0
-            ],
-            'Vestibulo': [
-                [5, 2, 'right']     // posición 5.2
-            ],
-            'Salon': [
-                [9, 2, 'right']     // posición 9.2
-            ],
-            'Biblioteca': [
-                [0, 3, 'left']      // posición 0.3
-            ],
-            'Centro': [
-                [3, 3, 'top']       // UNA SOLA PUERTA - arriba
-            ],
-            'Comedor': [
-                [7, 4, 'right']     // posición 7.4
-            ],
-            'Billar': [
-                [0, 7, 'left']      // posición 0.7
-            ],
-            'Invernadero': [
-                [4, 7, 'bottom']    // posición 4.7
-            ],
-            'SalonBaile': [
-                [7, 8, 'right']     // posición 7.8
-            ]
+        /* MAPEO EXACTO DE LAS CASILLAS DE PASILLO CON FLECHAS INDICADORAS:
+           - Estudio: (2, 0) - entrada abajo
+           - Vestibulo: (3, 0) - entrada abajo
+           - Salón: (7, 0) - entrada abajo
+           - Biblioteca: (0, 3) - entrada derecha
+           - Centro (2 puertas): (3, 4) y (4, 3)
+           - Comedor (2 puertas): (8, 3) y (7, 4)
+           - Billar: (0, 7) - entrada derecha
+           - Invernadero: (4, 7) - entrada arriba
+           - Salón de Baile: (7, 8) - entrada arriba
+        */
+        const doorEntries = {
+            '2,0': '↓',      // Estudio - ÚNICA entrada desde pasillo
+            '3,0': '↓',      // Vestíbulo
+            '7,0': '↓',      // Salón - entrada abajo
+            '0,3': '→',      // Biblioteca
+            '3,4': '→',      // Centro
+            '4,3': '↓',      // Centro
+            '8,3': '←',      // Comedor
+            '7,4': '↑',      // Comedor
+            '0,7': '→',      // Billar
+            '4,7': '↑',      // Invernadero
+            '7,8': '↑'       // Salón Baile
         };
-
-        function getDoorPositionStyle(side) {
-            const styles = {
-                'top': 'top: -20px; left: 50%; transform: translateX(-50%);',
-                'bottom': 'bottom: -20px; left: 50%; transform: translateX(-50%);',
-                'left': 'left: -20px; top: 50%; transform: translateY(-50%);',
-                'right': 'right: -20px; top: 50%; transform: translateY(-50%);'
-            };
-            return styles[side] || '';
-        }
 
         for (let y = 0; y < 10; y++) {
             for (let x = 0; x < 10; x++) {
@@ -914,13 +866,11 @@
                     let isTopLeft = (x === foundRoom.startX && y === foundRoom.startY);
                     BOARD_LAYOUT.push({
                         id: foundRoom.id,
-                        name: foundRoom.name,  // Mostrar nombre en TODOS los tiles de la habitación
-                        type: foundRoom.type,
-                        x: x,
-                        y: y,
+                        name: foundRoom.name,
+                        type: foundRoom.id === 'Centro' ? 'center' : 'room',
+                        x: x, y: y,
                         isPrimary: isTopLeft,
-                        cssClass: foundRoom.cssClass,
-                        roomId: foundRoom.id  // Agregar roomId para referencia
+                        cssClass: foundRoom.cssClass
                     });
                 } else {
                     let isEvent = (x === 2 && y === 2) || (x === 7 && y === 7);
@@ -928,8 +878,7 @@
                         id: `Pasillo_${x}_${y}`,
                         name: isEvent ? '✨' : '',
                         type: isEvent ? 'event-tile' : 'hallway',
-                        x: x,
-                        y: y,
+                        x: x, y: y,
                         isPrimary: true,
                         cssClass: ''
                     });
@@ -938,19 +887,13 @@
         }
 
         let gameState = {
-            userId: null,
-            playerName: '',
-            roomCode: '',
-            isHost: false,
-            players: {},
-            playerIdsOrder: [],
-            myCards: [],
-            currentIndex: 0,
-            myLocation: 'Centro',
-            stepsAvailable: 0,
-            hasRolled: false,
-            notebookMarks: {},
-            activeSuggestion: null
+            userId: null, playerName: '', roomCode: '', isHost: false,
+            players: {}, playerIdsOrder: [], myCards: [], currentIndex: 0,
+            myLocation: 'Centro', stepsAvailable: 0, hasRolled: false,
+            notebookMarks: {}, activeSuggestion: null, nextTurnDoubleSteps: false,
+            canAskFreeSuggestion: false, hasShield: false, extraTurnGranted: false,
+            canMakeSuggestion: false, gameOver: false, winner: null, activePlayers: [],
+            cardsDistributed: false
         };
 
         async function authenticateUser() {
@@ -958,13 +901,8 @@
                 const result = await auth.signInAnonymously();
                 gameState.userId = result.user.uid;
                 showStatus('✅ Conectado', 'success');
-                setTimeout(() => {
-                    document.getElementById('statusMessage').innerHTML = '';
-                    loadPublicRooms();
-                }, 800);
-            } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            }
+                setTimeout(() => { document.getElementById('statusMessage').innerHTML = ''; loadPublicRooms(); }, 800);
+            } catch (error) { showStatus('❌ Error: ' + error.message, 'error'); }
         }
 
         function showStatus(message, type = 'loading') {
@@ -973,54 +911,55 @@
             statusDiv.textContent = message;
         }
 
+        function selectDetective(detective) {
+            document.getElementById('playerName').value = detective;
+            showStatus(`✅ Detective seleccionado: ${detective}. Ahora elige si crear sala o entrar.`, 'success');
+        }
+
         async function createNewRoom() {
             const name = document.getElementById('playerName').value.trim();
-            if (!name) { showStatus('❌ Ingresa tu nombre', 'error'); return; }
-
+            if (!name) { showStatus('❌ Selecciona un detective', 'error'); return; }
+            
+            let code = document.getElementById('roomCode').value.trim().toUpperCase();
+            if (!code) {
+                // Si no ingresó código, generar uno automático
+                code = Math.random().toString(36).substr(2, 6).toUpperCase();
+            }
+            
+            if (code.length === 0) { showStatus('❌ Ingresa o auto-genera un código', 'error'); return; }
+            
             gameState.playerName = name;
-            gameState.roomCode = Math.random().toString(36).substr(2, 6).toUpperCase();
+            gameState.roomCode = code;
             gameState.isHost = true;
-            showStatus('⏳ Creando sala...', 'loading');
-
             try {
-                const roomData = {
+                // Verificar si la sala ya existe
+                const snap = await database.ref(`rooms/${code}`).get();
+                if (snap.exists()) { showStatus('❌ Ese código de sala ya existe', 'error'); return; }
+                
+                await database.ref(`rooms/${code}`).set({
                     host: gameState.userId,
-                    players: {
-                        [gameState.userId]: { name: gameState.playerName, location: 'Centro', cards: [] }
-                    },
+                    players: { [gameState.userId]: { name: gameState.playerName, location: 'Centro', cards: [] } },
                     gameState: { currentIndex: 0, dice: 0, messages: [] }
-                };
-                await database.ref(`rooms/${gameState.roomCode}`).set(roomData);
+                });
+                showStatus(`✅ Sala creada! Código: ${code}`, 'success');
                 initializeMysteryQuietly();
                 startGame();
-            } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            }
+            } catch (error) { showStatus('❌ Error: ' + error.message, 'error'); }
         }
 
         async function joinExistingRoom() {
             const name = document.getElementById('playerName').value.trim();
             const code = document.getElementById('roomCode').value.trim().toUpperCase();
             if (!name || !code) { showStatus('❌ Ingresa nombre y código', 'error'); return; }
-
             gameState.playerName = name;
             gameState.roomCode = code;
-            showStatus('⏳ Conectando...', 'loading');
-
             try {
-                const roomSnapshot = await database.ref(`rooms/${code}`).get();
-                if (!roomSnapshot.exists()) { showStatus('❌ Sala no encontrada', 'error'); return; }
-
-                const roomData = roomSnapshot.val();
-                gameState.isHost = (roomData.host === gameState.userId);
-
-                await database.ref(`rooms/${code}/players/${gameState.userId}`).set({
-                    name: gameState.playerName, location: 'Centro', cards: []
-                });
+                const snap = await database.ref(`rooms/${code}`).get();
+                if (!snap.exists()) { showStatus('❌ Sala no encontrada', 'error'); return; }
+                gameState.isHost = (snap.val().host === gameState.userId);
+                await database.ref(`rooms/${code}/players/${gameState.userId}`).set({ name: gameState.playerName, location: 'Centro', cards: [] });
                 startGame();
-            } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            }
+            } catch (error) { showStatus('❌ Error: ' + error.message, 'error'); }
         }
 
         function loadPublicRooms() {
@@ -1028,16 +967,10 @@
                 const roomsList = document.getElementById('roomsList');
                 const data = snapshot.val();
                 if (!data) { roomsList.innerHTML = '<p style="color: #888; font-size: 0.8rem;">No hay salas activas</p>'; return; }
-
                 let html = '<strong>Salas Disponibles:</strong>';
                 Object.entries(data).slice(-4).forEach(([code, room]) => {
-                    const playerCount = Object.keys(room.players || {}).length;
-                    html += `
-                        <div class="room-item">
-                            <div><strong>${code}</strong> (${playerCount} jug.)</div>
-                            <button class="btn btn-secondary btn-small" onclick="setRoomCode('${code}')">Entrar</button>
-                        </div>
-                    `;
+                    const count = Object.keys(room.players || {}).length;
+                    html += `<div class="room-item"><div><strong>${code}</strong> (${count} jug.)</div><button class="btn btn-secondary btn-small" onclick="setRoomCode('${code}')">Entrar</button></div>`;
                 });
                 roomsList.innerHTML = html;
             });
@@ -1049,204 +982,370 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('gameScreen').classList.add('active');
             document.getElementById('roomCodeDisplay').textContent = gameState.roomCode;
-            
             if (gameState.isHost) {
                 const actionsContainer = document.getElementById('actionButtonsContainer');
                 if (!document.getElementById('distributeBtn')) {
-                    const distributeBtn = document.createElement('button');
-                    distributeBtn.id = 'distributeBtn';
-                    distributeBtn.className = 'btn btn-secondary btn-small';
-                    distributeBtn.style.background = '#805ad5';
-                    distributeBtn.textContent = '🃏 Repartir';
-                    distributeBtn.onclick = manualDistributeCards;
-                    actionsContainer.insertBefore(distributeBtn, actionsContainer.firstChild);
+                    const btn = document.createElement('button');
+                    btn.id = 'distributeBtn';
+                    btn.className = 'btn btn-secondary btn-small';
+                    btn.style.background = '#805ad5';
+                    btn.textContent = '🃏 Repartir';
+                    btn.onclick = manualDistributeCards;
+                    actionsContainer.insertBefore(btn, actionsContainer.firstChild);
                 }
             }
-
             setupGameListeners();
             buildNotebookUI();
-            addMessage('system', `¡Partida iniciada! Sala: ${gameState.roomCode}`);
         }
 
         function initializeMysteryQuietly() {
-            const mystery = {
+            database.ref(`rooms/${gameState.roomCode}/mystery`).set({
                 suspect: SUSPECTS[Math.floor(Math.random() * SUSPECTS.length)],
                 weapon: WEAPONS[Math.floor(Math.random() * WEAPONS.length)],
                 room: uniqueRoomsList[Math.floor(Math.random() * uniqueRoomsList.length)]
-            };
-            database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+            });
         }
 
         async function manualDistributeCards() {
-            if (!gameState.isHost) return;
-
-            const availableSuspects = [...SUSPECTS];
-            const availableWeapons = [...WEAPONS];
-            const availableRooms = [...uniqueRoomsList];
-
-            const secretSuspect = availableSuspects.splice(Math.floor(Math.random() * availableSuspects.length), 1)[0];
-            const secretWeapon = availableWeapons.splice(Math.floor(Math.random() * availableWeapons.length), 1)[0];
-            const secretRoom = availableRooms.splice(Math.floor(Math.random() * availableRooms.length), 1)[0];
-
-            const mystery = {
-                suspect: secretSuspect,
-                weapon: secretWeapon,
-                room: secretRoom
-            };
-            await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
-
-            const mazoRestante = [...availableSuspects, ...availableWeapons, ...availableRooms].sort(() => Math.random() - 0.5);
-            const playerIds = Object.keys(gameState.players);
-
-            playerIds.forEach(id => {
-                database.ref(`rooms/${gameState.roomCode}/players/${id}/cards`).set([]);
-            });
-
-            let playerHands = {};
-            playerIds.forEach(id => playerHands[id] = []);
-
-            mazoRestante.forEach((carta, index) => {
-                const targetPlayerId = playerIds[index % playerIds.length];
-                playerHands[targetPlayerId].push(carta);
-            });
-
-            for (const [playerId, cards] of Object.entries(playerHands)) {
-                await database.ref(`rooms/${gameState.roomCode}/players/${playerId}/cards`).set(cards);
+            console.log('🃏 Iniciando distribución de cartas...');
+            if (!gameState.isHost) {
+                console.error('❌ No eres host, no puedes distribuir cartas');
+                return;
             }
-
-            addMessage('success', '🃏 ¡Misterio guardado y cartas repartidas equitativamente!');
+            if (gameState.cardsDistributed) {
+                showStatus('❌ Las cartas ya fueron repartidas en esta partida', 'error');
+                return;
+            }
+            const sList = [...SUSPECTS], wList = [...WEAPONS], rList = [...uniqueRoomsList];
+            console.log(`📊 Sospechosos: ${sList.length}, Armas: ${wList.length}, Habitaciones: ${rList.length}`);
+            
+            const mystery = {
+                suspect: sList.splice(Math.floor(Math.random() * sList.length), 1)[0],
+                weapon: wList.splice(Math.floor(Math.random() * wList.length), 1)[0],
+                room: rList.splice(Math.floor(Math.random() * rList.length), 1)[0]
+            };
+            console.log('🔍 Misterio:', mystery);
+            
+            await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+            const remaining = [...sList, ...wList, ...rList].sort(() => Math.random() - 0.5);
+            console.log(`🎴 WILDCARD_CARDS: ${WILDCARD_CARDS.length}`, WILDCARD_CARDS);
+            console.log(`🃏 Cartas totales a distribuir: ${remaining.length}`);
+            console.log('🃏 Cartas:', remaining);
+            
+            const playerIds = Object.keys(gameState.players);
+            console.log(`👥 Jugadores: ${playerIds.length}`, playerIds);
+            
+            let hands = {};
+            playerIds.forEach(id => hands[id] = []);
+            remaining.forEach((card, i) => hands[playerIds[i % playerIds.length]].push(card));
+            
+            for (const [id, cards] of Object.entries(hands)) {
+                console.log(`🎴 ${id}: ${cards.length} cartas`, cards);
+                await database.ref(`rooms/${gameState.roomCode}/players/${id}/cards`).set(cards);
+            }
+            addMessage('success', '🃏 ¡Cartas repartidas!');
+            console.log('✅ Distribución completada');
+            
+            // ¡¡¡MARCAR COMO REPARTIDAS Y DESHABILITAREBUTTON!!!
+            gameState.cardsDistributed = true;
+            updateTurnControls();
         }
 
         function rollDice() {
             const playerIds = Object.keys(gameState.players);
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-
-            if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ No es tu turno.');
-                return;
+            if (playerIds[gameState.currentIndex] !== gameState.userId || gameState.hasRolled) return;
+            let dice = Math.floor(Math.random() * 6) + 1;
+            // Si se activó el comodín de avance rápido, duplicar pasos
+            if (gameState.nextTurnDoubleSteps) {
+                dice *= 2;
+                addMessage('success', `🌟 ¡Comodín activado! Pasos duplicados: ${dice}`);
+                gameState.nextTurnDoubleSteps = false;
             }
-
-            if (gameState.hasRolled) {
-                addMessage('error', '⚠️ Ya tiraste los dados.');
-                return;
-            }
-
-            const dice = Math.floor(Math.random() * 6) + 1;
             gameState.stepsAvailable = dice;
             gameState.hasRolled = true;
             document.getElementById('stepsAvailable').textContent = dice;
             document.getElementById('diceResult').textContent = `🎲 ${dice}`;
-            document.getElementById('boardInstruction').textContent = `✅ Moverás paso a paso (Te quedan ${dice} pasos). Puedes terminar cuando gustes.`;
             document.getElementById('endMoveBtn').style.display = 'block';
-            
             database.ref(`rooms/${gameState.roomCode}/gameState/dice`).set(dice);
-            addMessage('info', `🎲 Sacaste un ${dice}.`);
             updateGameBoard();
         }
 
-        function getRepresentativeTileId(locationString) {
-            let found = BOARD_LAYOUT.find(b => b.id === locationString);
-            if (found) return found.id;
-            let roomObj = roomsDef.find(r => r.id === locationString);
-            if (roomObj) return roomObj.id;
-            return locationString;
+        function activateWildcard(cardName) {
+            console.log('🎯 activateWildcard called with:', cardName);
+            if (cardName === '⚡ Paso Relámpago') {
+                gameState.stepsAvailable += 3;
+                console.log('⚡ Paso Relámpago activado! Pasos ahora:', gameState.stepsAvailable);
+                addMessage('success', `⚡ ¡${gameState.playerName} usó Paso Relámpago! +3 pasos.`);
+                document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
+                updateGameBoard();
+            } else if (cardName === '🌟 Comodín de Avance Rápido') {
+                gameState.nextTurnDoubleSteps = true;
+                console.log('🌟 Comodín de Avance Rápido activado! Próximo turno x2');
+                addMessage('success', `🌟 ¡${gameState.playerName} usó Comodín de Avance Rápido! Próximo turno x2 pasos.`);
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
+            } else {
+                console.error('❌ Comodín no reconocido:', cardName);
+            }
         }
 
-        function calculateDistance(tileAId, tileBId) {
-            let repA = getRepresentativeTileId(tileAId);
-            let repB = getRepresentativeTileId(tileBId);
-            const tileA = BOARD_LAYOUT.find(b => b.id === repA);
-            const tileB = BOARD_LAYOUT.find(b => b.id === repB);
-            if (!tileA || !tileB) return 99;
-            return Math.abs(tileA.x - tileB.x) + Math.abs(tileA.y - tileB.y);
+        function getRepresentativeTileId(loc) {
+            let found = BOARD_LAYOUT.find(b => b.id === loc);
+            return found ? found.id : loc;
+        }
+
+        function getDetectiveIcon(playerName) {
+            return DETECTIVE_ICONS[playerName] || '👤';
+        }
+
+        function calculateDistance(aId, bId) {
+            let tA = BOARD_LAYOUT.find(b => b.id === getRepresentativeTileId(aId));
+            let tB = BOARD_LAYOUT.find(b => b.id === getRepresentativeTileId(bId));
+            if (!tA || !tB) return 99;
+            
+            let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
+            
+            // ¡¡¡PUERTA ESPECIAL!!! SOLO para habitaciones
+            const tileB = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(bId));
+            if (tileB && tileB.type === 'room') {
+                const coordKey = `${tA.x},${tA.y}`;
+                if (doorEntries[coordKey] && dist === 2) {
+                    // Hay puerta en mi casilla y destino es habitación
+                    return 1; // Permitir movimiento
+                }
+            }
+            
+            return dist;
         }
 
         function moveToTile(tileId) {
             const playerIds = Object.keys(gameState.players);
-            const currentTurnUserId = playerIds[gameState.currentIndex];
+            if (playerIds[gameState.currentIndex] !== gameState.userId || !gameState.hasRolled || gameState.stepsAvailable <= 0) return;
+            let targetRep = getRepresentativeTileId(tileId);
+            if (calculateDistance(gameState.myLocation, targetRep) !== 1) return;
 
-            if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ No es tu turno.');
-                return;
-            }
-
-            if (!gameState.hasRolled || gameState.stepsAvailable <= 0) {
-                addMessage('error', '❌ ¡Debes tirar los dados primero o ya no te quedan pasos!');
-                return;
-            }
-
-            let targetRepId = getRepresentativeTileId(tileId);
-            const distance = calculateDistance(gameState.myLocation, targetRepId);
-            
-            if (distance !== 1) {
-                addMessage('error', `❌ Solo puedes moverte a casillas adyacentes directas (a distancia 1).`);
-                return;
-            }
-
-            gameState.stepsAvailable -= 1;
-            gameState.myLocation = targetRepId;
-            document.getElementById('myLocation').textContent = targetRepId;
-            document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
-
-            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRepId);
-            addMessage('success', `🚶‍♂️ Paso dado hacia ${targetRepId}. Te quedan ${gameState.stepsAvailable} pasos.`);
-
-            if (targetRepId.startsWith('Pasillo_') && (targetRepId.includes('_2_2') || targetRepId.includes('_7_7'))) {
-                triggerRandomEvent();
-            }
-
-            if (gameState.stepsAvailable === 0) {
-                finishMovement();
-            } else {
+            // DETECTAR SI ESTOY ENTRANDO A HABITACIÓN ANTES DE RESTAR PASOS
+            const tile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(tileId));
+            if (tile && tile.type === 'room') {
+                // ¡¡¡ENTRADA A HABITACIÓN - GASTA TODOS LOS PASOS DIRECTAMENTE!!!
+                console.log('🏠 ¡¡¡ENTRADA A HABITACIÓN!!!');
+                gameState.stepsAvailable = 0;
+                gameState.myLocation = targetRep;
+                gameState.canMakeSuggestion = true;
+                document.getElementById('myLocation').textContent = targetRep;
+                document.getElementById('stepsAvailable').textContent = '0';
+                addMessage('info', `🏠 ¡${gameState.playerName} entró a ${targetRep}! Ahora puede hacer una sugerencia.`);
+                database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRep);
                 updateGameBoard();
+                return;
+            }
+
+            // FLUJO NORMAL - PASILLO A PASILLO
+            gameState.stepsAvailable -= 1;
+            gameState.myLocation = targetRep;
+            document.getElementById('myLocation').textContent = targetRep;
+            document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRep);
+
+            // ¡¡¡DETECTAR EVENTOS EN CASILLAS ESPECIALES!!!
+            checkEventTile(targetRep);
+
+            if (gameState.stepsAvailable === 0) finishMovement();
+            else updateGameBoard();
+        }
+
+        function checkEventTile(location) {
+            // Casillas de evento: (2,2) y (7,7)
+            const tile = BOARD_LAYOUT.find(t => t.id === location);
+            if (tile && tile.type === 'event-tile') {
+                console.log('✨ ¡¡¡EVENTO ACTIVADO EN:', location);
+                const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
+                triggerEvent(randomEvent.title, randomEvent.desc);
             }
         }
 
-        function finishMovement() {
-            const playerIds = Object.keys(gameState.players);
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-            if (currentTurnUserId !== gameState.userId) return;
-
-            gameState.stepsAvailable = 0;
-            gameState.hasRolled = false;
-            document.getElementById('stepsAvailable').textContent = 0;
-            document.getElementById('endMoveBtn').style.display = 'none';
-            document.getElementById('boardInstruction').textContent = '⏳ Espera tu turno.';
-
-            const nextIndex = (gameState.currentIndex + 1) % playerIds.length;
-            database.ref(`rooms/${gameState.roomCode}/gameState`).update({
-                currentIndex: nextIndex,
-                dice: 0
-            });
-
-            addMessage('info', `🏁 Turno finalizado. Pasa al siguiente jugador.`);
-            updateGameBoard();
-        }
-
-        function triggerRandomEvent() {
-            const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                type: 'event',
-                text: `✨ [COMODÍN] ${gameState.playerName} cayó en casilla especial: "${randomEvent.title}"`
-            });
-            showEventModal(randomEvent.title, randomEvent.desc);
-        }
-
-        function showEventModal(title, desc) {
+        function triggerEvent(title, desc) {
             document.getElementById('eventTitleTitle').textContent = title;
             document.getElementById('eventDescriptionText').textContent = desc;
             document.getElementById('eventModal').classList.add('active');
+            
+            // Aplicar efecto REAL del evento
+            if (title === '⚡ Paso Relámpago') {
+                gameState.stepsAvailable += 3;
+                document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
+                console.log('⚡ +3 pasos agregados');
+                addMessage('success', `⚡ ¡${gameState.playerName} activó Paso Relámpago! +3 pasos.`);
+            } 
+            else if (title === '🌟 Comodín de Avance Rápido') {
+                gameState.nextTurnDoubleSteps = true;
+                console.log('🌟 Próximo turno x2 pasos');
+                addMessage('success', `🌟 ¡${gameState.playerName} activó Comodín de Avance! Próximo turno x2.`);
+            } 
+            else if (title === '🚪 Pasaje Teleportado') {
+                console.log('🚪 Abriendo selector de habitaciones');
+                showTeleportMenu();
+            } 
+            else if (title === '🔍 Lente Magnética') {
+                console.log('🔍 Mostrando carta de otro jugador');
+                showRandomCardFromPlayer();
+            } 
+            else if (title === '📸 Fotografía Forense') {
+                console.log('📸 Información de jugadores en la habitación');
+                showPlayersInRoom();
+            } 
+            else if (title === '📋 Archivo Secreto') {
+                console.log('📋 Abriendo selector de jugadores para revisar libreta');
+                showNotebookSelector();
+            } 
+            else if (title === '🕐 Turno Bonificación') {
+                console.log('🕐 Dando turno extra');
+                giveExtraTurn();
+            } 
+            else if (title === '📜 Pasadizo Secreto') {
+                gameState.canAskFreeSuggestion = true;
+                console.log('📜 Pregunta libre sin restricción de habitación ACTIVADA');
+                addMessage('info', `📜 ¡${gameState.playerName} puede formular una pregunta LIBRE!`);
+            } 
+            else if (title === '🛡️ Escudo del Detective') {
+                gameState.hasShield = true;
+                console.log('🛡️ Protección ACTIVADA');
+                addMessage('info', `🛡️ ¡${gameState.playerName} tiene protección en el Centro!`);
+            } 
+            else if (title === '💰 Recompensa de Inteligencia') {
+                console.log('💰 Mostrando carta aleatoria de jugador random');
+                showRandomPlayerCard();
+            }
+        }
+
+        // ============ FUNCIONES DE COMODINES =============
+
+        function showTeleportMenu() {
+            const rooms = uniqueRoomsList;
+            let menuHtml = '<div style="max-height: 300px; overflow-y: auto;">';
+            rooms.forEach(room => {
+                if (room !== gameState.myLocation) {
+                    menuHtml += `<button onclick="teleportToRoom('${room}')" style="width: 100%; padding: 10px; margin: 5px 0; background: #22c55e; color: white; border: none; border-radius: 5px; cursor: pointer;">${room}</button>`;
+                }
+            });
+            menuHtml += '</div>';
+            document.getElementById('eventDescriptionText').innerHTML = menuHtml;
+        }
+
+        function teleportToRoom(room) {
+            gameState.myLocation = room;
+            document.getElementById('myLocation').textContent = room;
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(room);
+            addMessage('success', `🚪 ¡${gameState.playerName} se teletransportó a ${room}!`);
+            closeEventModal();
+            updateGameBoard();
+        }
+
+        function showRandomCardFromPlayer() {
+            const playerIds = Object.keys(gameState.players).filter(id => id !== gameState.userId);
+            if (playerIds.length === 0) {
+                addMessage('warning', '⚠️ No hay otros jugadores para revisar');
+                return;
+            }
+            const randomPlayerId = playerIds[Math.floor(Math.random() * playerIds.length)];
+            const randomPlayer = gameState.players[randomPlayerId];
+            const playerCards = randomPlayer.cards || [];
+            if (playerCards.length === 0) {
+                addMessage('info', `🔍 ${randomPlayer.name} no tiene cartas disponibles`);
+                return;
+            }
+            const randomCard = playerCards[Math.floor(Math.random() * playerCards.length)];
+            addMessage('success', `🔍 ¡${gameState.playerName} vio la carta: ${randomCard} de ${randomPlayer.name}!`);
+        }
+
+        function showPlayersInRoom() {
+            const playersInRoom = Object.values(gameState.players).filter(p => p.location === gameState.myLocation);
+            let info = `📸 Jugadores en ${gameState.myLocation}:\n`;
+            playersInRoom.forEach(p => {
+                info += `- ${p.name}: ${p.cards ? p.cards.length : 0} cartas\n`;
+            });
+            addMessage('info', info);
+        }
+
+        function showNotebookSelector() {
+            const playerIds = Object.keys(gameState.players).filter(id => id !== gameState.userId);
+            if (playerIds.length === 0) {
+                addMessage('warning', '⚠️ No hay otros jugadores');
+                return;
+            }
+            let menuHtml = '<div style="max-height: 300px; overflow-y: auto;"><p><strong>Elige jugador para revisar libreta:</strong></p>';
+            playerIds.forEach(id => {
+                const player = gameState.players[id];
+                menuHtml += `<button onclick="viewPlayerNotebook('${id}')" style="width: 100%; padding: 10px; margin: 5px 0; background: #3182ce; color: white; border: none; border-radius: 5px; cursor: pointer;">${player.name}</button>`;
+            });
+            menuHtml += '</div>';
+            document.getElementById('eventDescriptionText').innerHTML = menuHtml;
+        }
+
+        function viewPlayerNotebook(playerId) {
+            const player = gameState.players[playerId];
+            addMessage('warning', `📋 ${gameState.playerName} está revisando la libreta de ${player.name} por 30 segundos...`);
+            addMessage('info', `📋 Libreta de ${player.name}: (Sus marcas deducidas)`);
+            closeEventModal();
+        }
+
+        function giveExtraTurn() {
+            const playerIds = Object.keys(gameState.players);
+            const currentIndex = gameState.currentIndex;
+            const nextIndex = (currentIndex + 1) % playerIds.length;
+            
+            // Aquí el jugador que activó el comodín obtiene otro turno
+            addMessage('success', `🕐 ¡${gameState.playerName} gana un turno EXTRA después de este!`);
+            gameState.extraTurnGranted = true;
+        }
+
+        function showRandomPlayerCard() {
+            const playerIds = Object.keys(gameState.players).filter(id => id !== gameState.userId);
+            if (playerIds.length === 0) {
+                addMessage('warning', '⚠️ No hay otros jugadores');
+                return;
+            }
+            const randomPlayerId = playerIds[Math.floor(Math.random() * playerIds.length)];
+            const randomPlayer = gameState.players[randomPlayerId];
+            const playerCards = randomPlayer.cards || [];
+            if (playerCards.length === 0) {
+                addMessage('info', `💰 ${randomPlayer.name} no tiene cartas`);
+                return;
+            }
+            const randomCard = playerCards[Math.floor(Math.random() * playerCards.length)];
+            addMessage('success', `💰 ¡${gameState.playerName} forzó a ${randomPlayer.name} a mostrar: ${randomCard}!`);
         }
 
         function closeEventModal() {
             document.getElementById('eventModal').classList.remove('active');
         }
 
+        function finishMovement() {
+            const playerIds = Object.keys(gameState.players);
+            if (playerIds[gameState.currentIndex] !== gameState.userId) return;
+            gameState.stepsAvailable = 0;
+            gameState.hasRolled = false;
+            gameState.canMakeSuggestion = false;
+            document.getElementById('stepsAvailable').textContent = 0;
+            document.getElementById('endMoveBtn').style.display = 'none';
+            
+            // Encontrar próximo jugador NO eliminado
+            let nextIndex = (gameState.currentIndex + 1) % playerIds.length;
+            let attempts = 0;
+            while (gameState.players[playerIds[nextIndex]]?.eliminated && attempts < playerIds.length) {
+                nextIndex = (nextIndex + 1) % playerIds.length;
+                attempts++;
+            }
+            
+            database.ref(`rooms/${gameState.roomCode}/gameState`).update({ currentIndex: nextIndex, dice: 0 });
+            updateGameBoard();
+        }
+
         function setupGameListeners() {
-            database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snapshot) => {
-                gameState.players = snapshot.val() || {};
-                gameState.playerIdsOrder = Object.keys(gameState.players);
-                if (gameState.players[gameState.userId] && gameState.players[gameState.userId].location) {
+            database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snap) => {
+                gameState.players = snap.val() || {};
+                if (gameState.players[gameState.userId]?.location) {
                     gameState.myLocation = gameState.players[gameState.userId].location;
                     document.getElementById('myLocation').textContent = gameState.myLocation;
                 }
@@ -1254,71 +1353,68 @@
                 updateTurnControls();
                 updateGameBoard();
             });
-
-            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snapshot) => {
-                gameState.myCards = snapshot.val() || [];
+            database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snap) => {
+                console.log('🎴 Listener de cartas activado');
+                gameState.myCards = snap.val() || [];
+                console.log(`📥 Cartas recibidas: ${gameState.myCards.length}`, gameState.myCards);
                 updateMyCards();
-                gameState.myCards.forEach(card => {
-                    gameState.notebookMarks[card] = true;
-                });
+                gameState.myCards.forEach(c => gameState.notebookMarks[c] = true);
                 buildNotebookUI();
             });
-
-            database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snapshot) => {
-                const state = snapshot.val();
+            database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snap) => {
+                const state = snap.val();
                 if (state) {
                     gameState.currentIndex = state.currentIndex || 0;
-                    if (state.dice !== undefined) {
-                        document.getElementById('diceResult').textContent = state.dice > 0 ? `🎲 ${state.dice}` : '🎲 -';
-                    }
+                    if (state.dice !== undefined) document.getElementById('diceResult').textContent = state.dice > 0 ? `🎲 ${state.dice}` : '🎲 -';
                     updateTurnControls();
-
                     if (state.activeSuggestion && state.activeSuggestion.targetPlayerId === gameState.userId) {
                         handleIncomingSuggestion(state.activeSuggestion);
                     }
                 }
             });
-
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).on('child_added', (snapshot) => {
-                const message = snapshot.val();
-                if (message) addMessage(message.type, message.text);
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).on('child_added', (snap) => {
+                if (snap.val()) addMessage(snap.val().type, snap.val().text);
             });
-
-            // Listener para el ganador
-            database.ref(`rooms/${gameState.roomCode}/gameState/winner`).on('value', (snapshot) => {
-                const winner = snapshot.val();
-                if (winner) {
-                    showVictoryModal(winner.name);
+            database.ref(`rooms/${gameState.roomCode}/gameState/winner`).on('value', (snap) => {
+                if (snap.val()) showVictoryModal(snap.val().name);
+            });
+            
+            // ¡¡¡LISTENER DE CARTAS REVELADAS - USANDO push() + child_added!!!
+            database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).orderByChild('targetUserId').equalTo(gameState.userId).on('child_added', (snap) => {
+                const reveal = snap.val();
+                if (reveal && reveal.targetUserId === gameState.userId) {
+                    showRevealedCard(reveal.card, reveal.showerName);
+                    // Auto-marcar en libreta
+                    gameState.notebookMarks[reveal.card] = true;
+                    buildNotebookUI();
+                    // Limpiar después de mostrar
+                    database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals/${snap.key}`).remove();
                 }
             });
-
-            setupCardRevealListener();
         }
 
         function updateTurnControls() {
             const playerIds = Object.keys(gameState.players);
             if (playerIds.length === 0) return;
-
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-            const isMyTurn = (currentTurnUserId === gameState.userId);
+            const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
+            document.getElementById('rollDiceBtn').disabled = !isMyTurn || gameState.hasRolled;
+            document.getElementById('currentTurnInfo').textContent = isMyTurn ? '¡Tu Turno!' : (gameState.players[playerIds[gameState.currentIndex]]?.name || '-');
             
-            const rollBtn = document.getElementById('rollDiceBtn');
-            rollBtn.disabled = !isMyTurn || gameState.hasRolled;
-
-            if (isMyTurn) {
-                document.getElementById('currentTurnInfo').textContent = '¡Tu Turno!';
-                document.getElementById('currentTurnInfo').style.color = '#48bb78';
-                if (!gameState.hasRolled) {
-                    document.getElementById('boardInstruction').textContent = '🎲 Tira los dados.';
-                }
+            // Mostrar botón "Nueva Partida" si el juego terminó y eres el host
+            const newGameBtn = document.getElementById('newGameBtn');
+            if (gameState.gameOver && gameState.isHost) {
+                newGameBtn.style.display = 'grid';
             } else {
-                const activePlayerName = gameState.players[currentTurnUserId]?.name || 'Alguien';
-                document.getElementById('currentTurnInfo').textContent = activePlayerName;
-                document.getElementById('currentTurnInfo').style.color = '#f6ad55';
-                document.getElementById('boardInstruction').textContent = `⏳ Esperando a ${activePlayerName}...`;
-                document.getElementById('endMoveBtn').style.display = 'none';
+                newGameBtn.style.display = 'none';
             }
-            updatePlayersList();
+            
+            // ¡¡¡DESHABILITAR BOTÓN DE REPARTIR SI YA FUERON REPARTIDAS!!!
+            const distributeBtn = document.getElementById('distributeBtn');
+            if (distributeBtn) {
+                distributeBtn.disabled = gameState.cardsDistributed;
+                distributeBtn.style.opacity = gameState.cardsDistributed ? '0.5' : '1';
+                distributeBtn.style.cursor = gameState.cardsDistributed ? 'not-allowed' : 'pointer';
+            }
         }
 
         function updateGameBoard() {
@@ -1328,70 +1424,33 @@
             BOARD_LAYOUT.forEach((tile) => {
                 let playersInTileHtml = '';
                 Object.entries(gameState.players).forEach(([id, p]) => {
-                    let pRep = getRepresentativeTileId(p.location);
-                    let tileRep = getRepresentativeTileId(tile.id);
-                    if (pRep === tileRep) {
-                        if (pRep === 'Centro') {
-                            if (tile.isPrimary) {
-                                playersInTileHtml += `<span class="player-token">${p.name}</span>`;
-                            }
-                        } else {
-                            if (tile.isPrimary || tileRep.startsWith('Pasillo_')) {
-                                playersInTileHtml += `<span class="player-token">${p.name}</span>`;
-                            }
+                    if (getRepresentativeTileId(p.location) === getRepresentativeTileId(tile.id)) {
+                        if (tile.id === 'Centro' ? tile.isPrimary : (tile.isPrimary || tile.id.startsWith('Pasillo_'))) {
+                            playersInTileHtml += `<span class="player-token" title="${p.name}">${getDetectiveIcon(p.name)}</span>`;
                         }
                     }
                 });
 
-                let tileRep = getRepresentativeTileId(tile.id);
-                let myRep = getRepresentativeTileId(gameState.myLocation);
-                const isMyLocation = (tileRep === myRep && (tileRep === 'Centro' ? tile.isPrimary : tile.isPrimary || tileRep.startsWith('Pasillo_')));
-                const playerIds = Object.keys(gameState.players);
-                const isMyTurn = (playerIds[gameState.currentIndex] === gameState.userId);
-                const distance = calculateDistance(gameState.myLocation, tileRep);
-                
-                // Solo alcanzable si está a distancia 1, es mi turno, y aún tengo pasos
-                const canMoveHere = (isMyTurn && gameState.hasRolled && distance === 1 && gameState.stepsAvailable > 0 && !isMyLocation);
+                let isMyLocation = (getRepresentativeTileId(tile.id) === getRepresentativeTileId(gameState.myLocation) && (tile.isPrimary || tile.id.startsWith('Pasillo_')));
+                let isMyTurn = (Object.keys(gameState.players)[gameState.currentIndex] === gameState.userId);
+                let canMoveHere = (isMyTurn && gameState.hasRolled && calculateDistance(gameState.myLocation, tile.id) === 1 && gameState.stepsAvailable > 0 && !isMyLocation);
 
                 let tileClass = `${tile.type} ${tile.cssClass}`;
                 if (isMyLocation) tileClass += ' my-current-location';
                 if (canMoveHere) tileClass += ' reachable';
 
-                let stepIndicator = '';
-                if (canMoveHere) {
-                    stepIndicator = `<div class="step-indicator">${gameState.stepsAvailable} paso${gameState.stepsAvailable > 1 ? 's' : ''}</div>`;
-                }
+                let stepIndicator = canMoveHere ? `<div class="step-indicator">${gameState.stepsAvailable}</div>` : '';
 
-                // Detectar si esta casilla tiene una puerta - SIMPLIFICADO
-                let doorIndicator = '';
-                if (tile.type === 'room' || tile.type === 'center') {
-                    // Mostrar flecha SOLO en el tile principal de la habitación
-                    if (tile.isPrimary) {
-                        let arrowSymbol = '';
-                        
-                        // Símbolo por habitación
-                        if (tile.id === 'Estudio') arrowSymbol = '🚪';
-                        else if (tile.id === 'Vestibulo') arrowSymbol = '🚪';
-                        else if (tile.id === 'Salon') arrowSymbol = '🚪';
-                        else if (tile.id === 'Biblioteca') arrowSymbol = '🚪';
-                        else if (tile.id === 'Centro') arrowSymbol = '⭐';
-                        else if (tile.id === 'Comedor') arrowSymbol = '🚪';
-                        else if (tile.id === 'Billar') arrowSymbol = '🚪';
-                        else if (tile.id === 'Invernadero') arrowSymbol = '🚪';
-                        else if (tile.id === 'SalonBaile') arrowSymbol = '🚪';
-                        
-                        if (arrowSymbol) {
-                            doorIndicator = `<div class="door-indicator-inside">${arrowSymbol}</div>`;
-                        }
-                    }
-                }
+                // MOSTRAR LA FLECHA EN LAS CELDAS DE PASILLO ESPECIFICADAS
+                let coordKey = `${tile.x},${tile.y}`;
+                let doorBadge = doorEntries[coordKey] ? `<div class="door-badge">${doorEntries[coordKey]}</div>` : '';
 
                 boardHtml += `
                     <div class="board-tile ${tileClass}" onclick="moveToTile('${tile.id}')">
                         ${tile.name ? `<div class="room-name">${tile.name}</div>` : ''}
-                        ${doorIndicator}
                         <div class="players-in-tile">${playersInTileHtml}</div>
                         ${stepIndicator}
+                        ${doorBadge}
                     </div>
                 `;
             });
@@ -1402,147 +1461,93 @@
             const list = document.getElementById('playersList');
             const playerIds = Object.keys(gameState.players);
             list.innerHTML = playerIds.map((id, idx) => {
-                const player = gameState.players[id] || {};
-                const isCurrent = (idx === gameState.currentIndex);
+                const player = gameState.players[id];
+                const isEliminated = player.eliminated;
+                const style = isEliminated ? 'opacity: 0.5; text-decoration: line-through; color: #999;' : '';
+                const badge = isEliminated ? ' ❌' : '';
                 return `
-                    <div class="player-info ${isCurrent ? 'current' : ''}">
-                        <div>${isCurrent ? '▶ ' : ''}<strong>${player.name}</strong></div>
-                        <div style="font-size: 0.7rem; color: #a0aec0;">📍 ${player.location || 'Centro'}</div>
-                    </div>
-                `;
-            }).join('');
+                <div class="player-info ${idx === gameState.currentIndex && !isEliminated ? 'current' : ''}" style="${style}">
+                    <div>${idx === gameState.currentIndex && !isEliminated ? '▶ ' : ''}${isEliminated ? '💀' : ''}${player.name}${badge}</div>
+                    <div style="font-size: 0.7rem; color: #a0aec0;">📍 ${player.location || 'Centro'}</div>
+                </div>
+            `}).join('');
         }
 
         function updateMyCards() {
             const cardsDiv = document.getElementById('myCards');
-            if (gameState.myCards.length === 0) {
-                cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.8rem;">Sin cartas.</p>';
-                return;
-            }
-            cardsDiv.innerHTML = gameState.myCards.map(card => {
-                let type = SUSPECTS.includes(card) ? 'suspect' : WEAPONS.includes(card) ? 'weapon' : 'room';
-                return `<div class="card ${type}"><strong>${card}</strong></div>`;
+            if (gameState.myCards.length === 0) { cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.8rem;">Sin cartas.</p>'; return; }
+            cardsDiv.innerHTML = gameState.myCards.map(c => {
+                let cardClass = 'room';
+                let clickHandler = '';
+                if (SUSPECTS.includes(c)) cardClass = 'suspect';
+                else if (WEAPONS.includes(c)) cardClass = 'weapon';
+                else if (WILDCARD_CARDS.includes(c)) {
+                    cardClass = 'wildcard';
+                    // Escapar el nombre para que funcione en onclick
+                    clickHandler = ` onclick="window.activateWildcard('${c.replace(/'/g, "\\'")}')" style="cursor:pointer;"`;
+                }
+                return `<div class="card ${cardClass}"${clickHandler}><strong>${c}</strong></div>`;
             }).join('');
         }
 
+        // Hacer activateWildcard disponible globalmente
+        window.activateWildcard = function(cardName) {
+            activateWildcard(cardName);
+        };
+
         function buildNotebookUI() {
             const container = document.getElementById('notebookContainer');
-            let html = `
-                <table class="detective-table">
-                    <tr><th>Sospechosos</th><th>Tachado</th></tr>
-                    ${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" ${gameState.notebookMarks[s] ? 'checked' : ''} onchange="toggleNotebook('${s}', this.checked)"></td></tr>`).join('')}
-                </table>
-                <table class="detective-table" style="margin-top: 8px;">
-                    <tr><th>Armas</th><th>Tachado</th></tr>
-                    ${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" ${gameState.notebookMarks[w] ? 'checked' : ''} onchange="toggleNotebook('${w}', this.checked)"></td></tr>`).join('')}
-                </table>
-                <table class="detective-table" style="margin-top: 8px;">
-                    <tr><th>Habitaciones</th><th>Tachado</th></tr>
-                    ${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" ${gameState.notebookMarks[r] ? 'checked' : ''} onchange="toggleNotebook('${r}', this.checked)"></td></tr>`).join('')}
-                </table>
+            container.innerHTML = `
+                <table class="detective-table"><tr><th>Sospechosos</th><th>X</th></tr>${SUSPECTS.map(s => `<tr><td>${s}</td><td><input type="checkbox" ${gameState.notebookMarks[s]?'checked':''} onchange="gameState.notebookMarks['${s}']=this.checked"></td></tr>`).join('')}</table>
+                <table class="detective-table" style="margin-top:8px;"><tr><th>Armas</th><th>X</th></tr>${WEAPONS.map(w => `<tr><td>${w}</td><td><input type="checkbox" ${gameState.notebookMarks[w]?'checked':''} onchange="gameState.notebookMarks['${w}']=this.checked"></td></tr>`).join('')}</table>
+                <table class="detective-table" style="margin-top:8px;"><tr><th>Habitaciones</th><th>X</th></tr>${uniqueRoomsList.map(r => `<tr><td>${r}</td><td><input type="checkbox" ${gameState.notebookMarks[r]?'checked':''} onchange="gameState.notebookMarks['${r}']=this.checked"></td></tr>`).join('')}</table>
             `;
-            container.innerHTML = html;
-        }
-
-        function toggleNotebook(item, isChecked) {
-            gameState.notebookMarks[item] = isChecked;
         }
 
         function showNotebookModal() { document.getElementById('notebookModal').classList.add('active'); }
         function closeNotebookModal() { document.getElementById('notebookModal').classList.remove('active'); }
-
         function showSuggestionModal() {
-            const playerIds = Object.keys(gameState.players);
-            const currentTurnUserId = playerIds[gameState.currentIndex];
-
-            if (currentTurnUserId !== gameState.userId) {
-                addMessage('error', '❌ Solo puedes hacer preguntas en tu turno.');
-                return;
-            }
-
-            if (gameState.myLocation.startsWith('Pasillo_')) {
-                addMessage('error', '❌ Debes estar dentro de una habitación para hacer una pregunta.');
-                return;
-            }
-
-            const suspectSel = document.getElementById('sugSuspectSelect');
-            const weaponSel = document.getElementById('sugWeaponSelect');
-            const roomInput = document.getElementById('sugRoomInput');
-
-            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
-            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomInput.value = gameState.myLocation;
-
+            if (Object.keys(gameState.players)[gameState.currentIndex] !== gameState.userId || gameState.myLocation.startsWith('Pasillo_')) return;
+            document.getElementById('sugSuspectSelect').innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
+            document.getElementById('sugWeaponSelect').innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
+            document.getElementById('sugRoomInput').value = gameState.myLocation;
             document.getElementById('suggestionModal').classList.add('active');
         }
-
         function closeSuggestionModal() { document.getElementById('suggestionModal').classList.remove('active'); }
 
         async function submitSuggestion() {
             const suspect = document.getElementById('sugSuspectSelect').value;
             const weapon = document.getElementById('sugWeaponSelect').value;
             const room = document.getElementById('sugRoomInput').value;
-
-            if (!suspect || !weapon || !room) {
-                addMessage('error', '❌ Selecciona el sospechoso y el arma.');
-                return;
-            }
-
+            if (!suspect || !weapon) return;
             closeSuggestionModal();
-
             const playerIds = Object.keys(gameState.players);
-            const myIdx = playerIds.indexOf(gameState.userId);
-            const nextPlayerId = playerIds[(myIdx + 1) % playerIds.length];
-
-            const suggestionData = {
-                authorId: gameState.userId,
-                authorName: gameState.playerName,
-                targetPlayerId: nextPlayerId,
-                suspect: suspect,
-                weapon: weapon,
-                room: room,
-                originalAuthorId: gameState.userId
-            };
-
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                type: 'suggestion',
-                text: `❓ ${gameState.playerName} pregunta en [${room}]: [ Sospechoso: ${suspect} | Arma: ${weapon} ]`
+            const nextPlayerId = playerIds[(playerIds.indexOf(gameState.userId) + 1) % playerIds.length];
+            await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set({
+                authorId: gameState.userId, authorName: gameState.playerName, targetPlayerId: nextPlayerId, suspect, weapon, room, originalAuthorId: gameState.userId
             });
-
-            await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestionData);
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'suggestion', text: `❓ ${gameState.playerName} preguntó en ${room}: ${suspect} con ${weapon}` });
+            
+            // ¡¡¡FIN DEL TURNO AUTOMÁTICO!!!
+            setTimeout(() => finishMovement(), 2000);
         }
 
         function handleIncomingSuggestion(suggestion) {
             gameState.activeSuggestion = suggestion;
             const matching = gameState.myCards.filter(c => c === suggestion.suspect || c === suggestion.weapon || c === suggestion.room);
-
             if (matching.length > 0) {
-                const select = document.getElementById('matchingCardsSelect');
-                select.innerHTML = matching.map(c => `<option value="${c}">${c}</option>`).join('');
+                document.getElementById('matchingCardsSelect').innerHTML = matching.map(c => `<option value="${c}">${c}</option>`).join('');
                 document.getElementById('replySuggestionModal').classList.add('active');
             } else {
-                if (suggestion.originalAuthorId === gameState.userId) {
-                    database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                        type: 'info',
-                        text: `🛡️ Ningún jugador posee las cartas de la pregunta.`
-                    });
-                    database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
-                } else {
-                    passSuggestionToNext(suggestion);
-                }
+                passSuggestionToNext(suggestion);
             }
         }
 
         async function passSuggestionToNext(suggestion) {
             const playerIds = Object.keys(gameState.players);
-            const currentTargetIdx = playerIds.indexOf(suggestion.targetPlayerId);
-            const nextPlayerId = playerIds[(currentTargetIdx + 1) % playerIds.length];
-
+            const nextPlayerId = playerIds[(playerIds.indexOf(suggestion.targetPlayerId) + 1) % playerIds.length];
             if (nextPlayerId === suggestion.originalAuthorId) {
-                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                    type: 'info',
-                    text: `🛡️ Nadie pudo responder a la pregunta.`
-                });
+                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'info', text: `🛡️ Nadie pudo responder la pregunta.` });
                 database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
             } else {
                 suggestion.targetPlayerId = nextPlayerId;
@@ -1550,94 +1555,220 @@
             }
         }
 
-        async function confirmReplySuggestion() {
-            const selectedCard = document.getElementById('matchingCardsSelect').value;
+        function showRevealedCard(card, showerName) {
+            // Mostrar modal con la carta revelada
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+                padding: 40px;
+                border-radius: 15px;
+                z-index: 10000;
+                box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+                text-align: center;
+                border: 3px solid #48bb78;
+            `;
+            modal.innerHTML = `
+                <div style="color: white; font-size: 24px; font-weight: bold; margin-bottom: 20px;">
+                    👁️ CARTA REVELADA
+                </div>
+                <div style="background: white; color: #111827; padding: 20px; border-radius: 10px; margin-bottom: 20px; font-size: 32px; font-weight: bold;">
+                    ${card}
+                </div>
+                <div style="color: white; font-size: 18px;">
+                    📌 Mostrada por: <strong>${showerName}</strong>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" style="margin-top: 20px; padding: 10px 20px; background: white; color: #22c55e; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                    ✅ Cerrar
+                </button>
+            `;
+            
+            // Agregar overlay oscuro
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 9999;
+            `;
+            overlay.onclick = () => {
+                overlay.remove();
+                modal.remove();
+            };
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(modal);
+            
+            // Sonido de notificación (opcional)
+            addMessage('success', `👁️ ${showerName} te mostró: ${card}`);
+        }
+
+        function confirmReplySuggestion() {
+            const card = document.getElementById('matchingCardsSelect').value;
             document.getElementById('replySuggestionModal').classList.remove('active');
-
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({
-                type: 'success',
-                text: `👁️ ${gameState.playerName} mostró una carta en privado.`
-            });
-
-            // Guardar la carta mostrada y enviar al autor de la sugerencia
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'success', text: `👁️ ${gameState.playerName} mostró una carta.` });
             if (gameState.activeSuggestion) {
-                const cardRevealData = {
-                    showerId: gameState.userId,
-                    showerName: gameState.playerName,
-                    card: selectedCard,
-                    timestamp: Date.now()
-                };
-                
-                // Enviar al autor de la sugerencia
-                database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals/${gameState.activeSuggestion.originalAuthorId}`).set(cardRevealData);
-                
-                // Mostrar la carta al que la pidió (si es el jugador actual)
-                if (gameState.activeSuggestion.originalAuthorId === gameState.userId) {
-                    showCardDisplay(gameState.playerName, selectedCard);
-                }
+                // Usar push() para cada carta (no set()) - permite múltiples cartas
+                database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).push({ 
+                    targetUserId: gameState.activeSuggestion.originalAuthorId,
+                    showerName: gameState.playerName, 
+                    card 
+                });
             }
-
             database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
         }
 
         function showAccusationModal() {
-            if (gameState.myLocation !== 'Centro') {
-                addMessage('error', '❌ Debes estar en el Centro para acusar.');
-                return;
-            }
-
-            const suspectSel = document.getElementById('suspectSelect');
-            const weaponSel = document.getElementById('weaponSelect');
-            const roomSel = document.getElementById('roomSelect');
-
-            const unmarketSuspects = SUSPECTS.filter(s => !gameState.notebookMarks[s]);
-            const unmarketWeapons = WEAPONS.filter(w => !gameState.notebookMarks[w]);
-            const unmarketRooms = uniqueRoomsList.filter(r => !gameState.notebookMarks[r]);
-
-            suspectSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketSuspects.map(s => `<option value="${s}">${s}</option>`).join('');
-            weaponSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketWeapons.map(w => `<option value="${w}">${w}</option>`).join('');
-            roomSel.innerHTML = '<option value="">-- Selecciona --</option>' + unmarketRooms.map(r => `<option value="${r}">${r}</option>`).join('');
-
+            if (gameState.myLocation !== 'Centro') return;
+            document.getElementById('suspectSelect').innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.filter(s => !gameState.notebookMarks[s]).map(s => `<option value="${s}">${s}</option>`).join('');
+            document.getElementById('weaponSelect').innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.filter(w => !gameState.notebookMarks[w]).map(w => `<option value="${w}">${w}</option>`).join('');
+            document.getElementById('roomSelect').innerHTML = '<option value="">-- Selecciona --</option>' + uniqueRoomsList.filter(r => !gameState.notebookMarks[r]).map(r => `<option value="${r}">${r}</option>`).join('');
             document.getElementById('accusationModal').classList.add('active');
         }
-
         function closeAccusationModal() { document.getElementById('accusationModal').classList.remove('active'); }
-
-        function showVictoryModal(winner) { 
-            document.getElementById('victoryMessage').textContent = `🏆 ¡${winner} GANÓ EL JUEGO! 🏆`;
-            document.getElementById('victoryModal').classList.add('active'); 
-        }
-
-        function closeVictoryModal() { 
-            document.getElementById('victoryModal').classList.remove('active'); 
-        }
 
         async function submitAccusation() {
             const suspect = document.getElementById('suspectSelect').value;
             const weapon = document.getElementById('weaponSelect').value;
             const room = document.getElementById('roomSelect').value;
-
-            if (!suspect || !weapon || !room) { addMessage('error', '❌ Completa los 3 campos.'); return; }
-
-            const mysterySnap = await database.ref(`rooms/${gameState.roomCode}/mystery`).get();
-            const mystery = mysterySnap.val();
-
-            const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
-            const msg = isCorrect ? `🏆 ¡${gameState.playerName} GANÓ EL JUEGO!` : `❌ ${gameState.playerName} falló su acusación. Era: ${mystery.suspect}, ${mystery.weapon}, ${mystery.room}`;
+            if (!suspect || !weapon || !room) return;
             
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: isCorrect ? 'success' : 'error', text: msg });
+            const mystery = (await database.ref(`rooms/${gameState.roomCode}/mystery`).get()).val();
+            const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
             
             if (isCorrect) {
-                // Guardar en Firebase que hay un ganador
-                database.ref(`rooms/${gameState.roomCode}/gameState/winner`).set({ name: gameState.playerName, timestamp: Date.now() });
+                // ¡¡¡GANÓ!!!
+                console.log('🏆 ¡¡¡ACUSACIÓN CORRECTA!!!');
+                gameState.gameOver = true;
+                gameState.winner = gameState.playerName;
+                database.ref(`rooms/${gameState.roomCode}/gameState/winner`).set({ name: gameState.playerName, isCorrect: true });
+                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'success', text: `🏆 ¡¡¡${gameState.playerName} GANÓ LA PARTIDA!!!` });
+                addMessage('success', `🏆 ¡¡¡${gameState.playerName} GANÓ LA PARTIDA!!!`);
+                showVictoryModal(gameState.playerName);
+            } else {
+                // ¡¡¡PERDIÓ Y QUEDA FUERA!!!
+                console.log('❌ Acusación fallida - Jugador eliminado');
+                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'error', text: `❌ ¡${gameState.playerName} acusó incorrectamente y quedó FUERA de la partida!` });
+                addMessage('error', `❌ ¡${gameState.playerName} acusó incorrectamente y quedó FUERA!`);
+                
+                // Eliminar jugador de la partida
+                await database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/eliminated`).set(true);
+                gameState.players[gameState.userId].eliminated = true;
+                
+                // Si solo queda un jugador, ese gana
+                const activePlayers = Object.values(gameState.players).filter(p => !p.eliminated);
+                if (activePlayers.length === 1) {
+                    gameState.gameOver = true;
+                    gameState.winner = activePlayers[0].name;
+                    database.ref(`rooms/${gameState.roomCode}/gameState/winner`).set({ name: activePlayers[0].name, isCorrect: false });
+                    addMessage('success', `🏆 ¡${activePlayers[0].name} es el único jugador restante y GANÓ!`);
+                    showVictoryModal(activePlayers[0].name);
+                } else {
+                    // Pasar al siguiente jugador no eliminado
+                    skipToNextActiveTurn();
+                    updateGameBoard();
+                }
             }
             
             closeAccusationModal();
         }
 
+        function skipToNextActiveTurn() {
+            const playerIds = Object.keys(gameState.players);
+            let nextIndex = (gameState.currentIndex + 1) % playerIds.length;
+            let attempts = 0;
+            
+            // Saltar jugadores eliminados
+            while (gameState.players[playerIds[nextIndex]]?.eliminated && attempts < playerIds.length) {
+                nextIndex = (nextIndex + 1) % playerIds.length;
+                attempts++;
+            }
+            
+            gameState.currentIndex = nextIndex;
+            gameState.hasRolled = false;
+            database.ref(`rooms/${gameState.roomCode}/gameState/currentIndex`).set(nextIndex);
+        }
+
+        function showVictoryModal(winner) {
+            document.getElementById('victoryMessage').textContent = `¡${winner} ha descubierto el misterio y ganado la partida!`;
+            document.getElementById('victoryModal').classList.add('active');
+        }
+        function closeVictoryModal() { document.getElementById('victoryModal').classList.remove('active'); }
+        
+        async function startNewGame() {
+            console.log('🎮 Iniciando nueva partida...');
+            if (!gameState.isHost) {
+                addMessage('error', '❌ Solo el anfitrión puede iniciar una nueva partida');
+                return;
+            }
+            
+            // Reset del gameState
+            gameState.gameOver = false;
+            gameState.winner = null;
+            gameState.currentIndex = 0;
+            gameState.hasRolled = false;
+            gameState.stepsAvailable = 0;
+            gameState.canMakeSuggestion = false;
+            gameState.notebookMarks = {};
+            gameState.myCards = [];
+            gameState.canAskFreeSuggestion = false;
+            gameState.hasShield = false;
+            gameState.extraTurnGranted = false;
+            gameState.nextTurnDoubleSteps = false;
+            gameState.cardsDistributed = false;  // Será true cuando el host reparta
+            
+            // Reset de Firebase
+            const sList = [...SUSPECTS], wList = [...WEAPONS], rList = [...uniqueRoomsList];
+            const mystery = {
+                suspect: sList.splice(Math.floor(Math.random() * sList.length), 1)[0],
+                weapon: wList.splice(Math.floor(Math.random() * wList.length), 1)[0],
+                room: rList.splice(Math.floor(Math.random() * rList.length), 1)[0]
+            };
+            
+            await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
+            await database.ref(`rooms/${gameState.roomCode}/gameState/winner`).remove();
+            await database.ref(`rooms/${gameState.roomCode}/gameState/messages`).remove();
+            
+            // Reset de jugadores (quitar "eliminados")
+            for (const [id, player] of Object.entries(gameState.players)) {
+                await database.ref(`rooms/${gameState.roomCode}/players/${id}/eliminated`).remove();
+                await database.ref(`rooms/${gameState.roomCode}/players/${id}/location`).set('Centro');
+                gameState.players[id].eliminated = false;
+                gameState.players[id].location = 'Centro';
+            }
+            
+            // Distribuir cartas nuevamente
+            const remaining = [...sList, ...wList, ...rList].sort(() => Math.random() - 0.5);
+            const playerIds = Object.keys(gameState.players);
+            let hands = {};
+            playerIds.forEach(id => hands[id] = []);
+            remaining.forEach((card, i) => hands[playerIds[i % playerIds.length]].push(card));
+            
+            for (const [id, cards] of Object.entries(hands)) {
+                await database.ref(`rooms/${gameState.roomCode}/players/${id}/cards`).set(cards);
+            }
+            
+            await database.ref(`rooms/${gameState.roomCode}/gameState/currentIndex`).set(0);
+            await database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).remove();
+            
+            // ¡¡¡YA FUERON REPARTIDAS LAS CARTAS EN ESTA NUEVA PARTIDA!!!
+            gameState.cardsDistributed = true;
+            
+            addMessage('success', '🎮 ¡Nueva partida iniciada! Cartas repartidas.');
+            updateGameBoard();
+            updateTurnControls();
+        }
+        function closeCardDisplayModal() { document.getElementById('cardDisplayModal').classList.remove('active'); }
+
         function addMessage(type, text) {
             const log = document.getElementById('messageLog');
-            if(!log) return;
+            if (!log) return;
             const div = document.createElement('div');
             div.className = `message ${type}`;
             div.textContent = text;
@@ -1645,32 +1776,7 @@
             log.scrollTop = log.scrollHeight;
         }
 
-        function showCardDisplay(playerName, card) {
-            document.getElementById('cardDisplayMessage').textContent = `${playerName} te mostró:`;
-            document.getElementById('displayedCardName').textContent = card;
-            document.getElementById('cardDisplayModal').classList.add('active');
-        }
-
-        function closeCardDisplayModal() {
-            document.getElementById('cardDisplayModal').classList.remove('active');
-        }
-
-        function setupCardRevealListener() {
-            database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals/${gameState.userId}`).on('value', (snapshot) => {
-                const cardReveal = snapshot.val();
-                if (cardReveal) {
-                    showCardDisplay(cardReveal.showerName, cardReveal.card);
-                    // Limpiar el reveal después de mostrar
-                    setTimeout(() => {
-                        database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals/${gameState.userId}`).remove();
-                    }, 500);
-                }
-            });
-        }
-
-        // Mostrar versión
         document.getElementById('versionDisplay').textContent = `Versión ${GAME_VERSION} - ${VERSION_INFO}`;
-        
         authenticateUser();
     </script>
 </body>
