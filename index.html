@@ -803,8 +803,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.5.0";
-        const VERSION_INFO = "v4.5.0 - Bugfixes: Modal Blanco + Acciones Repetidas + Salida de Habitaciones";
+        const GAME_VERSION = "4.5.2";
+        const VERSION_INFO = "v4.5.2 - Distancia de Habitaciones 2x2 Corregida";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
@@ -1137,53 +1137,44 @@
         }
 
         function calculateDistance(aId, bId) {
-            let tA = BOARD_LAYOUT.find(b => b.id === getRepresentativeTileId(aId));
-            let tB = BOARD_LAYOUT.find(b => b.id === getRepresentativeTileId(bId));
-            if (!tA || !tB) return 99;
+            const aRepId = getRepresentativeTileId(aId);
+            const bRepId = getRepresentativeTileId(bId);
             
-            let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
+            // ¡¡¡ESPECIAL PARA HABITACIONES 2x2!!!
+            // Si estoy en una habitación, considero el tile más cercano de esa habitación
+            let tilesA = BOARD_LAYOUT.filter(b => b.id === aRepId);
+            let tilesB = BOARD_LAYOUT.filter(b => b.id === bRepId);
             
-            // ¡¡¡PUERTA ESPECIAL!!! SOLO para habitaciones
-            const tileB = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(bId));
-            if (tileB && tileB.type === 'room') {
-                const coordKey = `${tA.x},${tA.y}`;
-                if (doorEntries[coordKey] && dist === 2) {
-                    // Hay puerta en mi casilla y destino es habitación
-                    return 1; // Permitir movimiento
+            if (tilesA.length === 0 || tilesB.length === 0) return 99;
+            
+            // Encontrar la distancia mínima entre cualquier tile de A y cualquier tile de B
+            let minDist = 99;
+            for (let tA of tilesA) {
+                for (let tB of tilesB) {
+                    let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
+                    minDist = Math.min(minDist, dist);
                 }
             }
             
-            return dist;
+            // ¡¡¡PUERTA ESPECIAL!!! SOLO para habitaciones
+            const tileB = BOARD_LAYOUT.find(t => t.id === bRepId);
+            if (tileB && tileB.type === 'room') {
+                // Si la distancia mínima es 1, permitir
+                if (minDist === 1) return 1;
+            }
+            
+            return minDist;
         }
 
         function moveToTile(tileId) {
             const playerIds = Object.keys(gameState.players);
-            if (playerIds[gameState.currentIndex] !== gameState.userId || !gameState.hasRolled) return;
-            
+            if (playerIds[gameState.currentIndex] !== gameState.userId || !gameState.hasRolled || gameState.stepsAvailable <= 0) return;
             let targetRep = getRepresentativeTileId(tileId);
             if (calculateDistance(gameState.myLocation, targetRep) !== 1) return;
 
-            // DETECTAR SI ESTOY EN UNA HABITACIÓN Y SALIENDO (sin gastar pasos)
-            const currentTile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(gameState.myLocation));
-            const targetTile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(tileId));
-            
-            if (currentTile && currentTile.type === 'room' && targetTile && targetTile.type === 'hallway') {
-                // ¡¡¡SALIENDO DE HABITACIÓN - NO GASTA PASOS!!!
-                console.log('🚪 ¡¡¡SALIDA DE HABITACIÓN - SIN GASTAR PASOS!!!');
-                gameState.myLocation = targetRep;
-                gameState.canMakeSuggestion = false;
-                document.getElementById('myLocation').textContent = targetRep;
-                database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRep);
-                addMessage('info', `🚪 ${gameState.playerName} salió de ${currentTile.name}`);
-                updateGameBoard();
-                return;
-            }
-
-            // VERIFICAR SI PUEDO MOVER (debe haber pasos disponibles)
-            if (gameState.stepsAvailable <= 0) return;
-
-            // DETECTAR SI ESTOY ENTRANDO A HABITACIÓN
-            if (targetTile && targetTile.type === 'room') {
+            // DETECTAR SI ESTOY ENTRANDO A HABITACIÓN ANTES DE RESTAR PASOS
+            const tile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(tileId));
+            if (tile && tile.type === 'room') {
                 // ¡¡¡ENTRADA A HABITACIÓN - GASTA TODOS LOS PASOS DIRECTAMENTE!!!
                 console.log('🏠 ¡¡¡ENTRADA A HABITACIÓN!!!');
                 gameState.stepsAvailable = 0;
@@ -1197,9 +1188,10 @@
                 return;
             }
 
-            // FLUJO NORMAL - PASILLO A PASILLO
+            // FLUJO NORMAL - PASILLO A PASILLO (INCLUYENDO SALIDA DE HABITACIÓN)
             gameState.stepsAvailable -= 1;
             gameState.myLocation = targetRep;
+            gameState.canMakeSuggestion = false;
             document.getElementById('myLocation').textContent = targetRep;
             document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
             database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRep);
