@@ -803,8 +803,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.4.0";
-        const VERSION_INFO = "v4.4.0 - Layout Móvil Mejorado + Header Simplificado";
+        const GAME_VERSION = "4.5.0";
+        const VERSION_INFO = "v4.5.0 - Bugfixes: Modal Blanco + Acciones Repetidas + Salida de Habitaciones";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
@@ -925,7 +925,7 @@
             notebookMarks: {}, activeSuggestion: null, nextTurnDoubleSteps: false,
             canAskFreeSuggestion: false, hasShield: false, extraTurnGranted: false,
             canMakeSuggestion: false, gameOver: false, winner: null, activePlayers: [],
-            cardsDistributed: false
+            cardsDistributed: false, listenersSetup: false
         };
 
         async function authenticateUser() {
@@ -1026,7 +1026,11 @@
                     actionsContainer.insertBefore(btn, actionsContainer.firstChild);
                 }
             }
-            setupGameListeners();
+            // ¡¡¡EVITAR MÚLTIPLES LISTENERS - SOLO UNA VEZ!!!
+            if (!gameState.listenersSetup) {
+                setupGameListeners();
+                gameState.listenersSetup = true;
+            }
             buildNotebookUI();
         }
 
@@ -1154,13 +1158,32 @@
 
         function moveToTile(tileId) {
             const playerIds = Object.keys(gameState.players);
-            if (playerIds[gameState.currentIndex] !== gameState.userId || !gameState.hasRolled || gameState.stepsAvailable <= 0) return;
+            if (playerIds[gameState.currentIndex] !== gameState.userId || !gameState.hasRolled) return;
+            
             let targetRep = getRepresentativeTileId(tileId);
             if (calculateDistance(gameState.myLocation, targetRep) !== 1) return;
 
-            // DETECTAR SI ESTOY ENTRANDO A HABITACIÓN ANTES DE RESTAR PASOS
-            const tile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(tileId));
-            if (tile && tile.type === 'room') {
+            // DETECTAR SI ESTOY EN UNA HABITACIÓN Y SALIENDO (sin gastar pasos)
+            const currentTile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(gameState.myLocation));
+            const targetTile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(tileId));
+            
+            if (currentTile && currentTile.type === 'room' && targetTile && targetTile.type === 'hallway') {
+                // ¡¡¡SALIENDO DE HABITACIÓN - NO GASTA PASOS!!!
+                console.log('🚪 ¡¡¡SALIDA DE HABITACIÓN - SIN GASTAR PASOS!!!');
+                gameState.myLocation = targetRep;
+                gameState.canMakeSuggestion = false;
+                document.getElementById('myLocation').textContent = targetRep;
+                database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRep);
+                addMessage('info', `🚪 ${gameState.playerName} salió de ${currentTile.name}`);
+                updateGameBoard();
+                return;
+            }
+
+            // VERIFICAR SI PUEDO MOVER (debe haber pasos disponibles)
+            if (gameState.stepsAvailable <= 0) return;
+
+            // DETECTAR SI ESTOY ENTRANDO A HABITACIÓN
+            if (targetTile && targetTile.type === 'room') {
                 // ¡¡¡ENTRADA A HABITACIÓN - GASTA TODOS LOS PASOS DIRECTAMENTE!!!
                 console.log('🏠 ¡¡¡ENTRADA A HABITACIÓN!!!');
                 gameState.stepsAvailable = 0;
@@ -1603,20 +1626,6 @@
                 text-align: center;
                 border: 3px solid #48bb78;
             `;
-            modal.innerHTML = `
-                <div style="color: white; font-size: 24px; font-weight: bold; margin-bottom: 20px;">
-                    👁️ CARTA REVELADA
-                </div>
-                <div style="background: white; color: #111827; padding: 20px; border-radius: 10px; margin-bottom: 20px; font-size: 32px; font-weight: bold;">
-                    ${card}
-                </div>
-                <div style="color: white; font-size: 18px;">
-                    📌 Mostrada por: <strong>${showerName}</strong>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" style="margin-top: 20px; padding: 10px 20px; background: white; color: #22c55e; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
-                    ✅ Cerrar
-                </button>
-            `;
             
             // Agregar overlay oscuro
             const overlay = document.createElement('div');
@@ -1629,10 +1638,33 @@
                 background: rgba(0, 0, 0, 0.7);
                 z-index: 9999;
             `;
-            overlay.onclick = () => {
+            
+            modal.innerHTML = `
+                <div style="color: white; font-size: 24px; font-weight: bold; margin-bottom: 20px;">
+                    👁️ CARTA REVELADA
+                </div>
+                <div style="background: white; color: #111827; padding: 20px; border-radius: 10px; margin-bottom: 20px; font-size: 32px; font-weight: bold;">
+                    ${card}
+                </div>
+                <div style="color: white; font-size: 18px;">
+                    📌 Mostrada por: <strong>${showerName}</strong>
+                </div>
+                <button style="margin-top: 20px; padding: 10px 20px; background: white; color: #22c55e; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                    ✅ Cerrar
+                </button>
+            `;
+            
+            // Función para cerrar el modal
+            const closeModal = () => {
                 overlay.remove();
                 modal.remove();
             };
+            
+            // Agregar listener al botón
+            modal.querySelector('button').addEventListener('click', closeModal);
+            
+            // También cerrar al clickear el overlay
+            overlay.onclick = closeModal;
             
             document.body.appendChild(overlay);
             document.body.appendChild(modal);
