@@ -803,8 +803,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.5.4";
-        const VERSION_INFO = "v4.5.4 - Validación de Puertas: Solo entrada por puerta actual";
+        const GAME_VERSION = "4.5.5";
+        const VERSION_INFO = "v4.5.5 - Corregir Duplicación de Mensajes de Cartas Mostradas";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
@@ -1632,6 +1632,12 @@
         }
 
         function showRevealedCard(card, showerName) {
+            // Agregar mensaje genérico a Firebase para que todos lo vean
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ 
+                type: 'success', 
+                text: `👁️ ${showerName} mostró una carta.` 
+            });
+            
             // Mostrar modal con la carta revelada
             const modal = document.createElement('div');
             modal.style.cssText = `
@@ -1690,14 +1696,13 @@
             document.body.appendChild(overlay);
             document.body.appendChild(modal);
             
-            // Sonido de notificación (opcional)
+            // Mensaje específico para quien recibe la carta
             addMessage('success', `👁️ ${showerName} te mostró: ${card}`);
         }
 
         function confirmReplySuggestion() {
             const card = document.getElementById('matchingCardsSelect').value;
             document.getElementById('replySuggestionModal').classList.remove('active');
-            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'success', text: `👁️ ${gameState.playerName} mostró una carta.` });
             if (gameState.activeSuggestion) {
                 // Usar push() para cada carta (no set()) - permite múltiples cartas
                 database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).push({ 
@@ -1705,6 +1710,7 @@
                     showerName: gameState.playerName, 
                     card 
                 });
+                // El mensaje se agrega automáticamente en showRevealedCard()
             }
             database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
         }
