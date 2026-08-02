@@ -803,8 +803,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.5.3";
-        const VERSION_INFO = "v4.5.3 - Una Puerta por Habitación (Entrada/Salida Única)";
+        const GAME_VERSION = "4.5.4";
+        const VERSION_INFO = "v4.5.4 - Validación de Puertas: Solo entrada por puerta actual";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
@@ -1135,42 +1135,64 @@
         }
 
         function calculateDistance(aId, bId) {
-            let tA = BOARD_LAYOUT.find(b => b.id === getRepresentativeTileId(aId));
-            let tB = BOARD_LAYOUT.find(b => b.id === getRepresentativeTileId(bId));
-            if (!tA || !tB) return 99;
+            const aRepId = getRepresentativeTileId(aId);
+            const bRepId = getRepresentativeTileId(bId);
             
-            let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
+            // Obtener TODOS los tiles de A y B
+            let tilesA = BOARD_LAYOUT.filter(b => b.id === aRepId);
+            let tilesB = BOARD_LAYOUT.filter(b => b.id === bRepId);
+            
+            if (tilesA.length === 0 || tilesB.length === 0) return 99;
+            
+            // Encontrar distancia MÍNIMA entre cualquier tile de A y cualquier tile de B
+            let minDist = 99;
+            for (let tA of tilesA) {
+                for (let tB of tilesB) {
+                    let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
+                    minDist = Math.min(minDist, dist);
+                }
+            }
             
             // ¡¡¡PUERTAS ESPECIALES!!! SOLO entrada/salida por puertas definidas
-            const currentRoom = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(aId) && t.type === 'room');
-            const targetRoom = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(bId) && t.type === 'room');
-            const currentHallway = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(aId) && t.type === 'hallway');
-            const targetHallway = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(bId) && t.type === 'hallway');
+            const isCurrentRoom = tilesA.some(t => t.type === 'room');
+            const isTargetRoom = tilesB.some(t => t.type === 'room');
+            const isCurrentHallway = tilesA.some(t => t.type === 'hallway');
+            const isTargetHallway = tilesB.some(t => t.type === 'hallway');
             
             // ¡¡¡CASO 1: SALIR DE HABITACIÓN A PASILLO - Debe haber puerta!!!
-            if (currentRoom && targetHallway) {
-                // Verificar si tB (tile destino en pasillo) tiene una puerta
-                const coordKey = `${tB.x},${tB.y}`;
-                if (doorEntries[coordKey]) {
-                    // Hay puerta en el pasillo destino
-                    return 1; // Permitir movimiento
+            if (isCurrentRoom && isTargetHallway) {
+                // Buscar si hay puerta en el pasillo destino
+                for (let tB of tilesB) {
+                    const coordKey = `${tB.x},${tB.y}`;
+                    if (doorEntries[coordKey]) {
+                        // Encontrar la distancia de la habitación a esta puerta
+                        for (let tA of tilesA) {
+                            let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
+                            if (dist === 1) return 1; // Puerta adyacente encontrada
+                        }
+                    }
                 }
-                return 99; // No hay puerta, no permitir
+                return 99; // No hay puerta adyacente
             }
             
             // ¡¡¡CASO 2: ENTRAR A HABITACIÓN DESDE PASILLO - Debe haber puerta!!!
-            if (currentHallway && targetRoom) {
-                // Verificar si tA (tile actual en pasillo) tiene una puerta
-                const coordKey = `${tA.x},${tA.y}`;
-                if (doorEntries[coordKey]) {
-                    // Hay puerta en el pasillo actual
-                    return 1; // Permitir movimiento
+            if (isCurrentHallway && isTargetRoom) {
+                // Buscar si hay puerta en el pasillo actual
+                for (let tA of tilesA) {
+                    const coordKey = `${tA.x},${tA.y}`;
+                    if (doorEntries[coordKey]) {
+                        // Encontrar la distancia de esta puerta a la habitación
+                        for (let tB of tilesB) {
+                            let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
+                            if (dist === 1) return 1; // Habitación adyacente a la puerta
+                        }
+                    }
                 }
-                return 99; // No hay puerta, no permitir
+                return 99; // No hay puerta adyacente a la habitación destino
             }
             
             // MOVIMIENTO NORMAL (pasillo a pasillo, sala a sala, etc.)
-            return dist;
+            return minDist;
         }
 
         function moveToTile(tileId) {
@@ -1179,7 +1201,7 @@
             let targetRep = getRepresentativeTileId(tileId);
             if (calculateDistance(gameState.myLocation, targetRep) !== 1) return;
 
-            // DETECTAR SI ESTOY ENTRANDO A HABITACIÓN ANTES DE RESTAR PASOS
+            // DETECTAR SI ESTOY ENTRANDO A HABITACIÓN
             const tile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(tileId));
             if (tile && tile.type === 'room') {
                 // ¡¡¡ENTRADA A HABITACIÓN - GASTA TODOS LOS PASOS DIRECTAMENTE!!!
