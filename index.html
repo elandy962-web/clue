@@ -1910,14 +1910,13 @@
                 // Android
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        installBtn.classList.add('hide');
-                    }
+                    installBtn.classList.add('hide');
                     deferredPrompt = null;
                 });
             } else {
                 // iPhone
                 alert('iPhone: Abre el menú (⋯) > Añadir a pantalla de inicio > Añadir');
+                installBtn.classList.add('hide');
             }
         }
 
