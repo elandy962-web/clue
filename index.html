@@ -658,9 +658,6 @@
         <div id="loginScreen" class="login-screen">
             <button id="installBtn" onclick="installApp()" style="width: 100%; margin-bottom: 20px;">📱 Instalar App</button>
             <h2>👮 Elige tu Detective</h2>
-            <div style="text-align: center; color: #48bb78; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem;">
-                🎮 <span id="versionDisplay">Versión 4.3.0</span>
-            </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
                 <button class="btn btn-primary" onclick="selectDetective('Señorita Amapola')">👩 Señorita Amapola</button>
                 <button class="btn btn-primary" onclick="selectDetective('Coronel Mostaza')">👨‍✈️ Coronel Mostaza</button>
@@ -1057,6 +1054,26 @@
                 gameState.listenersSetup = true;
             }
             buildNotebookUI();
+        }
+
+        function leaveGame() {
+            if (confirm('¿Estás seguro de que quieres salir de la partida?')) {
+                document.getElementById('gameScreen').classList.remove('active');
+                document.getElementById('loginScreen').style.display = 'flex';
+                gameState = {
+                    roomCode: '',
+                    detectives: [],
+                    players: {},
+                    currentIndex: 0,
+                    cardsDistributed: false,
+                    hasRolled: false,
+                    stepsAvailable: 0,
+                    myLocation: 'Centro',
+                    myCards: [],
+                    notebookMarks: {},
+                    listenersSetup: false
+                };
+            }
         }
 
         function initializeMysteryQuietly() {
@@ -1894,8 +1911,6 @@
             log.scrollTop = log.scrollHeight;
         }
 
-        document.getElementById('versionDisplay').textContent = `Versión ${GAME_VERSION} - ${VERSION_INFO}`;
-        
         // PWA Installation
         let deferredPrompt;
         const installBtn = document.getElementById('installBtn');
@@ -1920,8 +1935,13 @@
             }
         }
 
-        // Ocultar si ya está instalado
+        // Ocultar si ya está instalado (iOS)
         if (window.navigator.standalone === true) {
+            installBtn.classList.add('hide');
+        }
+
+        // Ocultar si ya está instalado (Android)
+        if (window.matchMedia('(display-mode: standalone)').matches) {
             installBtn.classList.add('hide');
         }
 
