@@ -559,12 +559,14 @@
             background: #1a202c;
             border-radius: 12px;
             padding: 18px;
-            max-width: 450px;
+            max-width: 95vw;
             width: 100%;
             border: 2px solid #4a5568;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            max-height: 85vh;
+            max-height: 90vh;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-content h2 {
@@ -1291,6 +1293,12 @@
             document.getElementById('eventDescriptionText').textContent = desc;
             document.getElementById('eventModal').classList.add('active');
             
+            // MOSTRAR A TODOS QUE SE ACTIVÓ UN COMODÍN
+            database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ 
+                type: 'success', 
+                text: `✨ ¡${gameState.playerName} activó ${title}!` 
+            });
+            
             // Aplicar efecto REAL del evento
             if (title === '⚡ Paso Relámpago') {
                 gameState.stepsAvailable += 3;
@@ -1463,6 +1471,9 @@
         }
 
         function setupGameListeners() {
+            // REMOVER LISTENERS VIEJOS PRIMERO para evitar duplicación
+            const dbRef = database.ref(`rooms/${gameState.roomCode}/gameState`);
+            dbRef.off();
             database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snap) => {
                 gameState.players = snap.val() || {};
                 if (gameState.players[gameState.userId]?.location) {
@@ -1669,6 +1680,9 @@
             if (nextPlayerId === suggestion.originalAuthorId) {
                 database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'info', text: `🛡️ Nadie pudo responder la pregunta.` });
                 database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
+                // TERMINAR EL TURNO CUANDO NADIE RESPONDE
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                finishMovement();
             } else {
                 suggestion.targetPlayerId = nextPlayerId;
                 database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestion);
