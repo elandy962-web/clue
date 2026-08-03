@@ -813,7 +813,7 @@
         <div id="loginScreen" class="login-screen">
             <button id="installBtn" onclick="installApp()" style="width: 100%; margin-bottom: 20px;">📱 Instalar App</button>
             <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: #1a202c; border-radius: 8px; border: 1px solid #4a5568;">
-                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.7.0</small>
+                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.7.2</small>
             </div>
             <h2>👮 Elige tu Detective</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
@@ -997,7 +997,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.7.0";
+        const GAME_VERSION = "4.7.2";
         const VERSION_INFO = "v4.7.0 - Integración Completa de Comodines";
 
         const firebaseConfig = {
@@ -1845,17 +1845,20 @@
 
         function updateMyCards() {
             const cardsDiv = document.getElementById('myCards');
-            if (gameState.myCards.length === 0) { cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.8rem;">Sin cartas.</p>'; return; }
-            cardsDiv.innerHTML = gameState.myCards.map(c => {
+            
+            // Filtrar SOLO cartas normales (sin comodines)
+            const normalCards = gameState.myCards.filter(c => !WILDCARD_CARDS.includes(c));
+            
+            if (normalCards.length === 0) { 
+                cardsDiv.innerHTML = '<p style="color: #888; font-size: 0.8rem;">Sin cartas.</p>'; 
+                return; 
+            }
+            
+            cardsDiv.innerHTML = normalCards.map(c => {
                 let cardClass = 'room';
-                let clickHandler = '';
                 if (SUSPECTS.includes(c)) cardClass = 'suspect';
                 else if (WEAPONS.includes(c)) cardClass = 'weapon';
-                else if (WILDCARD_CARDS.includes(c)) {
-                    cardClass = 'wildcard';
-                    clickHandler = ` onclick="window.activateWildcard('${c.replace(/'/g, "\\'")}')" style="cursor:pointer;"`;
-                }
-                return `<div class="card ${cardClass}"${clickHandler}><strong>${c}</strong></div>`;
+                return `<div class="card ${cardClass}"><strong>${c}</strong></div>`;
             }).join('');
         }
 
