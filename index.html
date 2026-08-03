@@ -157,9 +157,9 @@
         @media (min-width: 900px) {
             .game-container {
                 display: none;
-                grid-template-columns: 1.3fr 1fr;
-                align-items: start;
-                gap: 10px;
+                grid-template-columns: 1.2fr 1fr;
+                align-items: stretch;
+                gap: 12px;
             }
             .game-container.active {
                 display: grid;
@@ -167,20 +167,37 @@
 
             .board-section {
                 grid-column: 1;
-                order: auto;
+                grid-row: span 3;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .clue-board-wrapper {
+                max-width: none;
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .clue-board {
+                max-width: 500px;
+                max-height: 500px;
             }
 
             .actions-section {
                 grid-column: 2;
-                order: auto;
+                order: 1;
             }
 
             .sidebar {
                 grid-column: 2;
-                order: auto;
+                order: 2;
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
+                flex: 1;
             }
         }
 
@@ -339,7 +356,6 @@
             pointer-events: none;
         }
 
-        /* FLECHAS / INDICADORES EN LAS CASILLAS DE PASILLO ESPECIFICADAS */
         .door-badge {
             background: #ef4444;
             color: white;
@@ -562,7 +578,6 @@
         .detective-table th { background: #111827; color: #f6ad55; }
         .detective-table td:first-child { text-align: left; font-weight: bold; }
         
-        /* Móvil: reducir tamaño */
         @media (max-width: 768px) {
             .detective-table {
                 font-size: 0.75rem;
@@ -607,7 +622,6 @@
             padding-right: 8px;
         }
         
-        /* ¡¡¡LIBRETA A PANTALLA COMPLETA!!! */
         #notebookModal {
             padding: 0 !important;
         }
@@ -669,14 +683,12 @@
             }
         }
         
-        /* Tablet: 2 columnas */
         @media (min-width: 768px) {
             #notebookModal #notebookContainer {
                 grid-template-columns: 1fr 1fr;
             }
         }
         
-        /* Desktop: 3 columnas */
         @media (min-width: 1200px) {
             #notebookModal #notebookContainer {
                 grid-template-columns: 1fr 1fr 1fr;
@@ -710,7 +722,6 @@
                 font-size: 0.75rem !important;
             }
         }
-        
 
         .modal-content h2 {
             color: #f6ad55;
@@ -766,7 +777,6 @@
             margin-bottom: 6px;
         }
 
-        /* PWA Install Button */
         #installBtn {
             padding: 12px;
             background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
@@ -803,7 +813,7 @@
         <div id="loginScreen" class="login-screen">
             <button id="installBtn" onclick="installApp()" style="width: 100%; margin-bottom: 20px;">📱 Instalar App</button>
             <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: #1a202c; border-radius: 8px; border: 1px solid #4a5568;">
-                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.6.0</small>
+                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.7.0</small>
             </div>
             <h2>👮 Elige tu Detective</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
@@ -896,7 +906,6 @@
         </div>
     </div>
 
-    <!-- MODAL GRANDE DE COMODÍN PARA TODOS -->
     <div id="wildcardShowModal" class="modal" style="z-index: 5000;">
         <div class="modal-content" style="max-width: 90vw; text-align: center;">
             <div id="wildcardShowContent" style="padding: 30px;">
@@ -988,8 +997,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.6.0";
-        const VERSION_INFO = "v4.5.5 - Corregir Duplicación de Mensajes de Cartas Mostradas";
+        const GAME_VERSION = "4.7.0";
+        const VERSION_INFO = "v4.7.0 - Integración Completa de Comodines";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDWw0rXDYPuf6BsVUhEnj_ZFeiBCNaHVPw",
@@ -1029,11 +1038,18 @@
             { title: "🕐 Turno Bonificación", desc: "Ganas un turno extra inmediatamente después de este." },
             { title: "📋 Archivo Secreto", desc: "Revisa la libreta de anotaciones de otro jugador por 30 segundos." }
         ];
+        
         const WILDCARD_CARDS = [
             '🌟 Comodín de Avance Rápido',
             '⚡ Paso Relámpago',
-            '🌟 Comodín de Avance Rápido',
-            '⚡ Paso Relámpago'
+            '📜 Pasadizo Secreto',
+            '🛡️ Escudo del Detective',
+            '💰 Recompensa de Inteligencia',
+            '🔍 Lente Magnética',
+            '📸 Fotografía Forense',
+            '🚪 Pasaje Teleportado',
+            '🕐 Turno Bonificación',
+            '📋 Archivo Secreto'
         ];
 
         const BOARD_LAYOUT = [];
@@ -1051,27 +1067,16 @@
 
         const uniqueRoomsList = ['Estudio', 'Vestibulo', 'Salon', 'Biblioteca', 'Centro', 'Comedor', 'Billar', 'Invernadero', 'SalonBaile'];
 
-        /* MAPEO EXACTO DE LAS CASILLAS DE PASILLO CON FLECHAS INDICADORAS:
-           - Estudio: (2, 0) - entrada abajo
-           - Vestibulo: (3, 0) - entrada abajo
-           - Salón: (7, 0) - entrada abajo
-           - Biblioteca: (0, 3) - entrada derecha
-           - Centro (2 puertas): (3, 4) y (4, 3)
-           - Comedor (2 puertas): (8, 3) y (7, 4)
-           - Billar: (0, 7) - entrada derecha
-           - Invernadero: (4, 7) - entrada arriba
-           - Salón de Baile: (7, 8) - entrada arriba
-        */
         const doorEntries = {
-            '2,0': '↓',      // Estudio - ÚNICA entrada/salida
-            '3,0': '↓',      // Vestíbulo - ÚNICA entrada/salida
-            '7,0': '↓',      // Salón - ÚNICA entrada/salida
-            '0,3': '→',      // Biblioteca - ÚNICA entrada/salida
-            '3,4': '→',      // Centro - ÚNICA entrada/salida
-            '8,3': '←',      // Comedor - ÚNICA entrada/salida
-            '0,7': '→',      // Billar - ÚNICA entrada/salida
-            '4,7': '↑',      // Invernadero - ÚNICA entrada/salida
-            '7,8': '↑'       // Salón Baile - ÚNICA entrada/salida
+            '2,0': '↓',      
+            '3,0': '↓',      
+            '7,0': '↓',      
+            '0,3': '→',      
+            '3,4': '→',      
+            '8,3': '←',      
+            '0,7': '→',      
+            '4,7': '↑',      
+            '7,8': '↑'       
         };
 
         for (let y = 0; y < 10; y++) {
@@ -1137,7 +1142,6 @@
             
             let code = document.getElementById('roomCode').value.trim().toUpperCase();
             if (!code) {
-                // Si no ingresó código, generar uno automático
                 code = Math.random().toString(36).substr(2, 6).toUpperCase();
             }
             
@@ -1147,7 +1151,6 @@
             gameState.roomCode = code;
             gameState.isHost = true;
             try {
-                // Verificar si la sala ya existe
                 const snap = await database.ref(`rooms/${code}`).get();
                 if (snap.exists()) { showStatus('❌ Ese código de sala ya existe', 'error'); return; }
                 
@@ -1209,7 +1212,6 @@
                     actionsContainer.insertBefore(btn, actionsContainer.firstChild);
                 }
             }
-            // ¡¡¡EVITAR MÚLTIPLES LISTENERS - SOLO UNA VEZ!!!
             if (!gameState.listenersSetup) {
                 setupGameListeners();
                 gameState.listenersSetup = true;
@@ -1246,46 +1248,31 @@
         }
 
         async function manualDistributeCards() {
-            console.log('🃏 Iniciando distribución de cartas...');
-            if (!gameState.isHost) {
-                console.error('❌ No eres host, no puedes distribuir cartas');
-                return;
-            }
-            if (gameState.cardsDistributed) {
-                showStatus('❌ Las cartas ya fueron repartidas en esta partida', 'error');
-                return;
-            }
+            if (!gameState.isHost || gameState.cardsDistributed) return;
             const sList = [...SUSPECTS], wList = [...WEAPONS], rList = [...uniqueRoomsList];
-            console.log(`📊 Sospechosos: ${sList.length}, Armas: ${wList.length}, Habitaciones: ${rList.length}`);
             
             const mystery = {
                 suspect: sList.splice(Math.floor(Math.random() * sList.length), 1)[0],
                 weapon: wList.splice(Math.floor(Math.random() * wList.length), 1)[0],
                 room: rList.splice(Math.floor(Math.random() * rList.length), 1)[0]
             };
-            console.log('🔍 Misterio:', mystery);
             
             await database.ref(`rooms/${gameState.roomCode}/mystery`).set(mystery);
-            const remaining = [...sList, ...wList, ...rList].sort(() => Math.random() - 0.5);
-            console.log(`🎴 WILDCARD_CARDS: ${WILDCARD_CARDS.length}`, WILDCARD_CARDS);
-            console.log(`🃏 Cartas totales a distribuir: ${remaining.length}`);
-            console.log('🃏 Cartas:', remaining);
             
+            // Añadir comodines al mazo de reparto de cartas
+            const poolCards = [...sList, ...wList, ...rList, ...WILDCARD_CARDS];
+            const remaining = poolCards.sort(() => Math.random() - 0.5);
             const playerIds = Object.keys(gameState.players);
-            console.log(`👥 Jugadores: ${playerIds.length}`, playerIds);
             
             let hands = {};
             playerIds.forEach(id => hands[id] = []);
             remaining.forEach((card, i) => hands[playerIds[i % playerIds.length]].push(card));
             
             for (const [id, cards] of Object.entries(hands)) {
-                console.log(`🎴 ${id}: ${cards.length} cartas`, cards);
                 await database.ref(`rooms/${gameState.roomCode}/players/${id}/cards`).set(cards);
             }
-            addMessage('success', '🃏 ¡Cartas repartidas!');
-            console.log('✅ Distribución completada');
+            addMessage('success', '🃏 ¡Cartas y comodines repartidos!');
             
-            // ¡¡¡MARCAR COMO REPARTIDAS Y DESHABILITAREBUTTON!!!
             gameState.cardsDistributed = true;
             updateTurnControls();
         }
@@ -1294,7 +1281,6 @@
             const playerIds = Object.keys(gameState.players);
             if (playerIds[gameState.currentIndex] !== gameState.userId || gameState.hasRolled) return;
             let dice = Math.floor(Math.random() * 6) + 1;
-            // Si se activó el comodín de avance rápido, duplicar pasos
             if (gameState.nextTurnDoubleSteps) {
                 dice *= 2;
                 addMessage('success', `🌟 ¡Comodín activado! Pasos duplicados: ${dice}`);
@@ -1310,10 +1296,8 @@
         }
 
         function activateWildcard(cardName) {
-            console.log('🎯 activateWildcard called with:', cardName);
             if (cardName === '⚡ Paso Relámpago') {
                 gameState.stepsAvailable += 3;
-                console.log('⚡ Paso Relámpago activado! Pasos ahora:', gameState.stepsAvailable);
                 addMessage('success', `⚡ ¡${gameState.playerName} usó Paso Relámpago! +3 pasos.`);
                 document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
                 gameState.myCards = gameState.myCards.filter(c => c !== cardName);
@@ -1321,12 +1305,39 @@
                 updateGameBoard();
             } else if (cardName === '🌟 Comodín de Avance Rápido') {
                 gameState.nextTurnDoubleSteps = true;
-                console.log('🌟 Comodín de Avance Rápido activado! Próximo turno x2');
                 addMessage('success', `🌟 ¡${gameState.playerName} usó Comodín de Avance Rápido! Próximo turno x2 pasos.`);
                 gameState.myCards = gameState.myCards.filter(c => c !== cardName);
                 updateCards();
-            } else {
-                console.error('❌ Comodín no reconocido:', cardName);
+            } else if (cardName === '📜 Pasadizo Secreto') {
+                gameState.canAskFreeSuggestion = true;
+                addMessage('info', `📜 ¡${gameState.playerName} usó Pasadizo Secreto! Puede hacer una pregunta libre.`);
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
+            } else if (cardName === '🛡️ Escudo del Detective') {
+                gameState.hasShield = true;
+                addMessage('info', `🛡️ ¡${gameState.playerName} activó Escudo del Detective! Protegido en el centro.`);
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
+            } else if (cardName === '💰 Recompensa de Inteligencia' || cardName === '🔍 Lente Magnética') {
+                showRandomCardFromPlayer();
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
+            } else if (cardName === '📸 Fotografía Forense') {
+                showPlayersInRoom();
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
+            } else if (cardName === '🚪 Pasaje Teleportado') {
+                showTeleportMenu();
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
+            } else if (cardName === '🕐 Turno Bonificación') {
+                giveExtraTurn();
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
+            } else if (cardName === '📋 Archivo Secreto') {
+                showNotebookSelector();
+                gameState.myCards = gameState.myCards.filter(c => c !== cardName);
+                updateCards();
             }
         }
 
@@ -1343,13 +1354,11 @@
             const aRepId = getRepresentativeTileId(aId);
             const bRepId = getRepresentativeTileId(bId);
             
-            // Obtener TODOS los tiles de A y B
             let tilesA = BOARD_LAYOUT.filter(b => b.id === aRepId);
             let tilesB = BOARD_LAYOUT.filter(b => b.id === bRepId);
             
             if (tilesA.length === 0 || tilesB.length === 0) return 99;
             
-            // Encontrar distancia MÍNIMA entre cualquier tile de A y cualquier tile de B
             let minDist = 99;
             for (let tA of tilesA) {
                 for (let tB of tilesB) {
@@ -1358,45 +1367,37 @@
                 }
             }
             
-            // ¡¡¡PUERTAS ESPECIALES!!! SOLO entrada/salida por puertas definidas
             const isCurrentRoom = tilesA.some(t => t.type === 'room');
             const isTargetRoom = tilesB.some(t => t.type === 'room');
             const isCurrentHallway = tilesA.some(t => t.type === 'hallway');
             const isTargetHallway = tilesB.some(t => t.type === 'hallway');
             
-            // ¡¡¡CASO 1: SALIR DE HABITACIÓN A PASILLO - Debe haber puerta!!!
             if (isCurrentRoom && isTargetHallway) {
-                // Buscar si hay puerta en el pasillo destino
                 for (let tB of tilesB) {
                     const coordKey = `${tB.x},${tB.y}`;
                     if (doorEntries[coordKey]) {
-                        // Encontrar la distancia de la habitación a esta puerta
                         for (let tA of tilesA) {
                             let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
-                            if (dist === 1) return 1; // Puerta adyacente encontrada
+                            if (dist === 1) return 1;
                         }
                     }
                 }
-                return 99; // No hay puerta adyacente
+                return 99;
             }
             
-            // ¡¡¡CASO 2: ENTRAR A HABITACIÓN DESDE PASILLO - Debe haber puerta!!!
             if (isCurrentHallway && isTargetRoom) {
-                // Buscar si hay puerta en el pasillo actual
                 for (let tA of tilesA) {
                     const coordKey = `${tA.x},${tA.y}`;
                     if (doorEntries[coordKey]) {
-                        // Encontrar la distancia de esta puerta a la habitación
                         for (let tB of tilesB) {
                             let dist = Math.abs(tA.x - tB.x) + Math.abs(tA.y - tB.y);
-                            if (dist === 1) return 1; // Habitación adyacente a la puerta
+                            if (dist === 1) return 1;
                         }
                     }
                 }
-                return 99; // No hay puerta adyacente a la habitación destino
+                return 99;
             }
             
-            // MOVIMIENTO NORMAL (pasillo a pasillo, sala a sala, etc.)
             return minDist;
         }
 
@@ -1406,11 +1407,8 @@
             let targetRep = getRepresentativeTileId(tileId);
             if (calculateDistance(gameState.myLocation, targetRep) !== 1) return;
 
-            // DETECTAR SI ESTOY ENTRANDO A HABITACIÓN
             const tile = BOARD_LAYOUT.find(t => t.id === getRepresentativeTileId(tileId));
             if (tile && tile.type === 'room') {
-                // ¡¡¡ENTRADA A HABITACIÓN - GASTA TODOS LOS PASOS DIRECTAMENTE!!!
-                console.log('🏠 ¡¡¡ENTRADA A HABITACIÓN!!!');
                 gameState.stepsAvailable = 0;
                 gameState.myLocation = targetRep;
                 gameState.canMakeSuggestion = true;
@@ -1422,7 +1420,6 @@
                 return;
             }
 
-            // FLUJO NORMAL - PASILLO A PASILLO (INCLUYENDO SALIDA DE HABITACIÓN)
             gameState.stepsAvailable -= 1;
             gameState.myLocation = targetRep;
             gameState.canMakeSuggestion = false;
@@ -1430,7 +1427,6 @@
             document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
             database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/location`).set(targetRep);
 
-            // ¡¡¡DETECTAR EVENTOS EN CASILLAS ESPECIALES!!!
             checkEventTile(targetRep);
 
             if (gameState.stepsAvailable === 0) finishMovement();
@@ -1438,14 +1434,9 @@
         }
 
         function checkEventTile(location) {
-            // Casillas de evento: (2,2) y (7,7)
             const tile = BOARD_LAYOUT.find(t => t.id === location);
             if (tile && tile.type === 'event-tile') {
-                console.log('✨ ¡¡¡EVENTO ACTIVADO EN:', location);
                 const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
-                
-                // ¡¡¡GUARDAR EN FIREBASE PARA QUE TODOS LO VEAN!!!
-                // NO llamar triggerEvent aquí - el listener lo hará para TODOS
                 database.ref(`rooms/${gameState.roomCode}/gameState/currentEvent`).set({
                     title: randomEvent.title,
                     desc: randomEvent.desc,
@@ -1454,7 +1445,6 @@
                     timestamp: Date.now()
                 });
                 
-                // Limpiar después de 2 segundos
                 setTimeout(() => {
                     database.ref(`rooms/${gameState.roomCode}/gameState/currentEvent`).remove();
                 }, 2000);
@@ -1466,7 +1456,6 @@
             document.getElementById('eventDescriptionText').textContent = desc;
             document.getElementById('eventModal').classList.add('active');
             
-            // MOSTRAR COMODÍN EN GRANDE A TODOS
             const emojis = {
                 '⚡ Paso Relámpago': '⚡',
                 '🌟 Comodín de Avance Rápido': '🌟',
@@ -1486,61 +1475,47 @@
             document.getElementById('wildcardPlayer').textContent = `Activado por: ${gameState.playerName}`;
             document.getElementById('wildcardShowModal').classList.add('active');
             
-            // MOSTRAR A TODOS EN FIREBASE
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ 
                 type: 'success', 
                 text: `✨ ¡${gameState.playerName} activó ${title}!` 
             });
             
-            // Aplicar efecto REAL del evento
             if (title === '⚡ Paso Relámpago') {
                 gameState.stepsAvailable += 3;
                 document.getElementById('stepsAvailable').textContent = gameState.stepsAvailable;
-                console.log('⚡ +3 pasos agregados');
                 addMessage('success', `⚡ ¡${gameState.playerName} activó Paso Relámpago! +3 pasos.`);
             } 
             else if (title === '🌟 Comodín de Avance Rápido') {
                 gameState.nextTurnDoubleSteps = true;
-                console.log('🌟 Próximo turno x2 pasos');
                 addMessage('success', `🌟 ¡${gameState.playerName} activó Comodín de Avance! Próximo turno x2.`);
             } 
             else if (title === '🚪 Pasaje Teleportado') {
-                console.log('🚪 Abriendo selector de habitaciones');
                 showTeleportMenu();
             } 
             else if (title === '🔍 Lente Magnética') {
-                console.log('🔍 Mostrando carta de otro jugador');
                 showRandomCardFromPlayer();
             } 
             else if (title === '📸 Fotografía Forense') {
-                console.log('📸 Información de jugadores en la habitación');
                 showPlayersInRoom();
             } 
             else if (title === '📋 Archivo Secreto') {
-                console.log('📋 Abriendo selector de jugadores para revisar libreta');
                 showNotebookSelector();
             } 
             else if (title === '🕐 Turno Bonificación') {
-                console.log('🕐 Dando turno extra');
                 giveExtraTurn();
             } 
             else if (title === '📜 Pasadizo Secreto') {
                 gameState.canAskFreeSuggestion = true;
-                console.log('📜 Pregunta libre sin restricción de habitación ACTIVADA');
                 addMessage('info', `📜 ¡${gameState.playerName} puede formular una pregunta LIBRE!`);
             } 
             else if (title === '🛡️ Escudo del Detective') {
                 gameState.hasShield = true;
-                console.log('🛡️ Protección ACTIVADA');
                 addMessage('info', `🛡️ ¡${gameState.playerName} tiene protección en el Centro!`);
             } 
             else if (title === '💰 Recompensa de Inteligencia') {
-                console.log('💰 Mostrando carta aleatoria de jugador random');
                 showRandomPlayerCard();
             }
         }
-
-        // ============ FUNCIONES DE COMODINES =============
 
         function showTeleportMenu() {
             const rooms = uniqueRoomsList;
@@ -1564,12 +1539,10 @@
         }
 
         function triggerEventAllPlayers(title, desc, activatedByName, activatedByUserId) {
-            // Mostrar modal a TODOS
             document.getElementById('eventTitleTitle').textContent = title;
             document.getElementById('eventDescriptionText').textContent = `Activado por: ${activatedByName}`;
             document.getElementById('eventModal').classList.add('active');
             
-            // MOSTRAR ÍCONO EN GRANDE A TODOS
             const emojis = {
                 '⚡ Paso Relámpago': '⚡',
                 '🌟 Comodín de Avance Rápido': '🌟',
@@ -1591,25 +1564,17 @@
                 document.getElementById('wildcardShowModal').classList.add('active');
             }
             
-            // ¡¡¡APLICAR EFECTO REAL SOLO SI FUI YO QUIEN LO ACTIVÓ!!!
             if (gameState.userId === activatedByUserId) {
-                console.log('🎰 ¡¡¡SOY YO QUIEN ACTIVÓ EL COMODÍN!!!');
                 triggerEvent(title, desc);
             }
         }
 
         function showRandomCardFromPlayer() {
             const playerIds = Object.keys(gameState.players).filter(id => id !== gameState.userId);
-            if (playerIds.length === 0) {
-                addMessage('warning', '⚠️ No hay otros jugadores');
-                return;
-            }
+            if (playerIds.length === 0) return;
             const randomPlayerId = playerIds[Math.floor(Math.random() * playerIds.length)];
             const randomPlayer = gameState.players[randomPlayerId];
             
-            console.log(`🔍 Forzando a ${randomPlayer.name} a mostrar una carta`);
-            
-            // ¡¡¡FORZAR AL JUGADOR A MOSTRAR CARTA!!!
             database.ref(`rooms/${gameState.roomCode}/gameState/forcedCardRequest`).set({
                 targetPlayerId: randomPlayerId,
                 requestedBy: gameState.playerName,
@@ -1630,10 +1595,7 @@
 
         function showNotebookSelector() {
             const playerIds = Object.keys(gameState.players).filter(id => id !== gameState.userId);
-            if (playerIds.length === 0) {
-                addMessage('warning', '⚠️ No hay otros jugadores');
-                return;
-            }
+            if (playerIds.length === 0) return;
             let menuHtml = '<div style="max-height: 300px; overflow-y: auto;"><p><strong>Elige jugador para revisar libreta:</strong></p>';
             playerIds.forEach(id => {
                 const player = gameState.players[id];
@@ -1646,16 +1608,10 @@
         function viewPlayerNotebook(playerId) {
             const player = gameState.players[playerId];
             addMessage('warning', `📋 ${gameState.playerName} está revisando la libreta de ${player.name} por 30 segundos...`);
-            addMessage('info', `📋 Libreta de ${player.name}: (Sus marcas deducidas)`);
             closeEventModal();
         }
 
         function giveExtraTurn() {
-            const playerIds = Object.keys(gameState.players);
-            const currentIndex = gameState.currentIndex;
-            const nextIndex = (currentIndex + 1) % playerIds.length;
-            
-            // Aquí el jugador que activó el comodín obtiene otro turno
             addMessage('success', `🕐 ¡${gameState.playerName} gana un turno EXTRA después de este!`);
             gameState.extraTurnGranted = true;
         }
@@ -1666,27 +1622,14 @@
 
         function showRandomPlayerCard() {
             const playerIds = Object.keys(gameState.players).filter(id => id !== gameState.userId);
-            if (playerIds.length === 0) {
-                addMessage('warning', '⚠️ No hay otros jugadores');
-                return;
-            }
+            if (playerIds.length === 0) return;
             const randomPlayerId = playerIds[Math.floor(Math.random() * playerIds.length)];
-            const randomPlayer = gameState.players[randomPlayerId];
-            const playerCards = randomPlayer.cards || [];
             
-            if (playerCards.length === 0) {
-                addMessage('info', `💰 ${randomPlayer.name} no tiene cartas`);
-                return;
-            }
-            
-            // MOSTRAR MODAL AL JUGADOR SELECCIONADO PARA QUE ELIJA
             database.ref(`rooms/${gameState.roomCode}/gameState/forcedCardRequest`).set({
                 targetPlayerId: randomPlayerId,
                 requestedBy: gameState.playerName,
                 timestamp: Date.now()
             });
-            
-            addMessage('info', `💰 Se le pidió a ${randomPlayer.name} que muestre una carta...`);
         }
 
         function closeEventModal() {
@@ -1699,15 +1642,21 @@
             gameState.stepsAvailable = 0;
             gameState.hasRolled = false;
             gameState.canMakeSuggestion = false;
+            gameState.canAskFreeSuggestion = false;
             document.getElementById('stepsAvailable').textContent = 0;
             document.getElementById('endMoveBtn').style.display = 'none';
             
-            // Encontrar próximo jugador NO eliminado
-            let nextIndex = (gameState.currentIndex + 1) % playerIds.length;
-            let attempts = 0;
-            while (gameState.players[playerIds[nextIndex]]?.eliminated && attempts < playerIds.length) {
-                nextIndex = (nextIndex + 1) % playerIds.length;
-                attempts++;
+            let nextIndex = gameState.currentIndex;
+            if (gameState.extraTurnGranted) {
+                gameState.extraTurnGranted = false;
+                addMessage('success', `🕐 ¡${gameState.playerName} aprovecha su turno extra!`);
+            } else {
+                nextIndex = (gameState.currentIndex + 1) % playerIds.length;
+                let attempts = 0;
+                while (gameState.players[playerIds[nextIndex]]?.eliminated && attempts < playerIds.length) {
+                    nextIndex = (nextIndex + 1) % playerIds.length;
+                    attempts++;
+                }
             }
             
             database.ref(`rooms/${gameState.roomCode}/gameState`).update({ currentIndex: nextIndex, dice: 0 });
@@ -1715,7 +1664,6 @@
         }
 
         function setupGameListeners() {
-            // REMOVER LISTENERS VIEJOS PRIMERO para evitar duplicación
             const dbRef = database.ref(`rooms/${gameState.roomCode}/gameState`);
             dbRef.off();
             database.ref(`rooms/${gameState.roomCode}/players`).on('value', (snap) => {
@@ -1729,11 +1677,11 @@
                 updateGameBoard();
             });
             database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/cards`).on('value', (snap) => {
-                console.log('🎴 Listener de cartas activado');
                 gameState.myCards = snap.val() || [];
-                console.log(`📥 Cartas recibidas: ${gameState.myCards.length}`, gameState.myCards);
                 updateMyCards();
-                gameState.myCards.forEach(c => gameState.notebookMarks[c] = true);
+                gameState.myCards.forEach(c => {
+                    if (!WILDCARD_CARDS.includes(c)) gameState.notebookMarks[c] = true;
+                });
                 buildNotebookUI();
             });
             database.ref(`rooms/${gameState.roomCode}/gameState`).on('value', (snap) => {
@@ -1754,20 +1702,16 @@
                 if (snap.val()) showVictoryModal(snap.val().name);
             });
             
-            // ¡¡¡LISTENER DE CARTAS REVELADAS - USANDO push() + child_added!!!
             database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).orderByChild('targetUserId').equalTo(gameState.userId).on('child_added', (snap) => {
                 const reveal = snap.val();
                 if (reveal && reveal.targetUserId === gameState.userId) {
                     showRevealedCard(reveal.card, reveal.showerName);
-                    // Auto-marcar en libreta
-                    gameState.notebookMarks[reveal.card] = true;
+                    if (!WILDCARD_CARDS.includes(reveal.card)) gameState.notebookMarks[reveal.card] = true;
                     buildNotebookUI();
-                    // Limpiar después de mostrar
                     database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals/${snap.key}`).remove();
                 }
             });
 
-            // LISTENER PARA CUANDO TE PIDEN MOSTRAR UNA CARTA FORZADAMENTE
             database.ref(`rooms/${gameState.roomCode}/gameState/forcedCardRequest`).on('value', (snap) => {
                 const request = snap.val();
                 if (request && request.targetPlayerId === gameState.userId) {
@@ -1775,7 +1719,6 @@
                 }
             });
             
-            // ¡¡¡LISTENER DE EVENTOS/COMODINES PARA QUE TODOS LOS JUGADORES LOS VEAN!!!
             database.ref(`rooms/${gameState.roomCode}/gameState/currentEvent`).on('value', (snap) => {
                 if (snap.val()) {
                     const event = snap.val();
@@ -1786,12 +1729,8 @@
 
         function showForcedCardModal(requestedBy) {
             const playerCards = gameState.myCards || [];
-            if (playerCards.length === 0) {
-                addMessage('warning', `⚠️ ${requestedBy} intentó forzarte a mostrar una carta, pero no tienes cartas!`);
-                return;
-            }
+            if (playerCards.length === 0) return;
             
-            // Crear modal para elegir carta
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
@@ -1818,13 +1757,8 @@
         }
 
         function forcedShowCard(card) {
-            // Remover modal
             document.querySelectorAll('div[style*="z-index: 5001"]').forEach(el => el.remove());
-            
-            // Remover la request de Firebase
             database.ref(`rooms/${gameState.roomCode}/gameState/forcedCardRequest`).remove();
-            
-            // Mostrar la carta revelada a todos
             database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).push({ 
                 targetUserId: gameState.userId,
                 showerName: gameState.playerName, 
@@ -1839,7 +1773,6 @@
             document.getElementById('rollDiceBtn').disabled = !isMyTurn || gameState.hasRolled;
             document.getElementById('currentTurnInfo').textContent = isMyTurn ? '¡Tu Turno!' : (gameState.players[playerIds[gameState.currentIndex]]?.name || '-');
             
-            // Mostrar botón "Nueva Partida" si el juego terminó y eres el host
             const newGameBtn = document.getElementById('newGameBtn');
             if (gameState.gameOver && gameState.isHost) {
                 newGameBtn.style.display = 'grid';
@@ -1847,7 +1780,6 @@
                 newGameBtn.style.display = 'none';
             }
             
-            // ¡¡¡DESHABILITAR BOTÓN DE REPARTIR SI YA FUERON REPARTIDAS!!!
             const distributeBtn = document.getElementById('distributeBtn');
             if (distributeBtn) {
                 distributeBtn.disabled = gameState.cardsDistributed;
@@ -1880,7 +1812,6 @@
 
                 let stepIndicator = canMoveHere ? `<div class="step-indicator">${gameState.stepsAvailable}</div>` : '';
 
-                // MOSTRAR LA FLECHA EN LAS CELDAS DE PASILLO ESPECIFICADAS
                 let coordKey = `${tile.x},${tile.y}`;
                 let doorBadge = doorEntries[coordKey] ? `<div class="door-badge">${doorEntries[coordKey]}</div>` : '';
 
@@ -1922,14 +1853,12 @@
                 else if (WEAPONS.includes(c)) cardClass = 'weapon';
                 else if (WILDCARD_CARDS.includes(c)) {
                     cardClass = 'wildcard';
-                    // Escapar el nombre para que funcione en onclick
                     clickHandler = ` onclick="window.activateWildcard('${c.replace(/'/g, "\\'")}')" style="cursor:pointer;"`;
                 }
                 return `<div class="card ${cardClass}"${clickHandler}><strong>${c}</strong></div>`;
             }).join('');
         }
 
-        // Hacer activateWildcard disponible globalmente
         window.activateWildcard = function(cardName) {
             activateWildcard(cardName);
         };
@@ -1946,10 +1875,13 @@
         function showNotebookModal() { document.getElementById('notebookModal').classList.add('active'); }
         function closeNotebookModal() { document.getElementById('notebookModal').classList.remove('active'); }
         function showSuggestionModal() {
-            if (Object.keys(gameState.players)[gameState.currentIndex] !== gameState.userId || gameState.myLocation.startsWith('Pasillo_')) return;
+            const isMyTurn = (Object.keys(gameState.players)[gameState.currentIndex] === gameState.userId);
+            if (!isMyTurn) return;
+            if (gameState.myLocation.startsWith('Pasillo_') && !gameState.canAskFreeSuggestion) return;
+            
             document.getElementById('sugSuspectSelect').innerHTML = '<option value="">-- Selecciona --</option>' + SUSPECTS.map(s => `<option value="${s}">${s}</option>`).join('');
             document.getElementById('sugWeaponSelect').innerHTML = '<option value="">-- Selecciona --</option>' + WEAPONS.map(w => `<option value="${w}">${w}</option>`).join('');
-            document.getElementById('sugRoomInput').value = gameState.myLocation;
+            document.getElementById('sugRoomInput').value = gameState.myLocation.startsWith('Pasillo_') ? 'Estudio (Libre)' : gameState.myLocation;
             document.getElementById('suggestionModal').classList.add('active');
         }
         function closeSuggestionModal() { document.getElementById('suggestionModal').classList.remove('active'); }
@@ -1957,9 +1889,15 @@
         async function submitSuggestion() {
             const suspect = document.getElementById('sugSuspectSelect').value;
             const weapon = document.getElementById('sugWeaponSelect').value;
-            const room = document.getElementById('sugRoomInput').value;
+            let room = document.getElementById('sugRoomInput').value;
+            if (room.includes('(Libre)')) room = 'Estudio';
             if (!suspect || !weapon) return;
             closeSuggestionModal();
+            
+            if (gameState.canAskFreeSuggestion) {
+                gameState.canAskFreeSuggestion = false;
+            }
+            
             const playerIds = Object.keys(gameState.players);
             const nextPlayerId = playerIds[(playerIds.indexOf(gameState.userId) + 1) % playerIds.length];
             await database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set({
@@ -1967,7 +1905,6 @@
             });
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'suggestion', text: `❓ ${gameState.playerName} preguntó en ${room}: ${suspect} con ${weapon}` });
             
-            // ¡¡¡FIN DEL TURNO AUTOMÁTICO!!!
             setTimeout(() => finishMovement(), 2000);
         }
 
@@ -1988,9 +1925,6 @@
             if (nextPlayerId === suggestion.originalAuthorId) {
                 database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'info', text: `🛡️ Nadie pudo responder la pregunta.` });
                 database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
-                // TERMINAR EL TURNO CUANDO NADIE RESPONDE
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                finishMovement();
             } else {
                 suggestion.targetPlayerId = nextPlayerId;
                 database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).set(suggestion);
@@ -1998,13 +1932,11 @@
         }
 
         function showRevealedCard(card, showerName) {
-            // Agregar mensaje genérico a Firebase para que todos lo vean
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ 
                 type: 'success', 
                 text: `👁️ ${showerName} mostró una carta.` 
             });
             
-            // Mostrar modal con la carta revelada
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
@@ -2020,7 +1952,6 @@
                 border: 3px solid #48bb78;
             `;
             
-            // Agregar overlay oscuro
             const overlay = document.createElement('div');
             overlay.style.cssText = `
                 position: fixed;
@@ -2047,22 +1978,16 @@
                 </button>
             `;
             
-            // Función para cerrar el modal
             const closeModal = () => {
                 overlay.remove();
                 modal.remove();
             };
             
-            // Agregar listener al botón
             modal.querySelector('button').addEventListener('click', closeModal);
-            
-            // También cerrar al clickear el overlay
             overlay.onclick = closeModal;
             
             document.body.appendChild(overlay);
             document.body.appendChild(modal);
-            
-            // Mensaje específico para quien recibe la carta
             addMessage('success', `👁️ ${showerName} te mostró: ${card}`);
         }
 
@@ -2070,13 +1995,11 @@
             const card = document.getElementById('matchingCardsSelect').value;
             document.getElementById('replySuggestionModal').classList.remove('active');
             if (gameState.activeSuggestion) {
-                // Usar push() para cada carta (no set()) - permite múltiples cartas
                 database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).push({ 
                     targetUserId: gameState.activeSuggestion.originalAuthorId,
                     showerName: gameState.playerName, 
                     card 
                 });
-                // El mensaje se agrega automáticamente en showRevealedCard()
             }
             database.ref(`rooms/${gameState.roomCode}/gameState/activeSuggestion`).remove();
         }
@@ -2100,8 +2023,6 @@
             const isCorrect = (suspect === mystery.suspect && weapon === mystery.weapon && room === mystery.room);
             
             if (isCorrect) {
-                // ¡¡¡GANÓ!!!
-                console.log('🏆 ¡¡¡ACUSACIÓN CORRECTA!!!');
                 gameState.gameOver = true;
                 gameState.winner = gameState.playerName;
                 database.ref(`rooms/${gameState.roomCode}/gameState/winner`).set({ name: gameState.playerName, isCorrect: true });
@@ -2109,27 +2030,28 @@
                 addMessage('success', `🏆 ¡¡¡${gameState.playerName} GANÓ LA PARTIDA!!!`);
                 showVictoryModal(gameState.playerName);
             } else {
-                // ¡¡¡PERDIÓ Y QUEDA FUERA!!!
-                console.log('❌ Acusación fallida - Jugador eliminado');
-                database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'error', text: `❌ ¡${gameState.playerName} acusó incorrectamente y quedó FUERA de la partida!` });
-                addMessage('error', `❌ ¡${gameState.playerName} acusó incorrectamente y quedó FUERA!`);
-                
-                // Eliminar jugador de la partida
-                await database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/eliminated`).set(true);
-                gameState.players[gameState.userId].eliminated = true;
-                
-                // Si solo queda un jugador, ese gana
-                const activePlayers = Object.values(gameState.players).filter(p => !p.eliminated);
-                if (activePlayers.length === 1) {
-                    gameState.gameOver = true;
-                    gameState.winner = activePlayers[0].name;
-                    database.ref(`rooms/${gameState.roomCode}/gameState/winner`).set({ name: activePlayers[0].name, isCorrect: false });
-                    addMessage('success', `🏆 ¡${activePlayers[0].name} es el único jugador restante y GANÓ!`);
-                    showVictoryModal(activePlayers[0].name);
+                if (gameState.hasShield) {
+                    gameState.hasShield = false;
+                    database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'info', text: `🛡️ ¡El Escudo del Detective protegió a ${gameState.playerName} de una acusación fallida!` });
+                    addMessage('info', `🛡️ ¡Tu Escudo del Detective te ha salvado de quedar fuera!`);
                 } else {
-                    // Pasar al siguiente jugador no eliminado
-                    skipToNextActiveTurn();
-                    updateGameBoard();
+                    database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ type: 'error', text: `❌ ¡${gameState.playerName} acusó incorrectamente y quedó FUERA de la partida!` });
+                    addMessage('error', `❌ ¡${gameState.playerName} acusó incorrectamente y quedó FUERA!`);
+                    
+                    await database.ref(`rooms/${gameState.roomCode}/players/${gameState.userId}/eliminated`).set(true);
+                    gameState.players[gameState.userId].eliminated = true;
+                    
+                    const activePlayers = Object.values(gameState.players).filter(p => !p.eliminated);
+                    if (activePlayers.length === 1) {
+                        gameState.gameOver = true;
+                        gameState.winner = activePlayers[0].name;
+                        database.ref(`rooms/${gameState.roomCode}/gameState/winner`).set({ name: activePlayers[0].name, isCorrect: false });
+                        addMessage('success', `🏆 ¡${activePlayers[0].name} es el único jugador restante y GANÓ!`);
+                        showVictoryModal(activePlayers[0].name);
+                    } else {
+                        skipToNextActiveTurn();
+                        updateGameBoard();
+                    }
                 }
             }
             
@@ -2141,7 +2063,6 @@
             let nextIndex = (gameState.currentIndex + 1) % playerIds.length;
             let attempts = 0;
             
-            // Saltar jugadores eliminados
             while (gameState.players[playerIds[nextIndex]]?.eliminated && attempts < playerIds.length) {
                 nextIndex = (nextIndex + 1) % playerIds.length;
                 attempts++;
@@ -2159,13 +2080,8 @@
         function closeVictoryModal() { document.getElementById('victoryModal').classList.remove('active'); }
         
         async function startNewGame() {
-            console.log('🎮 Iniciando nueva partida...');
-            if (!gameState.isHost) {
-                addMessage('error', '❌ Solo el anfitrión puede iniciar una nueva partida');
-                return;
-            }
+            if (!gameState.isHost) return;
             
-            // Reset del gameState
             gameState.gameOver = false;
             gameState.winner = null;
             gameState.currentIndex = 0;
@@ -2178,9 +2094,8 @@
             gameState.hasShield = false;
             gameState.extraTurnGranted = false;
             gameState.nextTurnDoubleSteps = false;
-            gameState.cardsDistributed = false;  // Será true cuando el host reparta
+            gameState.cardsDistributed = false;
             
-            // Reset de Firebase
             const sList = [...SUSPECTS], wList = [...WEAPONS], rList = [...uniqueRoomsList];
             const mystery = {
                 suspect: sList.splice(Math.floor(Math.random() * sList.length), 1)[0],
@@ -2192,7 +2107,6 @@
             await database.ref(`rooms/${gameState.roomCode}/gameState/winner`).remove();
             await database.ref(`rooms/${gameState.roomCode}/gameState/messages`).remove();
             
-            // Reset de jugadores (quitar "eliminados")
             for (const [id, player] of Object.entries(gameState.players)) {
                 await database.ref(`rooms/${gameState.roomCode}/players/${id}/eliminated`).remove();
                 await database.ref(`rooms/${gameState.roomCode}/players/${id}/location`).set('Centro');
@@ -2200,8 +2114,8 @@
                 gameState.players[id].location = 'Centro';
             }
             
-            // Distribuir cartas nuevamente
-            const remaining = [...sList, ...wList, ...rList].sort(() => Math.random() - 0.5);
+            const poolCards = [...sList, ...wList, ...rList, ...WILDCARD_CARDS];
+            const remaining = poolCards.sort(() => Math.random() - 0.5);
             const playerIds = Object.keys(gameState.players);
             let hands = {};
             playerIds.forEach(id => hands[id] = []);
@@ -2214,10 +2128,9 @@
             await database.ref(`rooms/${gameState.roomCode}/gameState/currentIndex`).set(0);
             await database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).remove();
             
-            // ¡¡¡YA FUERON REPARTIDAS LAS CARTAS EN ESTA NUEVA PARTIDA!!!
             gameState.cardsDistributed = true;
             
-            addMessage('success', '🎮 ¡Nueva partida iniciada! Cartas repartidas.');
+            addMessage('success', '🎮 ¡Nueva partida iniciada! Cartas y comodines repartidos.');
             updateGameBoard();
             updateTurnControls();
         }
@@ -2233,7 +2146,6 @@
             log.scrollTop = log.scrollHeight;
         }
 
-        // PWA Installation
         let deferredPrompt;
         const installBtn = document.getElementById('installBtn');
 
@@ -2244,25 +2156,21 @@
 
         function installApp() {
             if (deferredPrompt) {
-                // Android
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     installBtn.classList.add('hide');
                     deferredPrompt = null;
                 });
             } else {
-                // iPhone
                 alert('iPhone: Abre el menú (⋯) > Añadir a pantalla de inicio > Añadir');
                 installBtn.classList.add('hide');
             }
         }
 
-        // Ocultar si ya está instalado (iOS)
         if (window.navigator.standalone === true) {
             installBtn.classList.add('hide');
         }
 
-        // Ocultar si ya está instalado (Android)
         if (window.matchMedia('(display-mode: standalone)').matches) {
             installBtn.classList.add('hide');
         }
@@ -2275,3 +2183,4 @@
     </script>
 </body>
 </html>
+```[cite: 4]
