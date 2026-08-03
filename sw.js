@@ -1,4 +1,4 @@
-const CACHE_NAME = 'clue-v3';
+const CACHE_NAME = 'clue-v4';
 const urlsToCache = [
   '/',
   'index.html',

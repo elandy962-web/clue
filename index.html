@@ -563,10 +563,15 @@
             width: 100%;
             border: 2px solid #4a5568;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            max-height: 90vh;
-            overflow-y: auto;
+            max-height: 95vh;
             display: flex;
             flex-direction: column;
+        }
+
+        #notebookContainer {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
         }
 
         .modal-content h2 {
@@ -746,6 +751,19 @@
             <div id="notebookContainer"></div>
             <div style="margin-top: 12px; text-align: right;">
                 <button class="btn btn-secondary btn-small" onclick="closeNotebookModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL GRANDE DE COMODÍN PARA TODOS -->
+    <div id="wildcardShowModal" class="modal" style="z-index: 5000;">
+        <div class="modal-content" style="max-width: 90vw; text-align: center;">
+            <div id="wildcardShowContent" style="padding: 30px;">
+                <div style="font-size: 5rem; margin-bottom: 20px;" id="wildcardEmoji">✨</div>
+                <h2 id="wildcardTitle" style="font-size: 2.5rem; margin-bottom: 20px;">Comodín Activado</h2>
+                <p id="wildcardDesc" style="font-size: 1.5rem; margin-bottom: 30px; color: #48bb78;"></p>
+                <p id="wildcardPlayer" style="font-size: 1.2rem; color: #fbbf24;"></p>
+                <button class="btn btn-primary" onclick="closeWildcardShow()" style="font-size: 1.1rem; padding: 15px 30px; margin-top: 20px;">✅ Entendido</button>
             </div>
         </div>
     </div>
@@ -1293,7 +1311,27 @@
             document.getElementById('eventDescriptionText').textContent = desc;
             document.getElementById('eventModal').classList.add('active');
             
-            // MOSTRAR A TODOS QUE SE ACTIVÓ UN COMODÍN
+            // MOSTRAR COMODÍN EN GRANDE A TODOS
+            const emojis = {
+                '⚡ Paso Relámpago': '⚡',
+                '🌟 Comodín de Avance Rápido': '🌟',
+                '🚪 Pasaje Teleportado': '🚪',
+                '🔍 Lente Magnética': '🔍',
+                '📸 Fotografía Forense': '📸',
+                '📋 Archivo Secreto': '📋',
+                '📜 Pasadizo Secreto': '📜',
+                '🛡️ Escudo del Detective': '🛡️',
+                '💰 Recompensa de Inteligencia': '💰',
+                '🕐 Turno Bonificación': '🕐'
+            };
+            
+            document.getElementById('wildcardEmoji').textContent = emojis[title] || '✨';
+            document.getElementById('wildcardTitle').textContent = title;
+            document.getElementById('wildcardDesc').textContent = desc;
+            document.getElementById('wildcardPlayer').textContent = `Activado por: ${gameState.playerName}`;
+            document.getElementById('wildcardShowModal').classList.add('active');
+            
+            // MOSTRAR A TODOS EN FIREBASE
             database.ref(`rooms/${gameState.roomCode}/gameState/messages`).push({ 
                 type: 'success', 
                 text: `✨ ¡${gameState.playerName} activó ${title}!` 
@@ -1428,6 +1466,10 @@
             gameState.extraTurnGranted = true;
         }
 
+        function closeWildcardShow() {
+            document.getElementById('wildcardShowModal').classList.remove('active');
+        }
+
         function showRandomPlayerCard() {
             const playerIds = Object.keys(gameState.players).filter(id => id !== gameState.userId);
             if (playerIds.length === 0) {
@@ -1437,12 +1479,20 @@
             const randomPlayerId = playerIds[Math.floor(Math.random() * playerIds.length)];
             const randomPlayer = gameState.players[randomPlayerId];
             const playerCards = randomPlayer.cards || [];
+            
             if (playerCards.length === 0) {
                 addMessage('info', `💰 ${randomPlayer.name} no tiene cartas`);
                 return;
             }
-            const randomCard = playerCards[Math.floor(Math.random() * playerCards.length)];
-            addMessage('success', `💰 ¡${gameState.playerName} forzó a ${randomPlayer.name} a mostrar: ${randomCard}!`);
+            
+            // MOSTRAR MODAL AL JUGADOR SELECCIONADO PARA QUE ELIJA
+            database.ref(`rooms/${gameState.roomCode}/gameState/forcedCardRequest`).set({
+                targetPlayerId: randomPlayerId,
+                requestedBy: gameState.playerName,
+                timestamp: Date.now()
+            });
+            
+            addMessage('info', `💰 Se le pidió a ${randomPlayer.name} que muestre una carta...`);
         }
 
         function closeEventModal() {
@@ -1522,7 +1572,62 @@
                     database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals/${snap.key}`).remove();
                 }
             });
+
+            // LISTENER PARA CUANDO TE PIDEN MOSTRAR UNA CARTA FORZADAMENTE
+            database.ref(`rooms/${gameState.roomCode}/gameState/forcedCardRequest`).on('value', (snap) => {
+                const request = snap.val();
+                if (request && request.targetPlayerId === gameState.userId) {
+                    showForcedCardModal(request.requestedBy);
+                }
+            });
         }
+
+        function showForcedCardModal(requestedBy) {
+            const playerCards = gameState.myCards || [];
+            if (playerCards.length === 0) {
+                addMessage('warning', `⚠️ ${requestedBy} intentó forzarte a mostrar una carta, pero no tienes cartas!`);
+                return;
+            }
+            
+            // Crear modal para elegir carta
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 5001;
+            `;
+            
+            let cardsHtml = '<div style="background: #1a202c; padding: 30px; border-radius: 12px; max-width: 500px; border: 2px solid #fbbf24;">';
+            cardsHtml += `<h2 style="color: #fbbf24; margin-bottom: 20px;">💰 ${requestedBy} te pidió una carta</h2>`;
+            cardsHtml += '<p style="color: #e2e8f0; margin-bottom: 20px;">Elige cuál carta mostrar:</p>';
+            cardsHtml += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 300px; overflow-y: auto;">';
+            
+            playerCards.forEach(card => {
+                cardsHtml += `<button onclick="forcedShowCard('${card}')" style="padding: 10px; background: #22c55e; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">${card}</button>`;
+            });
+            
+            cardsHtml += '</div></div>';
+            modal.innerHTML = cardsHtml;
+            document.body.appendChild(modal);
+        }
+
+        function forcedShowCard(card) {
+            // Remover modal
+            document.querySelectorAll('div[style*="z-index: 5001"]').forEach(el => el.remove());
+            
+            // Remover la request de Firebase
+            database.ref(`rooms/${gameState.roomCode}/gameState/forcedCardRequest`).remove();
+            
+            // Mostrar la carta revelada a todos
+            database.ref(`rooms/${gameState.roomCode}/gameState/cardReveals`).push({ 
+                targetUserId: gameState.userId,
+                showerName: gameState.playerName, 
+                card 
+            });
 
         function updateTurnControls() {
             const playerIds = Object.keys(gameState.players);
