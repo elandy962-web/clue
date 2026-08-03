@@ -410,6 +410,20 @@
             order: 2;
             width: 100%;
         }
+        
+        .actions-section .panel {
+            padding: 10px;
+            min-height: auto;
+            flex: 0 1 auto;
+        }
+        
+        .actions-section .panel h3 {
+            margin: 0 0 6px 0;
+        }
+        
+        .actions-section .action-buttons {
+            flex: 0;
+        }
 
         .sidebar {
             display: flex;
@@ -488,39 +502,6 @@
             width: 100%;
         }
         .action-buttons button { width: 100%; }
-        
-        #endMoveBtn,
-        #newGameBtn {
-            grid-column: span 2;
-        }
-        
-        /* Desktop: 3 columnas - buttons sin span para ocupar natural */
-        @media (min-width: 1200px) {
-            .action-buttons {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            #endMoveBtn {
-                grid-column: auto;
-            }
-            #newGameBtn {
-                grid-column: auto;
-            }
-            .btn-leave-safe {
-                grid-column: auto !important;
-            }
-        }
-        
-        /* Móvil: 1 columna */
-        @media (max-width: 768px) {
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-            #endMoveBtn,
-            #newGameBtn,
-            .btn-leave-safe {
-                grid-column: span 1 !important;
-            }
-        }
 
         .btn-leave-safe {
             grid-column: span 2;
@@ -818,7 +799,7 @@
         <div id="loginScreen" class="login-screen">
             <button id="installBtn" onclick="installApp()" style="width: 100%; margin-bottom: 20px;">📱 Instalar App</button>
             <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: #1a202c; border-radius: 8px; border: 1px solid #4a5568;">
-                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.5.6</small>
+                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.5.9</small>
             </div>
             <h2>👮 Elige tu Detective</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
@@ -875,8 +856,8 @@
                         <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #3182ce;">📓 Libreta</button>
                         <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">❓ Preguntar</button>
                         <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
-                        <button id="endMoveBtn" class="btn btn-secondary btn-small" onclick="finishMovement()" style="background: #d69e2e; display:none;">✅ Terminar Movimiento</button>
-                        <button id="newGameBtn" class="btn btn-success btn-small" onclick="startNewGame()" style="background: #22c55e; display:none;">🎮 Nueva Partida</button>
+                        <button id="endMoveBtn" class="btn btn-secondary btn-small" onclick="finishMovement()" style="background: #d69e2e; grid-column: span 2; display:none;">✅ Terminar Movimiento</button>
+                        <button id="newGameBtn" class="btn btn-success btn-small" onclick="startNewGame()" style="background: #22c55e; grid-column: span 2; display:none;">🎮 Nueva Partida</button>
                         <button class="btn btn-secondary btn-small btn-leave-safe" onclick="leaveGame()">🚪 Salir de la partida</button>
                     </div>
                 </div>
@@ -1003,7 +984,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.5.6";
+        const GAME_VERSION = "4.5.9";
         const VERSION_INFO = "v4.5.5 - Corregir Duplicación de Mensajes de Cartas Mostradas";
 
         const firebaseConfig = {
