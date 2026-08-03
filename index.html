@@ -1302,7 +1302,23 @@
             if (tile && tile.type === 'event-tile') {
                 console.log('✨ ¡¡¡EVENTO ACTIVADO EN:', location);
                 const randomEvent = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
+                
+                // ¡¡¡GUARDAR EN FIREBASE PARA QUE TODOS LO VEAN!!!
+                database.ref(`rooms/${gameState.roomCode}/gameState/currentEvent`).set({
+                    title: randomEvent.title,
+                    desc: randomEvent.desc,
+                    activatedBy: gameState.userId,
+                    activatedByName: gameState.playerName,
+                    timestamp: Date.now()
+                });
+                
+                // ¡¡¡APLICAR EFECTO SOLO SI FUI YO!!!
                 triggerEvent(randomEvent.title, randomEvent.desc);
+                
+                // Limpiar después de 2 segundos
+                setTimeout(() => {
+                    database.ref(`rooms/${gameState.roomCode}/gameState/currentEvent`).remove();
+                }, 2000);
             }
         }
 
@@ -1408,21 +1424,54 @@
             updateGameBoard();
         }
 
+        function triggerEventAllPlayers(title, desc, activatedByName) {
+            // Mostrar modal a TODOS
+            document.getElementById('eventTitleTitle').textContent = title;
+            document.getElementById('eventDescriptionText').textContent = `Activado por: ${activatedByName}`;
+            document.getElementById('eventModal').classList.add('active');
+            
+            // MOSTRAR ÍCONO EN GRANDE A TODOS
+            const emojis = {
+                '⚡ Paso Relámpago': '⚡',
+                '🌟 Comodín de Avance Rápido': '🌟',
+                '🚪 Pasaje Teleportado': '🚪',
+                '🔍 Lente Magnética': '🔍',
+                '📸 Fotografía Forense': '📸',
+                '📋 Archivo Secreto': '📋',
+                '📜 Pasadizo Secreto': '📜',
+                '🛡️ Escudo del Detective': '🛡️',
+                '💰 Recompensa de Inteligencia': '💰',
+                '🕐 Turno Bonificación': '🕐'
+            };
+            
+            if (document.getElementById('wildcardEmoji')) {
+                document.getElementById('wildcardEmoji').textContent = emojis[title] || '✨';
+                document.getElementById('wildcardTitle').textContent = title;
+                document.getElementById('wildcardDesc').textContent = desc;
+                document.getElementById('wildcardPlayer').textContent = `Activado por: ${activatedByName}`;
+                document.getElementById('wildcardShowModal').classList.add('active');
+            }
+        }
+
         function showRandomCardFromPlayer() {
             const playerIds = Object.keys(gameState.players).filter(id => id !== gameState.userId);
             if (playerIds.length === 0) {
-                addMessage('warning', '⚠️ No hay otros jugadores para revisar');
+                addMessage('warning', '⚠️ No hay otros jugadores');
                 return;
             }
             const randomPlayerId = playerIds[Math.floor(Math.random() * playerIds.length)];
             const randomPlayer = gameState.players[randomPlayerId];
-            const playerCards = randomPlayer.cards || [];
-            if (playerCards.length === 0) {
-                addMessage('info', `🔍 ${randomPlayer.name} no tiene cartas disponibles`);
-                return;
-            }
-            const randomCard = playerCards[Math.floor(Math.random() * playerCards.length)];
-            addMessage('success', `🔍 ¡${gameState.playerName} vio la carta: ${randomCard} de ${randomPlayer.name}!`);
+            
+            console.log(`🔍 Forzando a ${randomPlayer.name} a mostrar una carta`);
+            
+            // ¡¡¡FORZAR AL JUGADOR A MOSTRAR CARTA!!!
+            database.ref(`rooms/${gameState.roomCode}/gameState/forcedCardRequest`).set({
+                targetPlayerId: randomPlayerId,
+                requestedBy: gameState.playerName,
+                timestamp: Date.now()
+            });
+            
+            addMessage('info', `🔍 ¡${gameState.playerName} activó Lente Magnética! ${randomPlayer.name} debe mostrar una carta.`);
         }
 
         function showPlayersInRoom() {
@@ -1578,6 +1627,14 @@
                 const request = snap.val();
                 if (request && request.targetPlayerId === gameState.userId) {
                     showForcedCardModal(request.requestedBy);
+                }
+            });
+            
+            // ¡¡¡LISTENER DE EVENTOS/COMODINES PARA QUE TODOS LOS JUGADORES LOS VEAN!!!
+            database.ref(`rooms/${gameState.roomCode}/gameState/currentEvent`).on('value', (snap) => {
+                if (snap.val()) {
+                    const event = snap.val();
+                    triggerEventAllPlayers(event.title, event.desc, event.activatedByName);
                 }
             });
         }
