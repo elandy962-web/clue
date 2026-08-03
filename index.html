@@ -817,6 +817,9 @@
 
         <div id="loginScreen" class="login-screen">
             <button id="installBtn" onclick="installApp()" style="width: 100%; margin-bottom: 20px;">📱 Instalar App</button>
+            <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: #1a202c; border-radius: 8px; border: 1px solid #4a5568;">
+                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.5.6</small>
+            </div>
             <h2>👮 Elige tu Detective</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
                 <button class="btn btn-primary" onclick="selectDetective('Señorita Amapola')">👩 Señorita Amapola</button>
@@ -1000,7 +1003,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.5.5";
+        const GAME_VERSION = "4.5.6";
         const VERSION_INFO = "v4.5.5 - Corregir Duplicación de Mensajes de Cartas Mostradas";
 
         const firebaseConfig = {
