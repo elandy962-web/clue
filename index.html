@@ -409,12 +409,16 @@
         .actions-section {
             order: 2;
             width: 100%;
+            flex-shrink: 1;
+            flex-basis: auto;
         }
         
         .actions-section .panel {
             padding: 10px;
             min-height: auto;
-            flex: 0 1 auto;
+            height: auto;
+            flex: none;
+            display: block;
         }
         
         .actions-section .panel h3 {
@@ -422,7 +426,7 @@
         }
         
         .actions-section .action-buttons {
-            flex: 0;
+            flex: none;
         }
 
         .sidebar {
@@ -799,7 +803,7 @@
         <div id="loginScreen" class="login-screen">
             <button id="installBtn" onclick="installApp()" style="width: 100%; margin-bottom: 20px;">📱 Instalar App</button>
             <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: #1a202c; border-radius: 8px; border: 1px solid #4a5568;">
-                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.5.9</small>
+                <small style="color: #a0aec0;" id="versionDisplay">Versión 4.6.0</small>
             </div>
             <h2>👮 Elige tu Detective</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
@@ -984,7 +988,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        const GAME_VERSION = "4.5.9";
+        const GAME_VERSION = "4.6.0";
         const VERSION_INFO = "v4.5.5 - Corregir Duplicación de Mensajes de Cartas Mostradas";
 
         const firebaseConfig = {
