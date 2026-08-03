@@ -485,8 +485,42 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 6px;
             margin-top: 4px;
+            width: 100%;
         }
         .action-buttons button { width: 100%; }
+        
+        #endMoveBtn,
+        #newGameBtn {
+            grid-column: span 2;
+        }
+        
+        /* Desktop: 3 columnas - buttons sin span para ocupar natural */
+        @media (min-width: 1200px) {
+            .action-buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            #endMoveBtn {
+                grid-column: 1 / 3;
+            }
+            #newGameBtn {
+                grid-column: 1 / 3;
+            }
+            .btn-leave-safe {
+                grid-column: 1 / 3 !important;
+            }
+        }
+        
+        /* Móvil: 1 columna */
+        @media (max-width: 768px) {
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            #endMoveBtn,
+            #newGameBtn,
+            .btn-leave-safe {
+                grid-column: span 1 !important;
+            }
+        }
 
         .btn-leave-safe {
             grid-column: span 2;
@@ -605,9 +639,23 @@
             padding-right: 10px;
             margin-bottom: 15px;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 15px;
             align-content: start;
+        }
+        
+        /* Tablet: 2 columnas */
+        @media (min-width: 768px) {
+            #notebookModal #notebookContainer {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        /* Desktop: 3 columnas */
+        @media (min-width: 1200px) {
+            #notebookModal #notebookContainer {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
         }
         
         #notebookModal .detective-table {
@@ -773,8 +821,8 @@
                         <button class="btn btn-secondary btn-small" onclick="showNotebookModal()" style="background: #3182ce;">📓 Libreta</button>
                         <button class="btn btn-primary btn-small" onclick="showSuggestionModal()" style="background: #dd6b20;">❓ Preguntar</button>
                         <button class="btn btn-primary btn-small" onclick="showAccusationModal()" style="background: #805ad5;">🎯 Acusar</button>
-                        <button id="endMoveBtn" class="btn btn-secondary btn-small" onclick="finishMovement()" style="background: #d69e2e; grid-column: span 2; display:none;">✅ Terminar Movimiento</button>
-                        <button id="newGameBtn" class="btn btn-success btn-small" onclick="startNewGame()" style="background: #22c55e; grid-column: span 2; display:none;">🎮 Nueva Partida</button>
+                        <button id="endMoveBtn" class="btn btn-secondary btn-small" onclick="finishMovement()" style="background: #d69e2e; display:none;">✅ Terminar Movimiento</button>
+                        <button id="newGameBtn" class="btn btn-success btn-small" onclick="startNewGame()" style="background: #22c55e; display:none;">🎮 Nueva Partida</button>
                         <button class="btn btn-secondary btn-small btn-leave-safe" onclick="leaveGame()">🚪 Salir de la partida</button>
                     </div>
                 </div>
