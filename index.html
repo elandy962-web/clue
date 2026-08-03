@@ -620,7 +620,34 @@
             font-size: 1.1rem;
             margin-bottom: 6px;
         }
+
+        /* PWA Install Button */
+        #installBtn {
+            padding: 12px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: block;
+        }
+
+        #installBtn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+        }
+
+        #installBtn.hide {
+            display: none;
+        }
     </style>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Clue">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f6ad55">
 </head>
 <body>
     <div class="container">
@@ -629,6 +656,7 @@
         </div>
 
         <div id="loginScreen" class="login-screen">
+            <button id="installBtn" onclick="installApp()" style="width: 100%; margin-bottom: 20px;">📱 Instalar App</button>
             <h2>👮 Elige tu Detective</h2>
             <div style="text-align: center; color: #48bb78; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem;">
                 🎮 <span id="versionDisplay">Versión 4.3.0</span>
@@ -1867,6 +1895,41 @@
         }
 
         document.getElementById('versionDisplay').textContent = `Versión ${GAME_VERSION} - ${VERSION_INFO}`;
+        
+        // PWA Installation
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                // Android
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        installBtn.classList.add('hide');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                // iPhone
+                alert('iPhone: Abre el menú (⋯) > Añadir a pantalla de inicio > Añadir');
+            }
+        }
+
+        // Ocultar si ya está instalado
+        if (window.navigator.standalone === true) {
+            installBtn.classList.add('hide');
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+
         authenticateUser();
     </script>
 </body>
